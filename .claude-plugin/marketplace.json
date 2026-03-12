@@ -1,0 +1,36 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "decouple-legacy",
+  "version": "1.0.0",
+  "description": "AI-powered framework for understanding, analyzing, and modernizing legacy systems. 10 domain-specific skills and 6 chained workflows across 4 plugins — from investigation to analysis, execution, and knowledge management.",
+  "owner": {
+    "name": "t-hasuike",
+    "url": "https://github.com/t-hasuike/decouple-legacy-skills"
+  },
+  "plugins": [
+    {
+      "name": "legacy-investigation",
+      "description": "Investigation and understanding skills for legacy systems: code exploration, service specification, and project navigation.",
+      "source": "./legacy-investigation",
+      "category": "legacy-systems"
+    },
+    {
+      "name": "legacy-analysis",
+      "description": "Analysis and planning skills for legacy systems: impact analysis, system overview diagrams (DFD, I/O interfaces).",
+      "source": "./legacy-analysis",
+      "category": "legacy-systems"
+    },
+    {
+      "name": "legacy-execution",
+      "description": "Execution and review skills for legacy systems: diff-based change proposals, automated PR creation, and code review.",
+      "source": "./legacy-execution",
+      "category": "legacy-systems"
+    },
+    {
+      "name": "legacy-knowledge",
+      "description": "Knowledge management skills for legacy systems: converting investigation results into reusable domain knowledge.",
+      "source": "./legacy-knowledge",
+      "category": "legacy-systems"
+    }
+  ]
+}
