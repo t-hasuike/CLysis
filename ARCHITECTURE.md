@@ -265,6 +265,44 @@ Human reviews synthesis & selects approach
 └────────────────────────────────────────┘
 ```
 
+### Leader (Shogun) Operational Protocol
+
+The leader follows a structured workflow for every mission:
+
+1. Receive instructions from the user
+2. Analyze the nature of the task
+3. **[Required]** Determine whether to consult the planner (karo) -- see "Planner Engagement Criteria" below
+4. Consult the planner (if applicable)
+5. Decide team composition (headcount, roles, model)
+6. **[Required]** Request user approval for team formation
+7. After approval, create and launch the agent team
+8. Operate in delegate mode -- coordinate, do not implement
+9. Report results to the user upon completion
+
+> **Note**: Steps 3-4 must not be skipped. When in doubt, consult the planner.
+
+### Planner (Karo) Engagement Criteria
+
+| Situation | Decision | Reason |
+|-----------|----------|--------|
+| Large-scale task (10+ files changed) | Consultation required | Task decomposition, dependency management |
+| Complex impact analysis (cross-repository) | Consultation required | Identify affected scope, surface risks |
+| Directory structure or knowledge management changes | Consultation required | Requires holistic design judgment |
+| Before presenting proposals to the user | Consultation required | Improve proposal quality and accuracy |
+| Error resolution (unknown cause, multi-file) | Consultation recommended | Root cause identification |
+| Small-scale investigation (single feature) | Not needed | Task tool is sufficient |
+| Minor documentation edits | Not needed | Delegate directly to workers |
+
+### Team Composition Guidelines
+
+| Scale | Team Structure | When to Use |
+|-------|---------------|-------------|
+| **Small investigation** | Task tool (sub-agent) | Single-shot investigation or code analysis |
+| **Medium task (compound)** | Karo (planner) then workers | Multi-step tasks (e.g., investigation + documentation update) |
+| **Medium task (parallel)** | 2 team members | Parallel work across 2 domains |
+| **Large task** | 3-4 team members | Parallel work across multiple domains with review |
+| **Investigation + deliberation** | 3-5 team members | Competing hypothesis validation, code review |
+
 ---
 
 ## Domain Knowledge Separation
@@ -475,6 +513,21 @@ Every phase transition requires human confirmation. This ensures the core philos
 
 ---
 
+## Visualization Standards
+
+State and structure visualization uses **mermaid format** as the default. The leader (or assigned agent) should select the appropriate diagram type based on the situation.
+
+| Diagram Type | Use Case | Example |
+|-------------|----------|---------|
+| flowchart | Bird's-eye view, dependency maps, cascading impact maps | Module dependency relationships |
+| sequenceDiagram | Processing flows, API call chains, batch processes | Order-to-delivery flow |
+| stateDiagram | Status transitions | Order status lifecycle |
+| erDiagram | Table relationships, data models | Entity-relationship diagrams |
+
+Investigation reports should include at least one visualization diagram to make findings accessible at a glance.
+
+---
+
 ## Quality & Safety
 
 ### Quality Gates
@@ -502,6 +555,8 @@ Every phase transition requires human confirmation. This ensures the core philos
 | F001 | Team formation requires user approval | Leader MUST request approval before creating team |
 | F002 | Leader does NOT implement code | Leader delegates to workers |
 | F003 | No simultaneous file edits by multiple agents | karo (planner) enforces file-level task splitting |
+| F004 | Leaving team unattended (risk of wasted work) | Leader MUST monitor progress and steer as needed |
+| F005 | Skipping karo for large-scale tasks (causes rework) | Leader MUST consult karo before delegating to workers |
 
 ---
 
