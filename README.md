@@ -3,7 +3,7 @@
 > AI-powered framework for understanding, analyzing, and modernizing legacy systems.
 
 レガシーシステムの調査・分析・修正を AI エージェントチームで体系的に支援するフレームワーク。
-10のドメイン特化スキルと6つのワークフローコマンドを、4つのプラグインで提供する。
+11のドメイン特化スキルと6つのワークフローコマンドを、4つのプラグインで提供する。
 
 ## Repository Structure
 
@@ -14,7 +14,7 @@ decouple-legacy-skills/
 ├── assessment/                # Quality evaluation criteria & maturity model
 ├── config/                    # Terminology customization
 ├── docs/                      # Templates, workflow examples, migration guide
-├── legacy-analysis/           # Plugin: impact-analysis, legacy-analyze
+├── legacy-analysis/           # Plugin: impact-analysis, legacy-analyze, distortion-analysis
 │   ├── .claude-plugin/
 │   ├── commands/
 │   ├── examples/
@@ -45,7 +45,7 @@ decouple-legacy-skills/
 | Plugin | Skills | Commands | Description |
 |--------|--------|----------|-------------|
 | [legacy-investigation](./legacy-investigation/) | 3 | 3 | 調査・理解（project-guide, investigate, service-spec） |
-| [legacy-analysis](./legacy-analysis/) | 2 | 1 | 分析・計画（impact-analysis, legacy-analyze） |
+| [legacy-analysis](./legacy-analysis/) | 3 | 1 | 分析・計画（impact-analysis, legacy-analyze, distortion-analysis） |
 | [legacy-execution](./legacy-execution/) | 3 | 2 | 実行・レビュー（propose-changes, create-pr, code-review） |
 | [legacy-knowledge](./legacy-knowledge/) | 2 | 0 | 知識蓄積（build-knowledge） |
 
@@ -131,7 +131,8 @@ claude plugin install legacy-knowledge@decouple-legacy
 | `/investigate` | legacy-investigation | Code investigation with semantic search (Serena MCP) |
 | `/service-spec` | legacy-investigation | Service/UseCase specification documentation |
 | `/impact-analysis` | legacy-analysis | Impact analysis with ADR-format reports |
-| `/legacy-analyze` | legacy-analysis | Legacy codebase understanding workflow (Phase 0→1→2→3) |
+| `/legacy-analyze` | legacy-analysis | Legacy codebase understanding workflow (Phase 0->1->2->3) |
+| `/distortion-analysis` | legacy-analysis | Detect code distortion patterns and organize in Part A/B/C framework |
 | `/propose-changes` | legacy-execution | Generate code diffs with context |
 | `/create-pr` | legacy-execution | Create PR with ADR summary and checklist |
 | `/code-review` | legacy-execution | PR review with code quality and domain knowledge validation |
@@ -237,6 +238,30 @@ Commands provide pre-configured pipelines for common workflows:
 /build-knowledge [output path]
    → Persists domain knowledge to input/domain/
 ```
+
+## Distortion Analysis Flow
+
+Detect code-level risks ("distortions") and organize them systematically:
+
+```
+/distortion-analysis [repository] [area]
+   → Phase 1: 5 parallel workers detect risks (flag gaps, type traps, missing checks, etc.)
+   → Phase 2: 3 parallel workers create Part A/B/C report
+   → Output: distortion-report-[repo]-[area]-[date].md
+```
+
+**Part A/B/C Framework**:
+- **Part A**: Business Process-driven -- maps risks to business processes
+- **Part B**: Root Cause-driven -- classifies by problem patterns (P1-P6), produces remediation priority with ROI
+- **Part C**: Mermaid Overview -- visualizes flow, causality, and remediation impact
+
+**Key concepts**:
+- **Distortion Patterns**: A (invalid value passes), B (stops midway), C (no check exists)
+- **Problem Patterns**: P1-P6 (shared flags, enum mismatch, type traps, soft-delete gaps, implicit conversion, insufficient branching)
+- **Subject-First Rule**: Always state "whose/what" when documenting flags and variables
+- **Cross-Cutting Risk View**: L1 (per-repo) + L2 (cross-repo) risk management
+
+See [ARCHITECTURE.md](ARCHITECTURE.md#distortion-analysis-framework) for detailed framework documentation.
 
 ## Review Flow
 

@@ -1,8 +1,8 @@
 # ARCHITECTURE
 
 **Project**: decouple-legacy
-**Version**: 1.0
-**Last Updated**: 2026-03-06
+**Version**: 1.1
+**Last Updated**: 2026-03-13
 
 ---
 
@@ -32,7 +32,7 @@ legacy-investigation/      # Phase 1: Investigation & Understanding
 
 legacy-analysis/          # Phase 2: Analysis & Planning
 ├── .claude-plugin/
-├── skills/               # impact-analysis, legacy-analyze
+├── skills/               # impact-analysis, legacy-analyze, distortion-analysis
 ├── commands/             # /deep-dive
 └── examples/
 
@@ -358,6 +358,105 @@ To change style, add to your project's CLAUDE.md:
 ```markdown
 ## Communication Style
 Use business Japanese for all reports.
+```
+
+---
+
+## Distortion Analysis Framework
+
+The Distortion Analysis Framework provides a systematic approach to detecting and organizing code-level risks ("distortions") in legacy systems. It is implemented as the `/distortion-analysis` skill in the `legacy-analysis` plugin.
+
+### Part A/B/C Framework
+
+Every distortion analysis produces a structured report with three complementary perspectives:
+
+| Part | Perspective | Purpose | Key Output |
+|------|-----------|---------|------------|
+| **Part A** | Business Process-driven | Map risks to business processes | Process-risk matrix with severity distribution |
+| **Part B** | Root Cause-driven | Classify risks by problem pattern | Remediation priority table with ROI |
+| **Part C** | Mermaid Overview | Visualize risk relationships | 3 diagrams: flow, causality, remediation impact |
+
+**Why three parts?** The same set of risks is viewed from different angles. Part A answers "which business processes are affected?", Part B answers "what root causes should we fix first?", and Part C answers "how do the risks relate to each other?"
+
+Risk counts MUST match across all three parts -- they represent the same risk set, just organized differently.
+
+### Distortion Patterns (A/B/C)
+
+Distortion patterns classify HOW a code defect manifests at runtime:
+
+| ID | Pattern | Description | Typical Example |
+|----|---------|-------------|-----------------|
+| **A** | Invalid value passes through | Insufficient validation allows values that should be rejected to flow downstream | Expired items included in checkout processing |
+| **B** | Stops midway | Some processing succeeds but downstream processing fails or becomes inconsistent | Order confirms but fulfillment routing errors |
+| **C** | No check exists | Required validation logic does not exist at all | No expiration check during payment |
+
+### Problem Patterns (P1-P6)
+
+Problem patterns classify the ROOT CAUSE of a distortion:
+
+| ID | Pattern | Description | Detection Focus |
+|----|---------|-------------|-----------------|
+| **P1** | Implicit shared flag dependency | Multiple processes reference the same flag with different assumptions | Cross-search flag references; record "whose/what" flag |
+| **P2** | Constant/Enum mismatch | Code constant definitions differ from DB stored values or cross-repository definitions | Compare Enum definitions, `const` declarations, DB data |
+| **P3** | Type comparison traps | Language-specific loose comparison pitfalls | Loose equality, missing strict parameters, switch type matching |
+| **P4** | Soft-delete/JOIN condition gaps | Missing logical deletion or JOIN conditions | Search SQL, ORM scopes, raw queries |
+| **P5** | Implicit value conversion | Unintended type/value conversions affecting results | Track casts, conversion functions, date parsing |
+| **P6** | Insufficient branching | Unhandled cases, missing else/default branches | Branch coverage, missing error handling |
+
+### Subject-First Rule
+
+When documenting risks involving flags, variables, or columns, always explicitly state **"whose/what"** as the subject. This prevents ambiguity and ensures readers understand the context without cross-referencing.
+
+```
+Bad:  "delflag is 0..."
+Good: "Event table's delflag (event logical deletion flag) is 0..."
+
+Bad:  "publishendday is not checked"
+Good: "Event's publication end date (event.publishendday) is not checked in PaymentProcessor's payment processing"
+```
+
+**Where to apply the Subject-First Rule:**
+- Distortion analysis reports (Part A/B/C)
+- Code review comments involving domain-specific flags or variables
+- Investigation reports referencing shared state across services
+- Any documentation describing cross-repository data dependencies
+
+### Cross-Cutting Risk View
+
+When analyzing multiple repositories, risks that span boundaries require a two-layer management approach:
+
+```
+L1: Component-Level View (per repository)
+    Individual distortion reports for each repository
+    ↓ synthesize after 2+ repos analyzed
+L2: Cross-Cutting View (across repositories)
+    Shared flags with different assumptions across repos
+    Data flow integrity across service boundaries
+    Inconsistent validation between layers
+```
+
+| Layer | Scope | When to Create | Example |
+|-------|-------|---------------|---------|
+| **L1** | Single repository/component | Always (default output) | Checkout flow risks in EC repo |
+| **L2** | Multiple repositories | After 2+ L1 analyses for related areas | Flag referenced differently in EC vs Backend |
+
+**L2 risks are often the most dangerous** because no single team owns them and they cross deployment boundaries.
+
+### 2-Phase Execution Model
+
+```
+Phase 1: Risk Collection
+    5 workers in parallel
+    → Worker A: Integrate existing investigation results
+    → Worker B-E: 4 distortion investigation perspectives
+    → Leader: Deduplicate & integrate (no file output)
+
+Phase 2: Part A/B/C Creation
+    3 workers in parallel
+    → Worker F: Part A (Business Process-driven)
+    → Worker G: Part B (Root Cause-driven)
+    → Worker H: Part C (Mermaid Overview)
+    → Leader: Integrate into single report file
 ```
 
 ---
