@@ -231,7 +231,7 @@ $ARGUMENTS
 
 ### 前提条件
 - 変更対象の仕様が把握済みであること（/service-spec で事前調査推奨）
-- input/project/service_responsibilities.md を参照可能であること
+- Service責務定義を参照可能であること（`input/project/service_responsibilities.md` or `knowledge/system/04_change_impact/service_responsibilities.md`）
 
 ### 後続スキル（パイプライン）
 - なし（最終成果物。実装フェーズへの引き継ぎ資料）

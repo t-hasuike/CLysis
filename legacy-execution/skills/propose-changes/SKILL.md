@@ -243,14 +243,14 @@ $ARGUMENTS
 ### INPUT
 | 種別 | 内容 | 必須/任意 | 例 |
 |------|------|-----------|-----|
-| 影響分析レポート | /impact-analysis の出力ファイルパス | 必須 | `output/impact_reports/add_feature.md` |
+| 影響分析レポート | /impact-analysis の出力ファイルパス | 必須 | `reports/impact_reports/add_feature.md`（or `output/impact_reports/add_feature.md`） |
 | Phase指定 | 実装対象のPhase番号 | 任意（デフォルト: Phase 0） | `Phase 0`, `Phase 1` |
 | 追加指示 | 特定箇所への注力指示 | 任意 | 「ValidationService のみ」 |
 
 ### OUTPUT
 | 種別 | 形式 | 出力先 |
 |------|------|--------|
-| 修正提案書 | diff形式 + 理由・影響範囲・テスト方針 | `output/proposals/{機能名}_{phase}.md` |
+| 修正提案書 | diff形式 + 理由・影響範囲・テスト方針 | `reports/proposals/{機能名}_{phase}.md`（or `output/proposals/`） |
 
 ### 前提条件
 - 影響分析レポートが作成済みであること（/impact-analysis で生成）

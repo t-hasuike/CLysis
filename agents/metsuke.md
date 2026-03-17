@@ -125,8 +125,8 @@ memory: project
 ## 参照先
 
 - **リポジトリ**: CLAUDE.mdの「リポジトリ」セクションで定義されたリポジトリを参照
-  - GitHub MCP経由でアクセスする場合: `owner/repo` 形式（例: `your-org/your-repo`）
+  - GitHub MCP経由でアクセスする場合: CLAUDE.mdに記載の `owner/repo` 形式を使用
 - **技術スタック**: CLAUDE.mdの「技術スタック」セクションを参照
-- **ドメイン知識**: `input/domain/` ディレクトリ
-- **プロジェクト情報**: `input/project/` ディレクトリ
+- **ドメイン知識**: `input/domain/` ディレクトリ（プロジェクトによっては `knowledge/domain/`）
+- **プロジェクト情報**: `input/project/` ディレクトリ（プロジェクトによっては `knowledge/system/`）
 - **Serenaメモリ**: coding_standards, security_guidelines, code_style_conventions, task_completion_checklist

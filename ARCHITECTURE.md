@@ -1,8 +1,8 @@
 # ARCHITECTURE
 
 **Project**: decouple-legacy
-**Version**: 1.1
-**Last Updated**: 2026-03-13
+**Version**: 1.2
+**Last Updated**: 2026-03-18
 
 ---
 
@@ -261,7 +261,7 @@ Human reviews synthesis & selects approach
 │  • Shared task list (TaskCreate/Update)│
 │  • Natural language messaging          │
 │  • Domain knowledge (input/domain/)    │
-│  • Reports (output/)                   │
+│  • Reports (output/ or reports/)       │
 └────────────────────────────────────────┘
 ```
 
@@ -587,8 +587,17 @@ decouple-legacy implements common AI agent patterns:
 | **Self-Reflection** | metsuke agent audit | Phase 2 (legacy-analyze) |
 | **Multi-Agent Collaboration** | Leader + Workers + Inspector | All phases |
 | **Plan-and-Execute** | /impact-analysis + Phase decomposition | Phase 1 |
-| **Knowledge Graph Memory** | input/domain/ + diagrams/ | Phase 3 (legacy-analyze) |
+| **Knowledge Graph Memory** | domain knowledge dir + diagrams/ | Phase 3 (legacy-analyze) |
 | **Sequential Chain** | Phase 0→1→2→3 iteration | /legacy-analyze |
+
+### Phase 3 Mandatory Rule
+
+After completing `/legacy-analyze` Phase 1-2 investigations, Phase 3 (map update) MUST be executed. Without Phase 3:
+- Knowledge remains trapped in the session and is lost
+- Subsequent investigations re-cover the same ground
+- The "unknown" list does not shrink
+
+Phase 3 ensures that investigation results are persisted as updated diagrams and domain knowledge.
 
 ---
 
@@ -652,10 +661,58 @@ Investigation reports should include at least one visualization diagram to make 
 | Rule ID | Rule | Enforcement |
 |---------|------|-------------|
 | F001 | Team formation requires user approval | Leader MUST request approval before creating team |
-| F002 | Leader does NOT implement code | Leader delegates to workers |
+| F002 | Leader does NOT implement code | Leader delegates to workers -- investigation, analysis, and file reading are also included |
 | F003 | No simultaneous file edits by multiple agents | karo (planner) enforces file-level task splitting |
 | F004 | Leaving team unattended (risk of wasted work) | Leader MUST monitor progress and steer as needed |
 | F005 | Skipping karo for large-scale tasks (causes rework) | Leader MUST consult karo before delegating to workers |
+| F006 | Investigation results must be saved to files | Task tool delegation MUST include output file path; stdout-only return is prohibited |
+
+### Worker Delegation Rules
+
+#### Role Clarification in Prompts
+
+When delegating to workers, the leader MUST include role clarification at the beginning of the prompt:
+
+```
+**Important: You are a worker (executor). You are not the leader. Execute the task yourself.**
+```
+
+This prevents workers from attempting to delegate further or behaving as coordinators.
+
+#### Agent Type Selection
+
+| Agent Type | Capabilities | Use When |
+|------------|-------------|----------|
+| ashigaru-investigator | Read-only (cannot write files) | Pure investigation, code analysis |
+| ashigaru-scribe | Can create documents (but may trigger approval waits) | Documentation tasks |
+| general-purpose | Can write files without approval waits | Investigation tasks that require file output (F006 compliance) |
+
+**Key rule**: When a task requires both investigation AND file output, use `general-purpose` instead of `ashigaru-investigator`.
+
+### Investigation Phase Constraints
+
+During investigation/analysis phases (before implementation decisions are made), the following constraints apply:
+
+| Action | Allowed | Prohibited |
+|--------|---------|-----------|
+| Code reading and analysis | Yes | -- |
+| Report writing | Yes | -- |
+| Domain knowledge updates | Yes | -- |
+| Diagram updates (mermaid) | Yes | -- |
+| Code modification proposals | -- | Yes (defer to /propose-changes) |
+| Direct code edits | -- | Yes (always prohibited during investigation) |
+| Configuration changes | -- | Yes (defer to implementation phase) |
+
+This separation ensures that investigation produces clean, unbiased analysis without premature solution commitment.
+
+### Configuration Change Reference Check
+
+When directory structure or knowledge management configuration changes, the leader MUST verify that all reference paths in the following files remain valid:
+
+- Agent definitions (`agents/*.md`) -- reference paths in "参照先" sections
+- Skill definitions (`legacy-*/skills/*/SKILL.md`) -- I/O specification paths
+- CLAUDE.md -- directory references
+- ARCHITECTURE.md -- path examples
 
 ---
 
