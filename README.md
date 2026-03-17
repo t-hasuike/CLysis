@@ -2,8 +2,8 @@
 
 > AI-powered framework for understanding, analyzing, and modernizing legacy systems.
 
-レガシーシステムの調査・分析・修正を AI エージェントチームで体系的に支援するフレームワーク。
-11のドメイン特化スキルと6つのワークフローコマンドを、4つのプラグインで提供する。
+Systematic support for investigation, analysis, and modernization of legacy systems using AI agent teams.
+12 domain-specific skills and 6 workflow commands across 4 plugins.
 
 ## Repository Structure
 
@@ -29,7 +29,7 @@ decouple-legacy-skills/
 │   ├── commands/
 │   ├── examples/
 │   └── skills/
-├── legacy-knowledge/          # Plugin: build-knowledge, templates
+├── legacy-knowledge/          # Plugin: build-knowledge, archive-output, templates
 │   ├── .claude-plugin/
 │   ├── examples/
 │   ├── prompts/
@@ -47,70 +47,187 @@ decouple-legacy-skills/
 | [legacy-investigation](./legacy-investigation/) | 3 | 3 | 調査・理解（project-guide, investigate, service-spec） |
 | [legacy-analysis](./legacy-analysis/) | 3 | 1 | 分析・計画（impact-analysis, legacy-analyze, distortion-analysis） |
 | [legacy-execution](./legacy-execution/) | 3 | 2 | 実行・レビュー（propose-changes, create-pr, code-review） |
-| [legacy-knowledge](./legacy-knowledge/) | 2 | 0 | 知識蓄積（build-knowledge） |
+| [legacy-knowledge](./legacy-knowledge/) | 3 | 0 | 知識蓄積（build-knowledge, archive-output, templates） |
+
+## Prerequisites
+
+- **Claude Code** — Required
+- **Serena MCP** — Recommended. Enables semantic code search for `/investigate`, `/service-spec`. Skills work without it but with reduced accuracy.
+- **GitHub MCP** — Optional. Required for `/create-pr` and `/code-review`.
 
 ## Quick Start
 
-### Claude Code CLI (Recommended)
+### Choose your installation method
 
-1. Add this repository to the marketplace:
+- **Marketplace** (recommended) — Using Claude Code with internet access
+- **Local** — Running locally or in a restricted environment
+- **Manual** — Just want to try individual skills
+
+### Installation Methods
+
+#### Marketplace Installation (Recommended)
+
+Register the marketplace and install plugins:
 
 ```bash
-claude plugin marketplace add decouple-legacy /path/to/decouple-legacy
-```
+# Register the marketplace
+claude plugin marketplace add t-hasuike/decouple-legacy-skills
 
-2. Install the plugin you need:
-
-```bash
-# Investigation & understanding
+# Install individual plugins
 claude plugin install legacy-investigation@decouple-legacy
-
-# Analysis & planning
 claude plugin install legacy-analysis@decouple-legacy
-
-# Execution & review
 claude plugin install legacy-execution@decouple-legacy
-
-# Knowledge management
 claude plugin install legacy-knowledge@decouple-legacy
 ```
 
-3. Use the skills and commands in your Claude Code session:
-
-```
-/investigate-flow [target feature]
-/impact-analysis [change description]
-```
-
-### Manual Installation
-
-Copy individual skills to your project:
+Or install all plugins at once:
 
 ```bash
+# Install all 4 plugins in one command
+claude plugin install legacy-investigation@decouple-legacy legacy-analysis@decouple-legacy legacy-execution@decouple-legacy legacy-knowledge@decouple-legacy
+
+# Verify installation
+claude plugin list
+```
+
+#### Local Installation
+
+If running locally or adding to an existing marketplace:
+
+```bash
+# Add this repository to the marketplace
+claude plugin marketplace add decouple-legacy /path/to/decouple-legacy
+
+# Then install plugins as above
+claude plugin install legacy-investigation@decouple-legacy legacy-analysis@decouple-legacy legacy-execution@decouple-legacy legacy-knowledge@decouple-legacy
+
+# Verify installation
+claude plugin list
+```
+
+#### Manual Installation
+
+Clone the repository and copy individual skills to your project:
+
+```bash
+# Clone the repository
+git clone https://github.com/t-hasuike/decouple-legacy-skills.git
+cd decouple-legacy-skills
+
 # Copy skills from a specific plugin
-cp -r decouple-legacy/legacy-investigation/skills/* .claude/skills/
+cp -r legacy-investigation/skills/* /path/to/your/project/.claude/skills/
 
 # Or copy commands
-cp -r decouple-legacy/legacy-investigation/commands/* .claude/commands/
+cp -r legacy-investigation/commands/* /path/to/your/project/.claude/commands/
 ```
 
-## Plugin Dependencies
+### Available Plugins
 
-Some commands reference skills from other plugins. To use these commands, install the required plugins:
+| Plugin | Skills | Description |
+|--------|--------|-------------|
+| **legacy-investigation** | project-guide, investigate, service-spec | Code exploration, service specification, documentation reference |
+| **legacy-analysis** | impact-analysis, legacy-analyze, distortion-analysis | Impact analysis, system overview, code quality patterns |
+| **legacy-execution** | propose-changes, create-pr, code-review | Change proposals, PR creation, automated code review |
+| **legacy-knowledge** | build-knowledge, templates | Knowledge extraction, domain documentation, team templates |
 
-| Command | Required Plugins |
-|---------|-----------------|
-| `/investigate-flow` | legacy-investigation + legacy-analysis |
-| `/review` | legacy-investigation + legacy-execution |
+### Skill Chain Patterns
 
-**Recommended**: Install all 4 plugins for full functionality:
+Common workflows for analyzing and modernizing legacy systems:
+
+#### Impact Analysis Chain
+
+Investigate the full impact of proposed changes:
 
 ```bash
-claude plugin install legacy-investigation@decouple-legacy
-claude plugin install legacy-analysis@decouple-legacy
-claude plugin install legacy-execution@decouple-legacy
-claude plugin install legacy-knowledge@decouple-legacy
+/project-guide [your task]
+  → /investigate [target service or area]
+  → /service-spec [high-impact services]
+  → /impact-analysis [change description]
 ```
+
+**Use case**: Before implementing a change, understand its ripple effects across the codebase.
+
+#### Bug Investigation Chain
+
+Locate and understand the root cause of defects:
+
+```bash
+/project-guide [bug description]
+  → /investigate [suspected area]
+  → /service-spec [related services]
+  → /distortion-analysis [repository] [area]
+```
+
+**Use case**: Systematically identify code quality patterns and risk areas.
+
+#### System Understanding Chain
+
+Build comprehensive domain knowledge:
+
+```bash
+/project-guide [feature or module]
+  → /investigate [target service]
+  → /service-spec [service documentation]
+  → /build-knowledge [output path]
+```
+
+**Use case**: Document and archive understanding of critical legacy components.
+
+### First Steps
+
+1. Use the skills in your Claude Code session:
+
+```bash
+/project-guide my-legacy-feature
+/investigate AccountService
+/impact-analysis [describe your planned change]
+```
+
+2. Build domain knowledge from your investigations:
+
+```bash
+/build-knowledge output/investigation-results.md
+```
+
+3. Use the execution skills to propose and review changes:
+
+```bash
+/propose-changes [change description]
+/create-pr [task description]
+/code-review [PR number]
+```
+
+## Plugin Dependencies and Recommended Setup
+
+### Dependency Matrix
+
+Some commands reference skills from other plugins. Ensure required plugins are installed:
+
+| Command | Required Plugins | Purpose |
+|---------|-----------------|---------|
+| `/investigate-flow` | legacy-investigation + legacy-analysis | Full investigation pipeline with impact analysis |
+| `/bug-hunt` | legacy-investigation + legacy-analysis | Bug root cause analysis |
+| `/deep-dive` | legacy-analysis (+ others for context) | System-wide analysis |
+| `/implement` | legacy-execution + legacy-investigation | End-to-end change implementation |
+| `/review` | legacy-execution + legacy-investigation | PR review with context |
+
+### Recommended Setup
+
+**For all users**: Install all 4 plugins to unlock full functionality and workflow chains:
+
+```bash
+claude plugin install legacy-investigation@decouple-legacy legacy-analysis@decouple-legacy legacy-execution@decouple-legacy legacy-knowledge@decouple-legacy
+```
+
+**By team role**:
+
+| Team Role | Required Plugins | Install Command |
+|-----------|-----------------|-----------------|
+| **Investigators** (understand legacy code) | legacy-investigation + legacy-analysis | `legacy-investigation@decouple-legacy legacy-analysis@decouple-legacy` |
+| **Implementers** (make changes) | legacy-execution + legacy-investigation | `legacy-execution@decouple-legacy legacy-investigation@decouple-legacy` |
+| **Reviewers** (validate changes) | legacy-execution + legacy-analysis | `legacy-execution@decouple-legacy legacy-analysis@decouple-legacy` |
+| **Knowledge Architects** (document systems) | legacy-knowledge + legacy-investigation | `legacy-knowledge@decouple-legacy legacy-investigation@decouple-legacy` |
+| **Full Teams** | All 4 plugins | `legacy-investigation@decouple-legacy legacy-analysis@decouple-legacy legacy-execution@decouple-legacy legacy-knowledge@decouple-legacy` |
 
 ## Workflow Commands
 

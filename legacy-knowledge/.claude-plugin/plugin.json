@@ -2,5 +2,5 @@
   "name": "legacy-knowledge",
   "description": "Knowledge management skills for legacy systems: converting investigation results into reusable domain knowledge.",
   "version": "1.0.0",
-  "skills": ["build-knowledge", "templates"]
+  "skills": ["build-knowledge", "templates", "archive-output"]
 }

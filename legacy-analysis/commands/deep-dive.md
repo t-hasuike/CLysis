@@ -12,41 +12,53 @@ legacy-analyze skill の Phase 0-3 を順次実行し、システム相関図・
 
 ## ワークフロー
 
-### Step 1: Phase 0 — システム概要の把握
+### Step 1: Phase 0 — 土台構築
 
 **legacy-analyze** skill を適用（Phase 0）:
 
-- リポジトリ構成・技術スタック・ディレクトリ構造を調査する
-- エントリポイント・ルーティングを特定する
+- Auto-collect from README, docker-compose.yml, dependency management files (.env.example)
+- Extract repository roles, technology stack, and dependencies
+- Ask 9 clarifying questions about business domain and context
+- Generate initial system overview diagram and "Known/Unknown" list
 
 $ARGUMENTS
 
 > **確認**: 「殿、システム概要の把握が完了しました。次の段（相関図）に進んでよろしいか？」
 
-### Step 2: Phase 1 — システム相関図
+### Step 2: Phase 1 — 具体から掘る
 
-**legacy-analyze** skill を適用（Phase 1）:
+**legacy-analyze** skill を適用（Phase 1 [change theme]）:
 
-- コンポーネント間の依存関係を Mermaid 図で可視化する
-- 外部サービス・DB・ファイルシステムとの関係を含む
+- Select a specific change theme (e.g., "add a new product category")
+- Trace impact across repositories using /impact-analysis
+- Document cross-repository connections, hidden outputs, hardcoded values
+- Update system overview diagram and DFD fragments
+- Refine "Known/Unknown" list
 
 > **確認**: 「殿、相関図ができました。次の段（DFD）に進んでよろしいか？」
 
-### Step 3: Phase 2 — データフロー図（DFD）
+### Step 3: Phase 2 — 監査で嘘を排除
 
 **legacy-analyze** skill を適用（Phase 2）:
 
-- 主要なデータフローを DFD Level 0-1 で可視化する
-- 入力源・処理・データストア・出力先を特定する
+- metsuke (Inspector) audits Phase 1 deliverables for accuracy
+- Verify all method names, class names, file paths exist
+- Cross-check code snippets against actual implementation
+- Validate application of project-specific rules (e.g., soft-delete conditions)
+- Correct findings and deliver audited artifacts
 
 > **確認**: 「殿、DFDが完成しました。次の段（I/O図）に進んでよろしいか？」
 
-### Step 4: Phase 3 — I/Oインタフェース図
+### Step 4: Phase 3 — 抽象に戻す
 
 **legacy-analyze** skill を適用（Phase 3）:
 
-- 外部インタフェースの入出力仕様を文書化する
-- API・バッチ・ファイル連携の仕様を整理する
+- Integrate Phase 1-2 fragments into three consolidated maps
+- Update system overview diagram with new connections
+- Add data flows to DFD
+- Document I/O interfaces and external connections
+- Persist domain knowledge to input/domain/
+- Update "Known/Unknown" list
 
 ### Step 5: 次の行動の提案
 

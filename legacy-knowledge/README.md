@@ -1,9 +1,10 @@
 # Legacy Knowledge
 
-レガシーシステムのドメイン知識を蓄積・管理するスキル群。
+Domain knowledge accumulation and management skills for legacy systems.
 
 ## Skills
-- **build-knowledge** — 調査結果→ドメイン知識化
+- **build-knowledge** — Extract and persist domain knowledge from investigation results
+- **archive-output** — Archive investigation outputs for knowledge reuse
 
-## Prompts
-- 汎用テンプレート集
+## Templates
+- Generic team operation templates for legacy system management

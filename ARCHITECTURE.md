@@ -411,8 +411,8 @@ When documenting risks involving flags, variables, or columns, always explicitly
 Bad:  "delflag is 0..."
 Good: "Event table's delflag (event logical deletion flag) is 0..."
 
-Bad:  "publishendday is not checked"
-Good: "Event's publication end date (event.publishendday) is not checked in PaymentProcessor's payment processing"
+Bad:  "publication_end_date is not checked"
+Good: "Event's publication end date (event.publication_end_date) is not checked in PaymentProcessor's payment processing"
 ```
 
 **Where to apply the Subject-First Rule:**
@@ -678,13 +678,15 @@ Investigation reports should include at least one visualization diagram to make 
 
 ---
 
-## Future Directions
+## Implemented Features
 
-### Phase 2 Enhancements
+### Phase 2: Automated Change Proposals (Implemented)
 
-- `/propose-changes` skill for AI-generated code diffs
-- `/create-pr` skill for automated PR creation with ADR context
+- `/propose-changes` skill — Generate code diffs with context
+- `/create-pr` skill — Automated PR creation with ADR context
 - Approval workflow: Human → AI proposes → Human reviews → CI/CD validates
+
+## Future Directions
 
 ### Phase 3 Enhancements
 

@@ -150,8 +150,8 @@ When documenting risks, always explicitly state "whose/what" as the subject for 
 Bad: "When delflag is 0..."
 Good: "When event table's delflag (event logical deletion flag) is 0..."
 
-Bad: "publishendday is not checked"
-Good: "Event's publication end date (event.publishendday) is not checked in PaymentProcessor.php's payment processing"
+Bad: "publication_end_date is not checked"
+Good: "Event's publication end date (event.publication_end_date) is not checked in PaymentProcessor.php's payment processing"
 ```
 
 ### Phase 1 Output
