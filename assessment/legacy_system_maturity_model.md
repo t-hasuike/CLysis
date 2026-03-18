@@ -1,257 +1,257 @@
-# レガシーシステム掌握度評価モデル
+# Legacy System Mastery Maturity Model
 
 > **Version**: 1.1
 > **Last Updated**: 2026-03-13
 > **Author**: ashigaru-scribe
 
-## 概要
+## Overview
 
-本基準書は、汎用的なレガシーシステムの掌握度を定量的に評価するための成熟度モデルである。10の観点から5段階のレベルで評価し、システムの可視化・改善の優先順位付け・進捗追跡を支援する。
+This document is a maturity model for quantitatively evaluating the mastery of generic legacy systems. It evaluates 10 perspectives at 5 levels, supporting system visualization, improvement prioritization, and progress tracking.
 
-## 評価モデルの説明
+## Assessment Model Description
 
-CMMI（Capability Maturity Model Integration）の5段階モデルをベースとし、レガシーシステム特有の課題に対応した10観点を定義している。
+Based on the CMMI (Capability Maturity Model Integration) 5-level model, it defines 10 perspectives addressing legacy system-specific challenges.
 
-**成熟度レベルの定義**:
-- Level 1: 初期段階（Ad hoc） - 文書化・自動化が欠如
-- Level 2: 管理段階（Managed） - 基本的なプロセス・計測が導入
-- Level 3: 定義段階（Defined） - 標準化・体系化されたプロセス
-- Level 4: 定量管理段階（Quantitatively Managed） - メトリクス駆動の管理
-- Level 5: 最適化段階（Optimizing） - 継続的改善・自動化による最適化
+**Maturity Level Definitions**:
+- Level 1: Initial (Ad hoc) - Lacking documentation and automation
+- Level 2: Managed - Basic processes and measurement introduced
+- Level 3: Defined - Standardized, systematic processes
+- Level 4: Quantitatively Managed - Metrics-driven management
+- Level 5: Optimizing - Continuous improvement through automation
 
-## 評価観点
+## Evaluation Perspectives
 
-### 1. 状態管理の健全性（State Management Health）
+### 1. State Management Health
 
-**定義**: システム状態の管理方法・変更追跡・整合性維持の成熟度
+**Definition**: Maturity of system state management methods, change tracking, and consistency maintenance
 
-**重要性**:
-- グローバル変数・散在した状態変更は保守性を低下させる
-- 適切な状態管理パターンの適用が変更影響の予測可能性を高める
-- ログ記録・不整合検出により障害対応が迅速化する
+**Importance**:
+- Global variables and scattered state changes reduce maintainability
+- Applying appropriate state management patterns increases change impact predictability
+- Log recording and inconsistency detection accelerate incident response
 
-**レベル概要**:
-- Level 1: グローバル変数多用、状態変更が分散、ログなし
-- Level 2: 部分的な改善、基本的なログ記録
-- Level 3: 状態管理パターン適用開始、構造化ログ
-- Level 4: パターン適用率高、自動検出による不整合削減
-- Level 5: グローバル変数0、完全な追跡可能性、自動修復
+**Level Overview**:
+- Level 1: Heavy use of global variables, scattered state changes, no logging
+- Level 2: Partial improvements, basic log recording
+- Level 3: State management pattern adoption begins, structured logging
+- Level 4: High pattern adoption rate, automated inconsistency detection and reduction
+- Level 5: Zero global variables, complete traceability, automatic repair
 
-### 2. テスト成熟度（Testing Maturity）
+### 2. Testing Maturity
 
-**定義**: テストカバレッジ・自動化・実行頻度の成熟度（TMMi準拠）
+**Definition**: Maturity of test coverage, automation, and execution frequency (TMMi-compliant)
 
-**重要性**:
-- テストはリファクタリング・機能追加の安全網
-- 自動化により継続的品質保証が可能
-- カバレッジ不足は潜在的バグ・リグレッションのリスク
+**Importance**:
+- Tests are the safety net for refactoring and feature additions
+- Automation enables continuous quality assurance
+- Insufficient coverage risks latent bugs and regressions
 
-**レベル概要**:
-- Level 1: カバレッジ10%未満、手動テスト中心
-- Level 2: 部分的な自動化、リリース前テスト
-- Level 3: カバレッジ40-70%、日次実行
-- Level 4: カバレッジ70-90%、commit毎実行
-- Level 5: カバレッジ90%以上、Mutation Testing導入
+**Level Overview**:
+- Level 1: Coverage under 10%, manual testing focus
+- Level 2: Partial automation, pre-release testing
+- Level 3: Coverage 40-70%, daily execution
+- Level 4: Coverage 70-90%, per-commit execution
+- Level 5: Coverage 90%+, Mutation Testing introduced
 
-### 3. デプロイメント・パイプライン（CI/CD）
+### 3. Deployment Pipeline (CI/CD)
 
-**定義**: デプロイ頻度・リードタイム・変更失敗率・復旧時間（DORA Metrics準拠）
+**Definition**: Deployment frequency, lead time, change failure rate, recovery time (DORA Metrics-compliant)
 
-**重要性**:
-- デプロイ頻度はビジネス俊敏性の指標
-- リードタイム短縮により市場変化への対応力向上
-- 変更失敗率・復旧時間は品質・信頼性の指標
+**Importance**:
+- Deployment frequency is an indicator of business agility
+- Shortened lead time improves responsiveness to market changes
+- Change failure rate and recovery time are quality and reliability indicators
 
-**レベル概要**:
-- Level 1: 年6回未満、リードタイム3ヶ月超、失敗率46%超
-- Level 2: 月次デプロイ、リードタイム1-3ヶ月
-- Level 3: 週次デプロイ、リードタイム1週間-1ヶ月
-- Level 4: 日次デプロイ、リードタイム1日-1週間
-- Level 5: 日複数回デプロイ、リードタイム1日未満
+**Level Overview**:
+- Level 1: Less than 6 deployments/year, lead time over 3 months, failure rate over 46%
+- Level 2: Monthly deployment, lead time 1-3 months
+- Level 3: Weekly deployment, lead time 1 week to 1 month
+- Level 4: Daily deployment, lead time 1 day to 1 week
+- Level 5: Multiple daily deployments, lead time under 1 day
 
-### 4. ドメイン知識の可視化度（Domain Knowledge）
+### 4. Domain Knowledge Visibility
 
-**定義**: ビジネスロジック・仕様の文書化・最新性・属人性の解消度
+**Definition**: Maturity of business logic/specification documentation, currency, and knowledge silo elimination
 
-**重要性**:
-- 暗黙知の可視化により属人性を排除
-- ドメインモデルの明示化が設計品質を向上
-- 文書の自動更新により陳腐化を防止
+**Importance**:
+- Visualizing tacit knowledge eliminates individual dependency
+- Making domain models explicit improves design quality
+- Automatic document updating prevents obsolescence
 
-**レベル概要**:
-- Level 1: 文書化10%未満、エキスパート依存100%
-- Level 2: 部分的な文書化、更新1-3年前
-- Level 3: 文書化40-70%、年次更新
-- Level 4: 文書化70-90%、半自動更新
-- Level 5: 文書化90%以上、自動更新、属人性排除
+**Level Overview**:
+- Level 1: Under 10% documented, 100% expert dependency
+- Level 2: Partial documentation, last updated 1-3 years ago
+- Level 3: 40-70% documented, annual updates
+- Level 4: 70-90% documented, semi-automatic updates
+- Level 5: 90%+ documented, automatic updates, knowledge silos eliminated
 
-### 5. 技術スタックの統一性（Technical Debt）
+### 5. Technology Stack Consistency (Technical Debt)
 
-**定義**: 技術的負債・フレームワーク/ライブラリバージョン分散・重複コード（SQALE準拠）
+**Definition**: Technical debt, framework/library version dispersion, duplicate code (SQALE-compliant)
 
-**重要性**:
-- 技術スタック分散は学習コスト・保守コストを増大
-- EOL（End of Life）ライブラリはセキュリティリスク
-- 技術的負債の可視化・返済計画が改善を加速
+**Importance**:
+- Technology stack dispersion increases learning and maintenance costs
+- EOL (End of Life) libraries pose security risks
+- Technical debt visualization and repayment planning accelerate improvement
 
-**レベル概要**:
-- Level 1: Debt Ratio 50%超、EOL使用率30%超
-- Level 2: Debt Ratio 21-50%、EOL使用率10-30%
-- Level 3: Debt Ratio 11-20%、EOL使用率0-10%
-- Level 4: Debt Ratio 6-10%、EOL 0%、返済速度>発生速度
-- Level 5: Debt Ratio 5%以下、自動リファクタリング
+**Level Overview**:
+- Level 1: Debt Ratio over 50%, EOL usage rate over 30%
+- Level 2: Debt Ratio 21-50%, EOL usage rate 10-30%
+- Level 3: Debt Ratio 11-20%, EOL usage rate 0-10%
+- Level 4: Debt Ratio 6-10%, EOL 0%, repayment rate exceeds accumulation rate
+- Level 5: Debt Ratio under 5%, automatic refactoring
 
-### 6. 可観測性（Observability）
+### 6. Observability
 
-**定義**: ログ・メトリクス・トレーシングの実装率・障害検出時間（Observability Maturity Model準拠）
+**Definition**: Implementation rate of logging, metrics, tracing and incident detection time (Observability Maturity Model-compliant)
 
-**重要性**:
-- 可観測性の欠如は障害対応の長期化・原因特定の困難化
-- 構造化ログ・分散トレーシングが複雑システムの理解を支援
-- SLO（Service Level Objective）設定により品質目標を明確化
+**Importance**:
+- Lack of observability prolongs incident response and makes root cause identification difficult
+- Structured logging and distributed tracing support understanding of complex systems
+- SLO (Service Level Objective) setting clarifies quality targets
 
-**レベル概要**:
-- Level 1: ログ10%未満、障害検出24時間超
-- Level 2: ログ10-40%、検出1-24時間
-- Level 3: ログ40-70%、メトリクス・トレーシング30-70%、検出15分-1時間
-- Level 4: ログ70-90%、検出15分未満、SLO達成率95%超
-- Level 5: ログ90%超、検出5分未満、SLO達成率99%超
+**Level Overview**:
+- Level 1: Under 10% logging, detection over 24 hours
+- Level 2: 10-40% logging, detection 1-24 hours
+- Level 3: 40-70% logging, metrics and tracing 30-70%, detection 15 min to 1 hour
+- Level 4: 70-90% logging, detection under 15 min, SLO achievement rate over 95%
+- Level 5: 90%+ logging, detection under 5 min, SLO achievement rate over 99%
 
-### 7. セキュリティ・コンプライアンス（Security）
+### 7. Security and Compliance
 
-**定義**: 脆弱性スキャン頻度・クリティカル脆弱性数・インジェクション対策・認証実装
+**Definition**: Vulnerability scan frequency, critical vulnerability count, injection prevention, authentication implementation
 
-**重要性**:
-- セキュリティ脆弱性は事業継続リスク
-- 定期的なスキャン・自動修正により脆弱性を早期検出・対処
-- SQLインジェクション等のOWASP Top 10対策が必須
+**Importance**:
+- Security vulnerabilities are business continuity risks
+- Regular scanning and auto-patching enable early detection and response
+- OWASP Top 10 countermeasures such as SQL injection prevention are essential
 
-**レベル概要**:
-- Level 1: スキャンなし、クリティカル脆弱性10件超
-- Level 2: 年1-4回スキャン、クリティカル5-10件
-- Level 3: 月次スキャン、クリティカル1-5件
-- Level 4: 日次スキャン、クリティカル0-1件
-- Level 5: commit毎スキャン、クリティカル0件、自動修正80%超
+**Level Overview**:
+- Level 1: No scanning, over 10 critical vulnerabilities
+- Level 2: 1-4 annual scans, 5-10 critical vulnerabilities
+- Level 3: Monthly scanning, 1-5 critical vulnerabilities
+- Level 4: Daily scanning, 0-1 critical vulnerabilities
+- Level 5: Per-commit scanning, 0 critical vulnerabilities, auto-fix rate over 80%
 
-### 8. 依存関係の健全性（Dependency Health）
+### 8. Dependency Health
 
-**定義**: 直接/間接依存数・平均年齢・脆弱依存・循環依存
+**Definition**: Direct/indirect dependency count, average age, vulnerable dependencies, circular dependencies
 
-**重要性**:
-- 依存関係の肥大化は保守コスト・セキュリティリスクを増大
-- 古い依存関係は脆弱性・互換性問題のリスク
-- 循環依存は設計品質の低下を示唆
+**Importance**:
+- Dependency bloat increases maintenance cost and security risk
+- Old dependencies risk vulnerabilities and compatibility issues
+- Circular dependencies indicate reduced design quality
 
-**レベル概要**:
-- Level 1: 直接依存100超、間接依存500超、平均年齢5年超
-- Level 2: 直接依存50-100、間接依存200-500
-- Level 3: 直接依存20-50、間接依存50-200、平均年齢1-3年
-- Level 4: 直接依存10-20、自動更新率70-95%
-- Level 5: 直接依存10未満、自動更新率95%超、依存削減率10%/年超
+**Level Overview**:
+- Level 1: Over 100 direct dependencies, over 500 indirect, average age over 5 years
+- Level 2: 50-100 direct, 200-500 indirect
+- Level 3: 20-50 direct, 50-200 indirect, average age 1-3 years
+- Level 4: 10-20 direct, auto-update rate 70-95%
+- Level 5: Under 10 direct, auto-update rate over 95%, dependency reduction rate over 10%/year
 
-### 9. データ品質・整合性（Data Quality）
+### 9. Data Quality and Consistency
 
-**定義**: NULL値率・重複率・外部キー制約・検証実装・不整合検出
+**Definition**: NULL value rate, duplication rate, foreign key constraints, validation implementation, inconsistency detection
 
-**重要性**:
-- データ品質の低下はビジネスロジックの信頼性を損なう
-- 外部キー制約・検証ロジックがデータ整合性を保証
-- 自動検出・修正により品質を維持
+**Importance**:
+- Data quality degradation undermines business logic reliability
+- Foreign key constraints and validation logic guarantee data consistency
+- Automatic detection and correction maintain quality
 
-**レベル概要**:
-- Level 1: NULL値率30%超、重複率10%超、FK制約30%未満
-- Level 2: NULL値率15-30%、FK制約30-50%
-- Level 3: NULL値率5-15%、FK制約50-80%、品質スコア50-80%
-- Level 4: NULL値率1-5%、FK制約80-95%、自動修正50-80%
-- Level 5: NULL値率1%未満、FK制約95%超、自動修正80%超
+**Level Overview**:
+- Level 1: NULL rate over 30%, duplication over 10%, FK constraints under 30%
+- Level 2: NULL rate 15-30%, FK constraints 30-50%
+- Level 3: NULL rate 5-15%, FK constraints 50-80%, quality score 50-80%
+- Level 4: NULL rate 1-5%, FK constraints 80-95%, auto-fix 50-80%
+- Level 5: NULL rate under 1%, FK constraints over 95%, auto-fix over 80%
 
-### 10. コード歪み検出成熟度（Distortion Detection Maturity）
+### 10. Code Distortion Detection Maturity
 
-**定義**: コード内の歪み（バリデーション不足・暗黙的依存・型比較の罠等）を検出・管理する能力
+**Definition**: Capability to detect and manage distortions in code (insufficient validation, implicit dependencies, type comparison traps, etc.)
 
-**重要性**:
-- レガシーコードの歪みは潜在的なビジネスリスクの温床
-- 体系的な検出（歪みパターンA/B/C）により問題の早期発見が可能
-- 横断リスクビュー（L1/L2）により単一リポジトリでは見えない問題を特定
-- Subject-First Ruleにより曖昧な記述を排除し、チーム間の認識齟齬を防止
+**Importance**:
+- Legacy code distortions are breeding grounds for latent business risks
+- Systematic detection (distortion patterns A/B/C) enables early problem discovery
+- Cross-cutting risk views (L1/L2) identify problems invisible at the single-repository level
+- Subject-First Rule eliminates ambiguous descriptions, preventing recognition gaps between teams
 
-**レベル概要**:
-- Level 1: 歪み検出なし、問題は偶発的に発見
-- Level 2: 手動レビューで一部検出、P1-P2パターンのみ
-- Level 3: 定期的な歪み分析実施、P1-P4パターン、Part A/B/C形式レポート
-- Level 4: CI/静的解析で自動検出、P1-P6全パターン、L1+L2横断管理
-- Level 5: 自動検出+予防的チェック、カスタムパターン追加、自動アラート
+**Level Overview**:
+- Level 1: No distortion detection, problems discovered incidentally
+- Level 2: Partial detection during manual review, P1-P2 patterns only
+- Level 3: Regular distortion analysis, P1-P4 patterns, Part A/B/C format reports
+- Level 4: Automated detection via CI/static analysis, all P1-P6 patterns, L1+L2 cross-cutting management
+- Level 5: Automated detection + preventive checks, custom patterns added, automated alerts
 
-## 総合評価方法
+## Composite Assessment Method
 
-### スコアリング
+### Scoring
 
-各観点をLevel 1～5で評価し、合計点（最大50点）で総合成熟度を判定する。
+Evaluate each perspective at Level 1-5, with total score (max 50 points) determining composite maturity.
 
-**総合成熟度の分類**:
-- 0-10点: **危機的（Critical）** - 即座の改善が必要
-- 11-20点: **低い（Low）** - 広範囲の改善が必要
-- 21-30点: **中程度（Moderate）** - 部分的な改善が必要
-- 31-40点: **高い（High）** - 継続的改善の維持
-- 41-50点: **非常に高い（Very High）** - 最適化段階
+**Composite maturity classification**:
+- 0-10 points: **Critical** - Immediate improvement needed
+- 11-20 points: **Low** - Broad improvement needed
+- 21-30 points: **Moderate** - Partial improvement needed
+- 31-40 points: **High** - Maintain continuous improvement
+- 41-50 points: **Very High** - Optimization stage
 
-### 重み付け評価（オプション）
+### Weighted Assessment (Optional)
 
-プロジェクト特性に応じて各観点に重み（0.5～2.0）を設定可能。
+Weights (0.5-2.0) can be assigned to each perspective based on project characteristics.
 
-**例**: EC系システムの場合
-- セキュリティ: 重み 2.0
-- データ品質: 重み 1.5
-- 可観測性: 重み 1.5
-- その他: 重み 1.0
+**Example**: For EC systems
+- Security: Weight 2.0
+- Data quality: Weight 1.5
+- Observability: Weight 1.5
+- Others: Weight 1.0
 
-重み付け後の総合スコア = Σ(各観点スコア × 重み) / Σ重み
+Weighted composite score = Sum(perspective score x weight) / Sum(weights)
 
-### 評価の可視化
+### Assessment Visualization
 
-レーダーチャートによる10観点の可視化を推奨。弱点の特定・改善の優先順位付けに活用。
+Radar chart visualization of 10 perspectives is recommended. Useful for identifying weaknesses and prioritizing improvements.
 
-## 参考フレームワーク
+## Reference Frameworks
 
-本評価モデルは以下の業界標準フレームワークを参考にしている:
+This assessment model references the following industry standard frameworks:
 
-- **CMMI (Capability Maturity Model Integration)**: 成熟度レベルの基本構造
-- **DORA Metrics**: デプロイメント観点の評価基準
-- **SQALE/SonarQube**: 技術的負債の定量評価
-- **TMMi (Test Maturity Model integration)**: テスト成熟度の評価
-- **Observability Maturity Model**: 可観測性の評価基準
-- **OWASP Top 10**: セキュリティ観点の評価項目
+- **CMMI (Capability Maturity Model Integration)**: Basic maturity level structure
+- **DORA Metrics**: Deployment perspective assessment criteria
+- **SQALE/SonarQube**: Technical debt quantitative assessment
+- **TMMi (Test Maturity Model integration)**: Testing maturity assessment
+- **Observability Maturity Model**: Observability assessment criteria
+- **OWASP Top 10**: Security perspective assessment items
 
-## 評価の実施方法
+## How to Conduct Assessments
 
-### 推奨頻度
+### Recommended Frequency
 
-- **四半期毎**: 定期的なトレンド追跡
-- **マイルストーン毎**: 改善施策の効果測定
-- **プロジェクト開始時**: ベースライン設定
+- **Quarterly**: Regular trend tracking
+- **Per milestone**: Improvement measure effectiveness measurement
+- **Project start**: Baseline setting
 
-### 評価プロセス
+### Assessment Process
 
-1. **データ収集**: 各観点の定量指標を計測（詳細は `evaluation_criteria_matrix.md` 参照）
-2. **レベル判定**: 定量/定性基準に基づきレベルを決定
-3. **レビュー**: 関係者による評価結果のレビュー
-4. **改善計画**: 低レベル観点の改善優先順位付け・施策立案
-5. **トレンド分析**: 過去評価との比較・改善効果の可視化
+1. **Data collection**: Measure quantitative indicators for each perspective (see `evaluation_criteria_matrix.md` for details)
+2. **Level determination**: Determine level based on quantitative/qualitative criteria
+3. **Review**: Review assessment results with stakeholders
+4. **Improvement planning**: Prioritize and develop measures for low-level perspectives
+5. **Trend analysis**: Compare with past assessments, visualize improvement effectiveness
 
-### 評価結果の活用
+### Using Assessment Results
 
-- **エグゼクティブ報告**: 総合スコア・レーダーチャート
-- **技術チーム**: 各観点の詳細分析・改善施策の立案
-- **ステークホルダー**: 改善進捗の定量的な追跡
+- **Executive reporting**: Composite score, radar chart
+- **Technical team**: Detailed analysis per perspective, improvement measure development
+- **Stakeholders**: Quantitative tracking of improvement progress
 
-## 関連ドキュメント
+## Related Documents
 
-- **詳細評価基準**: [evaluation_criteria_matrix.md](./evaluation_criteria_matrix.md) - 10観点×5段階の定量基準
-- **使用方法**: [README.md](./README.md) - 評価基準の使い方・適用例
+- **Detailed assessment criteria**: [evaluation_criteria_matrix.md](./evaluation_criteria_matrix.md) - 10 perspectives x 5 levels quantitative criteria
+- **Usage**: [README.md](./README.md) - How to use assessment criteria and application examples
 
-## バージョン履歴
+## Version History
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.1 | 2026-03-13 | 第10観点「コード歪み検出成熟度」を追加。総合スコア上限を50点に更新 |
-| 1.0 | 2026-03-01 | 初版作成。9観点×5段階の汎用評価モデルを定義 |
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.1 | 2026-03-13 | Added 10th perspective "Code Distortion Detection Maturity." Updated composite score max to 50 points |
+| 1.0 | 2026-03-01 | Initial version. Defined 9 perspectives x 5 levels generic assessment model |

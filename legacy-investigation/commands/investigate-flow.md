@@ -1,57 +1,57 @@
 ---
-description: レガシーシステムの影響調査を体系的に実行する。project-guide → investigate → service-spec → impact-analysis のスキルチェーンを順次実行する。
-argument-hint: "<変更内容の説明>"
+description: Systematically execute impact investigation for legacy systems. Sequentially execute the project-guide -> investigate -> service-spec -> impact-analysis skill chain.
+argument-hint: "<description of the change>"
 ---
 
-# /investigate-flow — 影響調査フロー
+# /investigate-flow -- Impact Investigation Flow
 
-## 概要
+## Overview
 
-新機能追加・仕様変更時に、影響範囲を体系的に調査するワークフロー。
-4つのスキルを順次実行し、最終的にADR形式の影響分析レポートを出力する。
+A workflow for systematically investigating the impact scope when adding new features or changing specifications.
+Sequentially execute 4 skills and output the final ADR-format impact analysis report.
 
-## ワークフロー
+## Workflow
 
-### Step 1: 参照ガイドの取得
+### Step 1: Get Reference Guide
 
-**project-guide** skill を適用:
+Apply **project-guide** skill:
 
-- タスク概要を分析し、参照すべきドキュメントの順序を特定する
-- input/project/ および input/domain/ から最適な参照順序を提示する
+- Analyze the task overview and identify the order of documents to reference
+- Present the optimal reference order from input/project/ and input/domain/
 
 $ARGUMENTS
 
-> **確認**: 「殿、参照ガイドを整えました。次の段（調査）に進んでよろしいか？」
+> **Checkpoint**: "Reference guide prepared. Ready to proceed to the next phase (investigation)?"
 
-### Step 2: コードベース調査
+### Step 2: Codebase Investigation
 
-**investigate** skill を適用:
+Apply **investigate** skill:
 
-- Step 1 で特定したドキュメントを事前に読み込む
-- 対象のクラス・機能を Serena のシンボリック検索で探索する
-- ファイルパス:行番号を明記した調査報告を作成する
+- Pre-read documents identified in Step 1
+- Explore target classes/features using Serena's symbolic search
+- Create investigation report with file path:line numbers
 
-> **確認**: 「殿、調査結果が揃いました。次の段（仕様整理）に進んでよろしいか？」
+> **Checkpoint**: "Investigation results ready. Ready to proceed to the next phase (specification organization)?"
 
-### Step 3: Service仕様の整理
+### Step 3: Service Specification Organization
 
-**service-spec** skill を適用:
+Apply **service-spec** skill:
 
-- Step 2 で発見した高影響 Service の仕様を詳細に整理する
-- メソッド一覧・依存関係・ビジネスルールを文書化する
-- 複数 Service にまたがる場合は **service-spec (CROSS)** skill も適用する
+- Organize specifications of high-impact Services discovered in Step 2 in detail
+- Document method lists, dependencies, and business rules
+- If spanning multiple Services, also apply **service-spec (CROSS)** skill
 
-> **確認**: 「殿、仕様の整理が完了しました。次の段（影響分析）に進んでよろしいか？」
+> **Checkpoint**: "Specification organization complete. Ready to proceed to the next phase (impact analysis)?"
 
-### Step 4: 影響分析
+### Step 4: Impact Analysis
 
-**impact-analysis** skill を適用:
+Apply **impact-analysis** skill:
 
-- Step 2-3 の結果をもとに、ADR形式の影響分析レポートを作成する
-- リスク評価・Phase分割した実装計画を含む
+- Create an ADR-format impact analysis report based on Step 2-3 results
+- Includes risk assessment and phased implementation plan
 
-### Step 5: 次の行動の提案
+### Step 5: Suggest Next Actions
 
-- 「殿、修正に着手されるなら `/implement` をお使いくだされ」
-- 「さらに深掘りが必要であれば `/deep-dive` をお使いくだされ」
-- 「ドメイン知識として蓄積するなら `/build-knowledge` をお使いくだされ」
+- "If you'd like to proceed with the fix, use `/implement`"
+- "If deeper investigation is needed, use `/deep-dive`"
+- "To accumulate as domain knowledge, use `/build-knowledge`"

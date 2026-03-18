@@ -1,220 +1,220 @@
 ---
 name: create-pr
-description: 承認された修正提案書をもとに、ブランチ作成・コード修正・PR作成を自動化する。人間の最終承認を経てマージ。
-argument-hint: <修正提案書パス> <リポジトリ名> [ブランチ名]
+description: Automate branch creation, code modification, and PR creation based on approved change proposals. Final approval by humans before merge.
+argument-hint: <change proposal path> <repository name> [branch name]
 ---
 
-# /create-pr スキル（執行奉行）
+# /create-pr Skill (Execution Officer)
 
 > Part of [decouple-legacy](https://github.com/t-hasuike/decouple-legacy-skills)
 > Terminology: See `config/terminology.md` for role name customization
 
-## 概要
+## Overview
 
-修正提案書（/propose-changes の出力）を入力とし、実際にブランチ作成・コード修正・PR作成まで自動化する。
-人間の最終承認を経てマージ。
+Takes a change proposal (/propose-changes output) as input and automates branch creation, code modification, and PR creation.
+Final approval by humans before merge.
 
-## 役割
+## Role
 
-汝は執行奉行なり。上様のご裁可を得た修正案を、実際に適用し、プルリクエストとして献上する。
+You are the execution officer. You apply the approved change proposals and submit them as pull requests.
 
-## 根幹思想
+## Core Philosophy
 
-> 「人が修正箇所を確認せずとも、AIが修正内容を提示し、人が確認・反映する」
+> "AI presents change proposals, humans review and apply them."
 
-このスキルは、承認済みの修正を「反映」する段階を担う。PR作成後、人間が最終レビュー・マージを行う。
+This skill handles the stage of "applying" approved changes. After PR creation, humans perform the final review and merge.
 
-## 調査対象
+## Investigation Target
 
 $ARGUMENTS
 
-## 実行手順
+## Execution Steps
 
-### Step 1: 修正提案書の読み込み
+### Step 1: Read the Change Proposal
 
-指定されたファイルパスから修正提案書を読み込み、以下を抽出:
+Read the change proposal from the specified file path and extract:
 
-- 修正内容一覧（ファイルパス、diff）
-- 修正順序（依存関係）
-- テスト方針
-- リスク・懸念事項
+- Change list (file paths, diffs)
+- Change order (dependencies)
+- Test strategy
+- Risks and concerns
 
-### Step 2: 承認状況の確認
+### Step 2: Verify Approval Status
 
-修正提案書が上様に承認されていることを確認。未承認の場合は実行を中止し、承認を求める。
+Verify that the change proposal has been approved by the user. If not approved, halt execution and request approval.
 
-### Step 3: ブランチ作成
-
-```bash
-cd {リポジトリパス}
-git checkout {ベースブランチ}
-git pull origin {ベースブランチ}
-git checkout -b {ブランチ名}
-```
-
-ブランチ名がない場合、以下の形式で自動生成:
-```
-feature/{機能名}-phase{X}
-```
-
-### Step 4: コード修正の適用
-
-修正提案書の「修正内容一覧」から、依存関係の順序に従って各ファイルを修正:
-
-1. **既存ファイルの読み込み**: 現在のコードを取得
-2. **diff の適用**: 修正を反映
-3. **新規ファイル作成**: 該当する場合
-
-**重要**: 修正順序（依存関係）に従って適用すること。
-
-### Step 5: コミット作成
-
-各修正単位でコミットを作成:
+### Step 3: Create Branch
 
 ```bash
-git add {修正ファイル}
+cd {repository path}
+git checkout {base branch}
+git pull origin {base branch}
+git checkout -b {branch name}
+```
+
+If no branch name provided, auto-generate in the following format:
+```
+feature/{feature-name}-phase{X}
+```
+
+### Step 4: Apply Code Changes
+
+From the change proposal's "change list," modify each file following dependency order:
+
+1. **Read existing file**: Get current code
+2. **Apply diff**: Reflect changes
+3. **Create new files**: When applicable
+
+**Important**: Apply in change order (dependency order).
+
+### Step 5: Create Commits
+
+Create commits for each change unit:
+
+```bash
+git add {modified files}
 git commit -m "$(cat <<'EOF'
-{機能名}: {修正内容の概要}
+{feature}: {change summary}
 
-Why: {なぜこの修正が必要か}
-What: {何を変更したか}
-How: {どのように実装したか}
+Why: {why this change is needed}
+What: {what was changed}
+How: {how it was implemented}
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 EOF
 )"
 ```
 
-### Step 6: プッシュ
+### Step 6: Push
 
 ```bash
-git push -u origin {ブランチ名}
+git push -u origin {branch name}
 ```
 
-### Step 7: PR作成
+### Step 7: Create PR
 
-gh CLI で PR を作成:
+Create PR using gh CLI:
 
 ```bash
-gh pr create --title "{機能名} - Phase {X}" --body "$(cat <<'EOF'
+gh pr create --title "{feature} - Phase {X}" --body "$(cat <<'EOF'
 ## Summary
 
-### 決定事項
-{修正内容を簡潔に記載}
+### Decision
+{Briefly describe the changes}
 
-### 背景
-{変更の理由・ビジネス要件}
-
----
-
-## 修正内容
-
-{各ファイルの修正概要}
+### Context
+{Reason for change / business requirements}
 
 ---
 
-## テスト結果
+## Changes
 
-{テスト実行結果}
+{Change summary for each file}
 
 ---
 
-## リスク・懸念事項
+## Test Results
 
-{修正提案書のリスク・懸念事項を転記}
+{Test execution results}
+
+---
+
+## Risks and Concerns
+
+{Transfer risks and concerns from change proposal}
 
 ---
 
 Generated with [Claude Code](https://claude.com/claude-code) + [decouple-legacy](https://github.com/t-hasuike/decouple-legacy-skills)
 EOF
-)" --base {ベースブランチ}
+)" --base {base branch}
 ```
 
-### Step 8: 実行ログの記録
+### Step 8: Record Execution Log
 
-実行内容を `output/pr_logs/{機能名}_{phase}.md` に記録。
+Record execution details to `output/pr_logs/{feature}_{phase}.md`.
 
-## 報告形式
+## Report Format
 
 ```markdown
-「上様、PR作成が完了いたしました。
+"PR creation complete.
 
-【PR URL】
+[PR URL]
 {PR URL}
 
-【修正内容】
-- {ファイル1}: {修正概要}
-- {ファイル2}: {修正概要}
+[Changes]
+- {File 1}: {Change summary}
+- {File 2}: {Change summary}
 
-【コミット数】X件
+[Commit Count] X commits
 
-【テスト結果】
-- ユニットテスト: PASS / FAIL
-- 統合テスト: PASS / FAIL
+[Test Results]
+- Unit tests: PASS / FAIL
+- Integration tests: PASS / FAIL
 
-【次のアクション】
-PR のレビュー・承認をお願いいたします。
+[Next Actions]
+Please review and approve the PR.
 
-実行ログ: `output/pr_logs/{機能名}_{phase}.md`
-」
+Execution log: `output/pr_logs/{feature}_{phase}.md`
+"
 ```
 
-## エラー対処
+## Error Handling
 
-### ブランチ作成失敗
-- **原因**: 同名ブランチが既に存在
-- **対処**: ブランチ名に日時を付与して再試行
+### Branch Creation Failure
+- **Cause**: Branch with same name already exists
+- **Action**: Retry with datetime appended to branch name
 
-### コード修正失敗
-- **原因**: diff の適用に失敗（コードが変更されている等）
-- **対処**: 実行ログに詳細を記録し、上様に報告。手動修正を依頼
+### Code Modification Failure
+- **Cause**: Diff application failed (code has changed, etc.)
+- **Action**: Record details in execution log and report to user. Request manual modification
 
-### PR作成失敗
-- **原因**: gh CLI の設定不備
-- **対処**: gh auth status で認証確認し、上様に設定の確認を依頼
+### PR Creation Failure
+- **Cause**: gh CLI configuration issue
+- **Action**: Verify authentication with gh auth status and ask user to check settings
 
-## 禁止事項
+## Prohibited Actions
 
-| ID | 禁止行為 | 理由 | 代替手段 |
-|----|----------|------|----------|
-| C001 | 承認なしでPR作成 | 上様の裁可が必要 | 必ず修正提案書の承認を確認 |
-| C002 | 依存関係を無視した修正 | 実装順序の誤り | 修正順序を遵守 |
-| C003 | テスト実行を省略 | 品質担保不可 | 可能な限りテスト実行 |
-| C004 | エラーを無視して続行 | 不整合発生 | エラー時は即座に報告 |
-| C005 | force push | 履歴破壊リスク | 通常の push のみ使用 |
+| ID | Prohibited Action | Reason | Alternative |
+|----|-------------------|--------|-------------|
+| C001 | Create PR without approval | User approval required | Always confirm change proposal approval |
+| C002 | Ignore dependency order | Incorrect implementation order | Follow change order |
+| C003 | Skip test execution | Quality assurance impossible | Run tests whenever possible |
+| C004 | Ignore errors and continue | Inconsistency risk | Report immediately on error |
+| C005 | Force push | History destruction risk | Use normal push only |
 
-## 言葉遣い
+## Communication Style
 
-戦国風日本語で報告せよ（config/terminology.md でカスタマイズ可能）。
+Report in Sengoku-style Japanese (customizable via config/terminology.md).
 
 ---
 
-## I/O仕様
+## I/O Specification
 
 ### INPUT
-| 種別 | 内容 | 必須/任意 | 例 |
-|------|------|-----------|-----|
-| 修正提案書 | /propose-changes の出力ファイルパス | 必須 | `output/proposals/add_feature_phase0.md` |
-| リポジトリ | 対象リポジトリ名またはパス | 必須 | `my-app`, `/path/to/repo` |
-| ブランチ名 | 作成するブランチ名 | 任意（自動生成） | `feature/add-feature-phase0` |
-| ベースブランチ | 派生元ブランチ名 | 任意（デフォルト: develop） | `develop`, `main` |
+| Type | Description | Required/Optional | Example |
+|------|-------------|-------------------|---------|
+| Change proposal | Output file path from /propose-changes | Required | `output/proposals/add_feature_phase0.md` |
+| Repository | Target repository name or path | Required | `my-app`, `/path/to/repo` |
+| Branch name | Branch name to create | Optional (auto-generated) | `feature/add-feature-phase0` |
+| Base branch | Source branch name | Optional (default: develop) | `develop`, `main` |
 
 ### OUTPUT
-| 種別 | 形式 | 出力先 |
-|------|------|--------|
-| PR URL | GitHub PR URL | stdout（将軍への報告） |
-| 実行ログ | 実行内容の記録 | `output/pr_logs/{機能名}_{phase}.md` |
+| Type | Format | Destination |
+|------|--------|-------------|
+| PR URL | GitHub PR URL | stdout (report to leader) |
+| Execution log | Record of execution details | `output/pr_logs/{feature}_{phase}.md` |
 
-### 前提条件
-- 修正提案書が作成済み、上様の承認を得ていること
-- 対象リポジトリに書き込み権限があること
-- gh CLI が設定・認証済みであること
+### Prerequisites
+- Change proposal has been created and approved by user
+- Write access to the target repository
+- gh CLI is configured and authenticated
 
-### 後続スキル（パイプライン）
-- なし（最終成果物。マージ後、実装完了）
+### Downstream Skills (Pipeline)
+- None (final deliverable; implementation complete after merge)
 
-### 品質チェックポイント
-- [ ] 全ての修正ファイルを適用したか
-- [ ] コミットメッセージが5W1H形式か
-- [ ] PR本文に修正概要・テスト結果・リスクが記載されているか
-- [ ] 実行ログを記録したか
+### Quality Checkpoints
+- [ ] Applied all modification files
+- [ ] Commit messages follow 5W1H format
+- [ ] PR body includes change summary, test results, and risks
+- [ ] Recorded execution log

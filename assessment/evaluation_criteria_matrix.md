@@ -1,294 +1,294 @@
-# レガシーシステム掌握度評価基準マトリクス
+# Legacy System Mastery Evaluation Criteria Matrix
 
 > **Version**: 1.0
 > **Last Updated**: 2026-03-01
 > **Author**: ashigaru-scribe
 
-## 概要
+## Overview
 
-本文書は `legacy_system_maturity_model.md` で定義された9観点×5段階の成熟度モデルに対し、具体的な定量評価基準を提供する。各観点について3-5個の測定可能な指標を定義し、客観的なレベル判定を可能とする。
-
----
-
-## 1. 状態管理の健全性（State Management Health）
-
-**定義**: システム状態の管理方法・変更追跡・整合性維持の成熟度
-
-| レベル | グローバル変数数 | 状態管理パターン適用率 | 状態変更ログ記録率 | 不整合検出メカニズム |
-|-------|----------------|---------------------|------------------|-------------------|
-| **Level 1** | 100個超 | 0-10% | 0-10% | なし |
-| **Level 2** | 50-100個 | 10-30% | 10-40% | 手動チェック（週次） |
-| **Level 3** | 20-50個 | 30-70% | 40-80% | 半自動検出（日次バッチ） |
-| **Level 4** | 5-20個 | 70-95% | 80-95% | 自動検出（リアルタイム）、不整合削減率80%超 |
-| **Level 5** | 0個 | 95-100% | 95-100% | 自動検出+自動修復、不整合発生率0.1%未満 |
-
-**判定方法**:
-- グローバル変数数: 静的解析ツール（SonarQube等）
-- パターン適用率: コードレビュー・設計文書
-- ログ記録率: コード内 `logger.*`・`log->*` の実装箇所数 / 状態変更箇所数
-- 不整合検出: モニタリングツール・アラート設定
+This document provides specific quantitative evaluation criteria for the 9-perspective x 5-level maturity model defined in `legacy_system_maturity_model.md`. It defines 3-5 measurable indicators for each perspective, enabling objective level determination.
 
 ---
 
-## 2. テスト成熟度（Testing Maturity）
+## 1. State Management Health
 
-**定義**: テストカバレッジ・自動化・実行頻度の成熟度（TMMi準拠）
+**Definition**: Maturity of system state management methods, change tracking, and consistency maintenance
 
-| レベル | コードカバレッジ | テスト自動化率 | テスト実行頻度 | テスト保守コスト | Mutation Score |
-|-------|----------------|--------------|--------------|----------------|---------------|
-| **Level 1** | 0-10% | 0-20% | リリース前のみ | カバレッジ1%あたり5時間超 | 測定なし |
-| **Level 2** | 10-40% | 20-50% | リリース前+週次 | カバレッジ1%あたり3-5時間 | 測定なし |
-| **Level 3** | 40-70% | 50-80% | 日次（CI実行） | カバレッジ1%あたり1-3時間 | 測定なし |
-| **Level 4** | 70-90% | 80-95% | commit毎 | カバレッジ1%あたり0.5-1時間 | 測定なし |
-| **Level 5** | 90-100% | 95-100% | commit毎+本番前 | カバレッジ1%あたり0.5時間未満 | 80%超（Mutation Testing導入） |
+| Level | Global Variable Count | State Management Pattern Adoption Rate | State Change Log Rate | Inconsistency Detection Mechanism |
+|-------|----------------------|---------------------------------------|---------------------|----------------------------------|
+| **Level 1** | 100+ | 0-10% | 0-10% | None |
+| **Level 2** | 50-100 | 10-30% | 10-40% | Manual check (weekly) |
+| **Level 3** | 20-50 | 30-70% | 40-80% | Semi-automatic detection (daily batch) |
+| **Level 4** | 5-20 | 70-95% | 80-95% | Automatic detection (real-time), inconsistency reduction over 80% |
+| **Level 5** | 0 | 95-100% | 95-100% | Automatic detection + auto-repair, inconsistency rate under 0.1% |
 
-**判定方法**:
-- コードカバレッジ: PHPUnit、Jest等のカバレッジレポート
-- 自動化率: 自動テスト数 / 全テストケース数
-- 実行頻度: CI/CD設定ファイル・実行ログ
-- 保守コスト: テスト修正・追加に要した工数 / カバレッジ増加率
-- Mutation Score: Infection（PHP）、Stryker（JS）等のレポート
-
----
-
-## 3. デプロイメント・パイプライン（CI/CD）
-
-**定義**: デプロイ頻度・リードタイム・変更失敗率・復旧時間（DORA Metrics準拠）
-
-| レベル | デプロイ頻度 | リードタイム（commit→本番） | 変更失敗率 | 復旧時間（MTTR） |
-|-------|------------|--------------------------|----------|----------------|
-| **Level 1** | 年6回未満 | 3ヶ月超 | 46%超 | 24時間超 |
-| **Level 2** | 月1-4回 | 1-3ヶ月 | 31-45% | 1-24時間 |
-| **Level 3** | 週1-4回 | 1週間-1ヶ月 | 16-30% | 15分-1時間 |
-| **Level 4** | 日1-4回 | 1日-1週間 | 5-15% | 15分未満 |
-| **Level 5** | 日5回以上 | 1日未満（on-demand可能） | 0-5% | 5分未満 |
-
-**判定方法**:
-- デプロイ頻度: デプロイログ・Git tag数
-- リードタイム: Git commit timestamp → 本番反映timestamp
-- 変更失敗率: ロールバック回数 / デプロイ回数
-- MTTR: インシデント検出timestamp → 復旧timestamp の平均
+**Measurement methods**:
+- Global variable count: Static analysis tools (SonarQube, etc.)
+- Pattern adoption rate: Code review, design documents
+- Log rate: `logger.*`, `log->*` implementation count / state change point count
+- Inconsistency detection: Monitoring tools, alert settings
 
 ---
 
-## 4. ドメイン知識の可視化度（Domain Knowledge）
+## 2. Testing Maturity
 
-**定義**: ビジネスロジック・仕様の文書化・最新性・属人性の解消度
+**Definition**: Maturity of test coverage, automation, and execution frequency (TMMi-compliant)
 
-| レベル | 文書化率 | 文書更新頻度 | 文書最終更新 | エキスパート依存率 | 自動生成率 |
-|-------|---------|------------|------------|----------------|----------|
-| **Level 1** | 0-10% | なし | 3年以上前 | 80-100% | 0% |
-| **Level 2** | 10-40% | 年1-2回 | 1-3年前 | 50-80% | 0-10% |
-| **Level 3** | 40-70% | 年3-6回 | 6ヶ月-1年前 | 20-50% | 10-40% |
-| **Level 4** | 70-90% | 月1-3回 | 1-6ヶ月前 | 5-20% | 40-70% |
-| **Level 5** | 90-100% | 週次以上 | 1ヶ月以内 | 0-5% | 70-100% |
+| Level | Code Coverage | Test Automation Rate | Test Execution Frequency | Test Maintenance Cost | Mutation Score |
+|-------|--------------|---------------------|------------------------|---------------------|---------------|
+| **Level 1** | 0-10% | 0-20% | Pre-release only | Over 5 hours per 1% coverage | Not measured |
+| **Level 2** | 10-40% | 20-50% | Pre-release + weekly | 3-5 hours per 1% | Not measured |
+| **Level 3** | 40-70% | 50-80% | Daily (CI execution) | 1-3 hours per 1% | Not measured |
+| **Level 4** | 70-90% | 80-95% | Per commit | 0.5-1 hour per 1% | Not measured |
+| **Level 5** | 90-100% | 95-100% | Per commit + pre-production | Under 0.5 hours per 1% | Over 80% (Mutation Testing introduced) |
 
-**判定方法**:
-- 文書化率: 文書化されたビジネスロジック数 / 全ビジネスロジック数
-- 更新頻度: 文書更新commit数 / 年
-- 最終更新: 文書ファイルの最終更新日
-- エキスパート依存率: 仕様確認時のエキスパート問い合わせ頻度（アンケート・調査）
-- 自動生成率: 自動生成される文書数 / 全文書数（Swagger、ER図自動生成等）
-
----
-
-## 5. 技術スタックの統一性（Technical Debt）
-
-**定義**: 技術的負債・フレームワーク/ライブラリバージョン分散・重複コード（SQALE準拠）
-
-| レベル | Debt Ratio | EOL使用率 | 重複コード率 | 技術スタック種類数 | Debt返済速度 |
-|-------|-----------|----------|------------|----------------|------------|
-| **Level 1** | 50%超 | 30%超 | 20%超 | 10種類超 | 測定なし |
-| **Level 2** | 21-50% | 10-30% | 10-20% | 6-10種類 | 発生速度未満 |
-| **Level 3** | 11-20% | 0-10% | 5-10% | 3-6種類 | 発生速度と同等 |
-| **Level 4** | 6-10% | 0% | 2-5% | 2-3種類 | 発生速度の1.5倍 |
-| **Level 5** | 0-5% | 0% | 0-2% | 1-2種類 | 発生速度の2倍以上 |
-
-**判定方法**:
-- Debt Ratio: SonarQube `Technical Debt Ratio = (remediation cost / development cost) × 100`
-- EOL使用率: EOL到達ライブラリ数 / 全ライブラリ数（Composer、npm audit等）
-- 重複コード率: SonarQube `Duplicated Lines Density`
-- 技術スタック種類数: 使用フレームワーク・言語・DB種類の合計
-- Debt返済速度: 月あたりDebt削減量 / 月あたりDebt発生量
+**Measurement methods**:
+- Code coverage: PHPUnit, Jest, etc. coverage reports
+- Automation rate: Automated test count / total test case count
+- Execution frequency: CI/CD configuration files, execution logs
+- Maintenance cost: Effort for test modification/addition / coverage increase rate
+- Mutation Score: Infection (PHP), Stryker (JS), etc. reports
 
 ---
 
-## 6. 可観測性（Observability）
+## 3. Deployment Pipeline (CI/CD)
 
-**定義**: ログ・メトリクス・トレーシングの実装率・障害検出時間（Observability Maturity Model準拠）
+**Definition**: Deployment frequency, lead time, change failure rate, recovery time (DORA Metrics-compliant)
 
-| レベル | ログ実装率 | メトリクス実装率 | トレーシング実装率 | 障害検出時間（MTTD） | SLO達成率 |
-|-------|----------|---------------|----------------|-------------------|----------|
-| **Level 1** | 0-10% | 0-10% | 0% | 24時間超 | 測定なし |
-| **Level 2** | 10-40% | 10-30% | 0-10% | 1-24時間 | 測定なし |
-| **Level 3** | 40-70% | 30-70% | 30-70% | 15分-1時間 | 80-95% |
-| **Level 4** | 70-90% | 70-90% | 70-90% | 5-15分 | 95-99% |
-| **Level 5** | 90-100% | 90-100% | 90-100% | 5分未満 | 99%超 |
+| Level | Deployment Frequency | Lead Time (commit to production) | Change Failure Rate | Recovery Time (MTTR) |
+|-------|---------------------|--------------------------------|--------------------|--------------------|
+| **Level 1** | Less than 6/year | Over 3 months | Over 46% | Over 24 hours |
+| **Level 2** | 1-4/month | 1-3 months | 31-45% | 1-24 hours |
+| **Level 3** | 1-4/week | 1 week - 1 month | 16-30% | 15 min - 1 hour |
+| **Level 4** | 1-4/day | 1 day - 1 week | 5-15% | Under 15 min |
+| **Level 5** | 5+/day | Under 1 day (on-demand possible) | 0-5% | Under 5 min |
 
-**判定方法**:
-- ログ実装率: ログ記録箇所数 / 重要処理箇所数
-- メトリクス実装率: メトリクス収集箇所数 / API・バッチ処理数
-- トレーシング実装率: トレーシング実装箇所数 / マイクロサービス・外部連携数
-- MTTD: アラート発生timestamp - 実際の障害発生timestamp の平均
-- SLO達成率: SLO達成期間 / 全評価期間（SLO設定がLevel 3以降の前提）
-
----
-
-## 7. セキュリティ・コンプライアンス（Security）
-
-**定義**: 脆弱性スキャン頻度・クリティカル脆弱性数・インジェクション対策・認証実装（OWASP Top 10準拠）
-
-| レベル | スキャン頻度 | クリティカル脆弱性数 | OWASP Top 10対策率 | SQLインジェクション対策率 | 自動修正率 |
-|-------|------------|-------------------|------------------|---------------------|----------|
-| **Level 1** | なし | 10件超 | 0-30% | 0-30% | 0% |
-| **Level 2** | 年1-4回 | 5-10件 | 30-50% | 30-60% | 0-20% |
-| **Level 3** | 月1-4回 | 1-5件 | 50-80% | 60-90% | 20-50% |
-| **Level 4** | 日次 | 0-1件 | 80-95% | 90-100% | 50-80% |
-| **Level 5** | commit毎 | 0件 | 95-100% | 100% | 80-100% |
-
-**判定方法**:
-- スキャン頻度: CI/CD設定・SAST/DASTツール実行ログ
-- クリティカル脆弱性数: Snyk、Trivy、OWASP ZAPレポート
-- OWASP Top 10対策率: チェックリスト実施率（A01-A10の対策実装数 / 10）
-- SQLインジェクション対策率: プレースホルダー使用率（静的解析で検出）
-- 自動修正率: 自動パッチ適用数 / 検出脆弱性数
+**Measurement methods**:
+- Deployment frequency: Deployment logs, Git tag count
+- Lead time: Git commit timestamp to production deployment timestamp
+- Change failure rate: Rollback count / deployment count
+- MTTR: Average of (incident detection timestamp - recovery timestamp)
 
 ---
 
-## 8. 依存関係の健全性（Dependency Health）
+## 4. Domain Knowledge Visibility
 
-**定義**: 直接/間接依存数・平均年齢・脆弱依存・循環依存
+**Definition**: Maturity of business logic/specification documentation, currency, and knowledge silo elimination
 
-| レベル | 直接依存数 | 間接依存数 | 依存平均年齢 | 脆弱性ある依存率 | 自動更新率 |
-|-------|----------|----------|------------|----------------|----------|
-| **Level 1** | 100超 | 500超 | 5年超 | 30%超 | 0% |
-| **Level 2** | 50-100 | 200-500 | 3-5年 | 15-30% | 0-30% |
-| **Level 3** | 20-50 | 50-200 | 1-3年 | 5-15% | 30-70% |
-| **Level 4** | 10-20 | 20-50 | 6ヶ月-1年 | 1-5% | 70-95% |
-| **Level 5** | 10未満 | 20未満 | 6ヶ月未満 | 0-1% | 95-100% |
+| Level | Documentation Rate | Documentation Update Frequency | Last Document Update | Expert Dependency Rate | Auto-Generation Rate |
+|-------|-------------------|-------------------------------|---------------------|-----------------------|--------------------|
+| **Level 1** | 0-10% | None | Over 3 years ago | 80-100% | 0% |
+| **Level 2** | 10-40% | 1-2/year | 1-3 years ago | 50-80% | 0-10% |
+| **Level 3** | 40-70% | 3-6/year | 6 months - 1 year ago | 20-50% | 10-40% |
+| **Level 4** | 70-90% | 1-3/month | 1-6 months ago | 5-20% | 40-70% |
+| **Level 5** | 90-100% | Weekly+ | Within 1 month | 0-5% | 70-100% |
 
-**判定方法**:
-- 直接依存数: `composer.json`・`package.json` のdependencies数
-- 間接依存数: `composer.lock`・`package-lock.json` の全パッケージ数
-- 依存平均年齢: 各依存の最終更新日からの経過日数の平均
-- 脆弱性ある依存率: 脆弱性検出依存数 / 全依存数（npm audit、composer audit）
-- 自動更新率: Dependabot等の自動マージ数 / 全更新PR数
+**Measurement methods**:
+- Documentation rate: Documented business logic count / total business logic count
+- Update frequency: Document update commit count / year
+- Last update: Last modified date of document files
+- Expert dependency rate: Expert inquiry frequency for specification confirmation (survey)
+- Auto-generation rate: Auto-generated document count / total document count (Swagger, auto-generated ER diagrams, etc.)
 
 ---
 
-## 9. データ品質・整合性（Data Quality）
+## 5. Technology Stack Consistency (Technical Debt)
 
-**定義**: NULL値率・重複率・外部キー制約・検証実装・不整合検出
+**Definition**: Technical debt, framework/library version dispersion, duplicate code (SQALE-compliant)
 
-| レベル | NULL値率 | 重複率 | FK制約実装率 | データ検証実装率 | 自動修正率 |
-|-------|---------|-------|------------|--------------|----------|
-| **Level 1** | 30%超 | 10%超 | 0-30% | 0-30% | 0% |
+| Level | Debt Ratio | EOL Usage Rate | Duplicate Code Rate | Technology Stack Type Count | Debt Repayment Rate |
+|-------|-----------|---------------|--------------------|--------------------------|--------------------|
+| **Level 1** | Over 50% | Over 30% | Over 20% | 10+ types | Not measured |
+| **Level 2** | 21-50% | 10-30% | 10-20% | 6-10 types | Below accumulation rate |
+| **Level 3** | 11-20% | 0-10% | 5-10% | 3-6 types | Equal to accumulation rate |
+| **Level 4** | 6-10% | 0% | 2-5% | 2-3 types | 1.5x accumulation rate |
+| **Level 5** | 0-5% | 0% | 0-2% | 1-2 types | 2x+ accumulation rate |
+
+**Measurement methods**:
+- Debt Ratio: SonarQube `Technical Debt Ratio = (remediation cost / development cost) x 100`
+- EOL usage rate: EOL library count / total library count (Composer, npm audit, etc.)
+- Duplicate code rate: SonarQube `Duplicated Lines Density`
+- Technology stack type count: Total of frameworks, languages, and DB types used
+- Debt repayment rate: Monthly debt reduction / monthly debt accumulation
+
+---
+
+## 6. Observability
+
+**Definition**: Implementation rate of logging, metrics, tracing, and incident detection time (Observability Maturity Model-compliant)
+
+| Level | Logging Rate | Metrics Rate | Tracing Rate | Detection Time (MTTD) | SLO Achievement Rate |
+|-------|-------------|-------------|-------------|---------------------|---------------------|
+| **Level 1** | 0-10% | 0-10% | 0% | Over 24 hours | Not measured |
+| **Level 2** | 10-40% | 10-30% | 0-10% | 1-24 hours | Not measured |
+| **Level 3** | 40-70% | 30-70% | 30-70% | 15 min - 1 hour | 80-95% |
+| **Level 4** | 70-90% | 70-90% | 70-90% | 5-15 min | 95-99% |
+| **Level 5** | 90-100% | 90-100% | 90-100% | Under 5 min | Over 99% |
+
+**Measurement methods**:
+- Logging rate: Log recording point count / critical processing point count
+- Metrics rate: Metrics collection point count / API and batch processing count
+- Tracing rate: Tracing implementation count / microservice and external integration count
+- MTTD: Average of (alert timestamp - actual incident timestamp)
+- SLO achievement rate: SLO-met period / total evaluation period (SLO setting prerequisite for Level 3+)
+
+---
+
+## 7. Security and Compliance
+
+**Definition**: Vulnerability scan frequency, critical vulnerability count, injection countermeasures, authentication implementation (OWASP Top 10-compliant)
+
+| Level | Scan Frequency | Critical Vulnerabilities | OWASP Top 10 Coverage | SQL Injection Prevention Rate | Auto-Fix Rate |
+|-------|---------------|------------------------|----------------------|------------------------------|--------------|
+| **Level 1** | None | 10+ | 0-30% | 0-30% | 0% |
+| **Level 2** | 1-4/year | 5-10 | 30-50% | 30-60% | 0-20% |
+| **Level 3** | 1-4/month | 1-5 | 50-80% | 60-90% | 20-50% |
+| **Level 4** | Daily | 0-1 | 80-95% | 90-100% | 50-80% |
+| **Level 5** | Per commit | 0 | 95-100% | 100% | 80-100% |
+
+**Measurement methods**:
+- Scan frequency: CI/CD settings, SAST/DAST tool execution logs
+- Critical vulnerabilities: Snyk, Trivy, OWASP ZAP reports
+- OWASP Top 10 coverage: Checklist completion rate (A01-A10 countermeasure implementation count / 10)
+- SQL injection prevention rate: Placeholder usage rate (detected via static analysis)
+- Auto-fix rate: Auto-patch count / detected vulnerability count
+
+---
+
+## 8. Dependency Health
+
+**Definition**: Direct/indirect dependency count, average age, vulnerable dependencies, circular dependencies
+
+| Level | Direct Dependencies | Indirect Dependencies | Dependency Average Age | Vulnerable Dependency Rate | Auto-Update Rate |
+|-------|--------------------|-----------------------|-----------------------|--------------------------|-----------------|
+| **Level 1** | 100+ | 500+ | Over 5 years | Over 30% | 0% |
+| **Level 2** | 50-100 | 200-500 | 3-5 years | 15-30% | 0-30% |
+| **Level 3** | 20-50 | 50-200 | 1-3 years | 5-15% | 30-70% |
+| **Level 4** | 10-20 | 20-50 | 6 months - 1 year | 1-5% | 70-95% |
+| **Level 5** | Under 10 | Under 20 | Under 6 months | 0-1% | 95-100% |
+
+**Measurement methods**:
+- Direct dependencies: Dependencies count in `composer.json`, `package.json`
+- Indirect dependencies: Total package count in `composer.lock`, `package-lock.json`
+- Average age: Average elapsed days since last update of each dependency
+- Vulnerable dependency rate: Vulnerable dependency count / total dependency count (npm audit, composer audit)
+- Auto-update rate: Dependabot auto-merge count / total update PR count
+
+---
+
+## 9. Data Quality and Consistency
+
+**Definition**: NULL value rate, duplication rate, foreign key constraints, validation implementation, inconsistency detection
+
+| Level | NULL Value Rate | Duplication Rate | FK Constraint Rate | Data Validation Rate | Auto-Fix Rate |
+|-------|----------------|-----------------|-------------------|---------------------|--------------|
+| **Level 1** | Over 30% | Over 10% | 0-30% | 0-30% | 0% |
 | **Level 2** | 15-30% | 5-10% | 30-50% | 30-50% | 0-30% |
 | **Level 3** | 5-15% | 2-5% | 50-80% | 50-80% | 30-50% |
 | **Level 4** | 1-5% | 0.5-2% | 80-95% | 80-95% | 50-80% |
-| **Level 5** | 1%未満 | 0.5%未満 | 95-100% | 95-100% | 80-100% |
+| **Level 5** | Under 1% | Under 0.5% | 95-100% | 95-100% | 80-100% |
 
-**判定方法**:
-- NULL値率: NULL値カラム数 / 全カラム数（主要テーブル対象）
-- 重複率: 重複レコード数 / 全レコード数
-- FK制約実装率: FK制約実装カラム数 / 外部参照カラム数
-- データ検証実装率: バリデーション実装箇所数 / データ入力箇所数
-- 自動修正率: 自動クレンジング・正規化処理による修正数 / 検出不整合数
-
----
-
-## 総合評価スコアの算出
-
-### 基本スコア
-
-各観点をLevel 1～5で評価し、合計する（最大45点）。
-
-**総合スコア = Σ(各観点のレベル)**
-
-### 重み付けスコア（オプション）
-
-プロジェクト特性に応じて重み付け可能。
-
-**重み付けスコア = Σ(各観点のレベル × 重み) / Σ重み**
-
-例: EC系システムの重み設定
-- セキュリティ: 2.0
-- データ品質: 1.5
-- 可観測性: 1.5
-- その他: 1.0
+**Measurement methods**:
+- NULL value rate: NULL value column count / total column count (major tables)
+- Duplication rate: Duplicate record count / total record count
+- FK constraint rate: FK constraint column count / foreign reference column count
+- Data validation rate: Validation implementation count / data input point count
+- Auto-fix rate: Auto-cleansing/normalization fix count / detected inconsistency count
 
 ---
 
-## 測定ツール例
+## Composite Score Calculation
 
-| 観点 | 推奨ツール |
-|------|----------|
-| 状態管理 | SonarQube、静的解析ツール |
-| テスト | PHPUnit、Jest、Infection（Mutation Testing） |
-| CI/CD | GitHub Actions、GitLab CI、Datadog |
-| ドメイン知識 | Confluence、Notion、Git履歴分析 |
-| 技術的負債 | SonarQube、CodeClimate、SQALE |
-| 可観測性 | Datadog、New Relic、OpenTelemetry |
-| セキュリティ | Snyk、Trivy、OWASP ZAP |
-| 依存関係 | Dependabot、npm audit、composer audit |
-| データ品質 | Great Expectations、dbt tests、SQL分析 |
+### Basic Score
 
----
+Evaluate each perspective at Level 1-5 and sum (max 45 points).
 
-## 10. コード歪み検出成熟度（Distortion Detection Maturity）
+**Composite Score = Sum(each perspective's level)**
 
-**定義**: コード内の歪み（バリデーション不足・暗黙的依存・型比較の罠等）を検出・管理する能力の成熟度
+### Weighted Score (Optional)
 
-| レベル | 歪み検出方法 | 問題パターン(P1-P6)カバレッジ | Subject-First Rule適用率 | 横断リスク管理 | 歪みレポート品質 |
-|-------|------------|--------------------------|------------------------|--------------|----------------|
-| **Level 1** | なし（発見は偶発的） | 0% | 0% | なし | なし |
-| **Level 2** | 手動レビュー時に一部検出 | 1-2パターン | 0-20% | なし | 非構造化メモ |
-| **Level 3** | 定期的な歪み分析実施 | 3-4パターン | 20-60% | L1（単一リポ）のみ | Part A/B/C形式 |
-| **Level 4** | CI/静的解析で自動検出 | 5-6パターン | 60-90% | L1 + L2（横断） | Part A/B/C + 修正ROI |
-| **Level 5** | 自動検出 + 予防的チェック | 6パターン + カスタム | 90-100% | L1 + L2 + 自動アラート | Part A/B/C + 修正追跡 |
+Weighting possible based on project characteristics.
 
-**判定方法**:
-- 歪み検出方法: 分析プロセスの有無・頻度
-- パターンカバレッジ: P1-P6のうち検出対象としているパターン数
-- Subject-First Rule: 歪みレポートで「誰の・何の」を主語として明示している割合
-- 横断リスク管理: L1（コンポーネント別）/ L2（横断リスクビュー）の実施状況
-- レポート品質: 出力形式の構造化度合い
+**Weighted Score = Sum(perspective level x weight) / Sum(weights)**
 
-### 歪みパターン（A/B/C）の評価基準
-
-| パターン | 重大度の判定基準 |
-|---------|---------------|
-| **A: 不正値が通過** | 高: 金銭・個人情報に影響 / 中: 業務データに影響 / 低: 表示のみに影響 |
-| **B: 途中で止まる** | 高: トランザクション不整合 / 中: 後続バッチ失敗 / 低: ログエラーのみ |
-| **C: チェック不在** | 高: セキュリティ・決済に影響 / 中: ビジネスルール違反の可能性 / 低: エッジケースのみ |
-
-### 問題パターン（P1-P6）の修正ROI評価基準
-
-| ROI | 定義 | 判定基準 |
-|-----|------|---------|
-| **最高** | 1修正で複数の高重大度リスクを解消 | 修正規模: 小 & 解消リスク: 高×2件以上 |
-| **高** | 1修正で高重大度リスクを解消 | 修正規模: 小〜中 & 解消リスク: 高×1件 |
-| **中** | 1修正で中重大度リスクを解消 | 修正規模: 中 & 解消リスク: 中×1件以上 |
-| **低** | 修正規模が大きい or 低重大度のみ | 修正規模: 大 or 解消リスク: 低のみ |
+Example: EC system weight settings
+- Security: 2.0
+- Data quality: 1.5
+- Observability: 1.5
+- Others: 1.0
 
 ---
 
-## 参考基準
+## Recommended Measurement Tools
 
-本マトリクスは以下の業界標準を参考にしている:
-
-- **DORA Metrics** (DevOps Research and Assessment): CI/CD評価基準
-- **SQALE** (Software Quality Assessment based on Lifecycle Expectations): 技術的負債評価
-- **TMMi** (Test Maturity Model integration): テスト成熟度評価
-- **Observability Maturity Model**: 可観測性評価
-- **OWASP Top 10**: セキュリティ評価
-- **CMMI**: 成熟度レベル定義
+| Perspective | Recommended Tools |
+|------------|-----------------|
+| State management | SonarQube, static analysis tools |
+| Testing | PHPUnit, Jest, Infection (Mutation Testing) |
+| CI/CD | GitHub Actions, GitLab CI, Datadog |
+| Domain knowledge | Confluence, Notion, Git history analysis |
+| Technical debt | SonarQube, CodeClimate, SQALE |
+| Observability | Datadog, New Relic, OpenTelemetry |
+| Security | Snyk, Trivy, OWASP ZAP |
+| Dependencies | Dependabot, npm audit, composer audit |
+| Data quality | Great Expectations, dbt tests, SQL analysis |
 
 ---
 
-## バージョン履歴
+## 10. Code Distortion Detection Maturity
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.1 | 2026-03-13 | 第10観点「コード歪み検出成熟度」を追加。歪みパターンA/B/C・問題パターンP1-P6の評価基準を定義 |
-| 1.0 | 2026-03-01 | 初版作成。9観点×5段階の定量評価基準マトリクスを定義 |
+**Definition**: Maturity of capability to detect and manage code distortions (insufficient validation, implicit dependencies, type comparison traps, etc.)
+
+| Level | Detection Method | Problem Pattern (P1-P6) Coverage | Subject-First Rule Adoption | Cross-Cutting Risk Management | Report Quality |
+|-------|-----------------|--------------------------------|---------------------------|------------------------------|---------------|
+| **Level 1** | None (incidental discovery) | 0% | 0% | None | None |
+| **Level 2** | Partial detection during manual review | 1-2 patterns | 0-20% | None | Unstructured notes |
+| **Level 3** | Regular distortion analysis | 3-4 patterns | 20-60% | L1 (single repo) only | Part A/B/C format |
+| **Level 4** | Automated via CI/static analysis | 5-6 patterns | 60-90% | L1 + L2 (cross-cutting) | Part A/B/C + remediation ROI |
+| **Level 5** | Automated + preventive checks | 6 patterns + custom | 90-100% | L1 + L2 + automated alerts | Part A/B/C + remediation tracking |
+
+**Measurement methods**:
+- Detection method: Presence and frequency of analysis processes
+- Pattern coverage: Number of patterns targeted for detection out of P1-P6
+- Subject-First Rule: Percentage of distortion reports that explicitly state "whose/what" as subject
+- Cross-cutting risk management: L1 (per component) / L2 (cross-cutting risk view) implementation status
+- Report quality: Degree of structural organization in output format
+
+### Distortion Patterns (A/B/C) Severity Assessment Criteria
+
+| Pattern | Severity Criteria |
+|---------|-----------------|
+| **A: Invalid value passes through** | High: Affects money/personal info / Medium: Affects business data / Low: Display only |
+| **B: Stops midway** | High: Transaction inconsistency / Medium: Downstream batch failure / Low: Log error only |
+| **C: No check exists** | High: Affects security/payments / Medium: Possible business rule violation / Low: Edge cases only |
+
+### Problem Pattern (P1-P6) Remediation ROI Assessment Criteria
+
+| ROI | Definition | Criteria |
+|-----|-----------|---------|
+| **Highest** | 1 fix resolves multiple high-severity risks | Fix size: small & resolved risks: high x 2+ |
+| **High** | 1 fix resolves a high-severity risk | Fix size: small-medium & resolved risks: high x 1 |
+| **Medium** | 1 fix resolves a medium-severity risk | Fix size: medium & resolved risks: medium x 1+ |
+| **Low** | Large fix size or low-severity only | Fix size: large or resolved risks: low only |
+
+---
+
+## Reference Standards
+
+This matrix references the following industry standards:
+
+- **DORA Metrics** (DevOps Research and Assessment): CI/CD evaluation criteria
+- **SQALE** (Software Quality Assessment based on Lifecycle Expectations): Technical debt evaluation
+- **TMMi** (Test Maturity Model integration): Testing maturity evaluation
+- **Observability Maturity Model**: Observability evaluation
+- **OWASP Top 10**: Security evaluation
+- **CMMI**: Maturity level definitions
+
+---
+
+## Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.1 | 2026-03-13 | Added 10th perspective "Code Distortion Detection Maturity." Defined evaluation criteria for distortion patterns A/B/C and problem patterns P1-P6 |
+| 1.0 | 2026-03-01 | Initial version. Defined 9-perspective x 5-level quantitative evaluation criteria matrix |

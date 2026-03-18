@@ -11,63 +11,63 @@
 ### OUTPUT
 
 ```
-「上様、調査報告でござる。
+"Investigation report.
 
-【任務】OrderService の仕様調査
+[Mission] OrderService specification investigation
 
-【調査対象】
+[Investigation Target]
 - File: app/Services/Order/OrderService.php
 - Lines: 1-450
 - Dependencies: 8 services, 3 repositories
 
-【概要】
-OrderService は注文処理の中核を担うサービスでござる。
-注文作成・更新・キャンセル・状態管理を一元的に処理。
+[Overview]
+OrderService is the core service handling order processing.
+It centrally manages order creation, updates, cancellation, and status management.
 
-【主要メソッド】
+[Key Methods]
 1. createOrder(array $orderData): Order
-   - 注文新規作成
-   - 在庫チェック + 価格計算 + 決済処理を連携
-   - Transaction内で実行
+   - Create new order
+   - Coordinates stock check + price calculation + payment processing
+   - Executed within a transaction
 
 2. updateOrderStatus(int $orderId, string $status): bool
-   - 注文ステータス更新
-   - 状態遷移ルールを検証（pending→confirmed→shipped→delivered）
-   - 不正な遷移は例外送出
+   - Update order status
+   - Validates state transition rules (pending -> confirmed -> shipped -> delivered)
+   - Throws exception on invalid transitions
 
 3. cancelOrder(int $orderId, string $reason): bool
-   - 注文キャンセル処理
-   - 決済返金 + 在庫復元を実行
-   - キャンセル期限チェック（発送後は不可）
+   - Order cancellation processing
+   - Executes payment refund + stock restoration
+   - Cancellation deadline check (not allowed after shipment)
 
 4. calculateTotal(array $items): Money
-   - 合計金額計算
-   - 商品価格 + 配送料 + 税金
-   - クーポン・ポイント割引適用
+   - Total amount calculation
+   - Product price + shipping fee + tax
+   - Coupon and point discount application
 
-【依存関係】
-- PaymentService: 決済処理委譲
-- InventoryService: 在庫管理委譲
-- ShippingService: 配送手配委譲
-- OrderRepository: DB永続化
-- NotificationService: 顧客通知
+[Dependencies]
+- PaymentService: Payment processing delegation
+- InventoryService: Stock management delegation
+- ShippingService: Shipping arrangement delegation
+- OrderRepository: DB persistence
+- NotificationService: Customer notification
 
-【特記事項】
-- すべてのDB操作はトランザクション内で実行
-- キャンセル処理は状態によって分岐（未発送/発送済み）
-- エラー時はOrderException→ログ記録→ロールバック
-- ステータス遷移は有限オートマトン（FSM）で管理
+[Notable Items]
+- All DB operations execute within transactions
+- Cancellation processing branches by status (pre-shipment/post-shipment)
+- On error: OrderException -> log recording -> rollback
+- Status transitions managed by finite state machine (FSM)
 
-【懸念点】
-- 1メソッドが250行（createOrder） → 分割推奨
-- PaymentServiceとの密結合 → インターフェース化検討余地あり
+[Concerns]
+- 1 method is 250 lines (createOrder) -> recommend splitting
+- Tight coupling with PaymentService -> consider interface extraction
 
-以上、報告完了でござる。」
+Report complete."
 ```
 
 ### Notes
 
 - Use `/investigate [ServiceName]` for initial exploration
-- Output follows Service仕様サマリー format
+- Output follows Service specification summary format
 - Useful for onboarding or legacy code understanding
 - Can be customized with additional flags (e.g., `/investigate OrderService --focus=security`)

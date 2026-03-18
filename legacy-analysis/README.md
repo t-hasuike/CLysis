@@ -1,11 +1,11 @@
 # Legacy Analysis
 
-レガシーシステムの分析・計画を支援するスキル群。
+Skills for analyzing and planning legacy system modernization.
 
 ## Skills
-- **impact-analysis** — 影響範囲の体系的分析
-- **legacy-analyze** — システム俯瞰図・DFD・I/O図
-- **distortion-analysis** — コード歪み検出・Part A/B/Cフレームワーク
+- **impact-analysis** -- Systematic impact scope analysis
+- **legacy-analyze** -- System overview diagrams, DFD, I/O diagrams
+- **distortion-analysis** -- Code distortion detection, Part A/B/C framework
 
 ## Commands
-- `/deep-dive` — システム全体の深掘り分析
+- `/deep-dive` -- In-depth system-wide analysis

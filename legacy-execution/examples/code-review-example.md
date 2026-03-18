@@ -5,13 +5,13 @@
 ### INPUT
 
 ```
-/code-review PR#123 - 新しい商品カテゴリ追加
+/code-review PR#123 - Adding new product category
 ```
 
 ### OUTPUT
 
 ```
-「上様、コードレビュー結果を献上いたします。
+"Code review results submitted.
 
 # Code Review Report: PR#123
 
@@ -22,129 +22,129 @@
 
 ---
 
-## 1. コード品質チェック
+## 1. Code Quality Check
 
 ### [Pass]
 
-- **型安全性**: すべてのファイルで `declare(strict_types=1)` 宣言済み
-- **命名規則**: PSR-12準拠（メソッド: camelCase, クラス: PascalCase）
-- **テストカバレッジ**: 新規コード85%（基準80%クリア）
-- **セキュリティ**: SQLインジェクション対策済み（Eloquent ORM使用）
+- **Type safety**: `declare(strict_types=1)` declared in all files
+- **Naming conventions**: PSR-12 compliant (methods: camelCase, classes: PascalCase)
+- **Test coverage**: 85% for new code (meets 80% threshold)
+- **Security**: SQL injection prevention in place (using Eloquent ORM)
 
-### [注意] Warnings
+### [Warning] Warnings
 
 | File | Line | Issue | Suggestion |
 |------|------|-------|------------|
-| `ProductService.php` | 123 | メソッドが150行 | `createProduct()` を3メソッドに分割推奨 |
-| `CategoryRepository.php` | 45 | N+1クエリ発生 | `with(['products'])` でEager Loading適用 |
-| `ProductController.php` | 67 | エラーハンドリング不足 | try-catch + ログ記録追加 |
+| `ProductService.php` | 123 | Method is 150 lines | Recommend splitting `createProduct()` into 3 methods |
+| `CategoryRepository.php` | 45 | N+1 query detected | Apply Eager Loading with `with(['products'])` |
+| `ProductController.php` | 67 | Insufficient error handling | Add try-catch + log recording |
 
 ### [NG] Must Fix
 
 | File | Line | Issue | Action Required |
 |------|------|-------|-----------------|
-| `Product.php` | 89 | `$fillable` に機密情報含む | `is_internal_use` を `$guarded` に移動 |
-| `CategoryService.php` | 234 | 論理削除チェック漏れ | `where('delflag', '0')` 追加必須 |
+| `Product.php` | 89 | `$fillable` contains sensitive info | Move `is_internal_use` to `$guarded` |
+| `CategoryService.php` | 234 | Missing soft-delete check | Must add `where('delflag', '0')` |
 
 ---
 
-## 2. ビジネスロジックチェック
+## 2. Business Logic Check
 
 ### [Pass]
 
-- **カテゴリ階層構造**: 最大3階層まで対応（仕様通り）
-- **商品-カテゴリ関連**: 多対多リレーション正しく実装
-- **権限チェック**: 管理者のみカテゴリ作成可能（Policy適用済み）
+- **Category hierarchy**: Supports up to 3 levels (per specification)
+- **Product-Category relation**: Many-to-many relation correctly implemented
+- **Permission check**: Admin-only category creation (Policy applied)
 
-### [注意] Warnings
+### [Warning] Warnings
 
 | File | Issue | Business Impact |
 |------|-------|----------------|
-| `CategoryService.php` | カテゴリ削除時に紐づく商品の扱いが未定義 | 商品が孤立する可能性 → 仕様確認必要 |
-| `ProductController.php` | カテゴリ変更時の在庫整合性チェックなし | 在庫管理に影響の可能性 |
+| `CategoryService.php` | Product handling undefined when deleting category | Products may become orphaned -> specification clarification needed |
+| `ProductController.php` | No inventory consistency check on category change | Possible inventory management impact |
 
 ### Suggestions
 
-1. **カスケード削除**: カテゴリ削除時、子カテゴリ・商品をどう扱うか仕様明確化
-2. **監査ログ**: カテゴリ変更履歴を audit_logs テーブルに記録推奨
-3. **パフォーマンス**: カテゴリツリー取得にキャッシュ導入検討（Redis）
+1. **Cascade delete**: Clarify specification for handling child categories/products on category deletion
+2. **Audit log**: Recommend recording category change history in audit_logs table
+3. **Performance**: Consider introducing cache for category tree retrieval (Redis)
 
 ---
 
-## 3. テスト戦略
+## 3. Test Strategy
 
-### 既存テスト
+### Existing Tests
 
-- [Pass] Unit tests: `CategoryServiceTest.php`（15 test cases）
-- [Pass] Feature tests: `CategoryApiTest.php`（8 test cases）
-- [注意] Integration tests: なし → 推奨追加
+- [Pass] Unit tests: `CategoryServiceTest.php` (15 test cases)
+- [Pass] Feature tests: `CategoryApiTest.php` (8 test cases)
+- [Warning] Integration tests: None -> recommend adding
 
-### 追加推奨テスト
+### Recommended Additional Tests
 
 ```php
-// CategoryServiceTest.php に追加
+// Add to CategoryServiceTest.php
 public function test_deleting_category_with_products_should_handle_gracefully()
 {
-    // Given: カテゴリに商品が紐づいている
-    // When: カテゴリ削除実行
-    // Then: 適切な例外 or 商品の再配置
+    // Given: Category has products linked
+    // When: Delete category
+    // Then: Appropriate exception or product reassignment
 }
 
 public function test_category_tree_respects_max_depth()
 {
-    // Given: 3階層のカテゴリツリー
-    // When: 4階層目追加試行
+    // Given: 3-level category tree
+    // When: Attempt to add 4th level
     // Then: ValidationException
 }
 ```
 
 ---
 
-## 4. マイグレーション確認
+## 4. Migration Verification
 
 ### [Pass]
 
-- **ロールバック可能**: `down()` メソッド実装済み
-- **外部キー制約**: `categories.parent_id` → `categories.id` 正しく設定
-- **インデックス**: `categories.slug` にUNIQUEインデックス（SEO対応）
+- **Rollback possible**: `down()` method implemented
+- **Foreign key constraints**: `categories.parent_id` -> `categories.id` correctly set
+- **Index**: UNIQUE index on `categories.slug` (SEO support)
 
-### [注意] Warnings
+### [Warning] Warnings
 
-- `product_category` 中間テーブルに複合インデックスなし → 追加推奨:
+- No composite index on `product_category` intermediate table -> recommend adding:
   ```php
   $table->index(['product_id', 'category_id']);
   ```
 
 ---
 
-## 5. 総合評価
+## 5. Overall Evaluation
 
-| 項目 | 評価 | コメント |
-|------|------|---------|
-| コード品質 | 中 Good | 小規模リファクタ推奨 |
-| セキュリティ | 高 Needs Fix | 論理削除チェック漏れ修正必須 |
-| テスト | 低 Excellent | カバレッジ良好 |
-| パフォーマンス | 中 Good | N+1クエリ対策推奨 |
-| ビジネスロジック | 中 Needs Clarification | カテゴリ削除仕様確認必要 |
+| Category | Rating | Comment |
+|----------|--------|---------|
+| Code Quality | Medium Good | Minor refactoring recommended |
+| Security | High Needs Fix | Must fix soft-delete check gap |
+| Testing | Low Excellent | Good coverage |
+| Performance | Medium Good | N+1 query fix recommended |
+| Business Logic | Medium Needs Clarification | Category deletion specification needs confirmation |
 
 ### Approval Status: **Conditional Approval**
 
-以下2点修正後、マージ可能でござる:
+Merge-ready after fixing the following 2 items:
 
-1. [NG] `CategoryService.php:234` - 論理削除チェック追加
-2. [NG] `Product.php:89` - `$fillable` 修正
+1. [NG] `CategoryService.php:234` - Add soft-delete check
+2. [NG] `Product.php:89` - Fix `$fillable`
 
-その他[注意]項目は次Sprintで対応可。
+Other [Warning] items can be addressed in next Sprint.
 
 ---
 
-以上、報告完了でござる。」
+Report complete."
 ```
 
 ### Notes
 
 - Use `/code-review [PR Number/Description]` for pull request reviews
 - Output includes code quality + business logic checks
-- Severity indicators: [Pass], [注意] Warning, [NG] Must Fix
+- Severity indicators: [Pass], [Warning], [NG] Must Fix
 - Provides actionable suggestions with line numbers
 - Useful for maintaining code quality standards

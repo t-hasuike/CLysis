@@ -1,301 +1,301 @@
-# レガシーシステム調査ドキュメント品質評価基準
+# Legacy System Investigation Document Quality Assessment Criteria
 
 > **Version**: 1.1
 > **Last Updated**: 2026-03-02
 > **Author**: ashigaru-scribe
 
-## 概要
+## Overview
 
-本基準書は、**将軍チームが出力したレガシーシステム調査ドキュメント**が、**「人がレガシーシステムの概要を掴み、次の行動や計画に移すことができる」**品質を満たしているかを評価する基準である。
+This document defines criteria for evaluating whether **investigation documents output by the leader team** meet the quality needed for **"a person to grasp the legacy system overview and proceed to the next action or plan."**
 
-システム成熟度評価（`legacy_system_maturity_model.md`）とは異なり、**ドキュメント自体の完成度・実行可能性**を評価する。
-
----
-
-## 「次の行動に移せる」の定義
-
-調査ドキュメントを読んだ人が、以下の5つの質問に答えられる状態を「次の行動に移せる」と定義する:
-
-| 質問 | 内容 | 必要な情報 |
-|------|------|-----------|
-| **What（何を）** | 変更対象のファイル・メソッドを特定できる | ファイル名・クラス名・メソッド名の列挙 |
-| **Where（どこに）** | 正確なファイルパス・行番号を把握できる | 絶対パス・行番号・リンク |
-| **How（どう）** | 実装方法の選択肢を判断できる | 実装パターン・技術選定の提示 |
-| **Risk（リスク）** | 影響範囲と副作用を評価できる | 影響を受けるファイル・テーブル・APIの列挙 |
-| **Next（次）** | 実装順序・Phase分割を計画できる | Phase分割案・依存関係の整理 |
+Unlike the system maturity assessment (`legacy_system_maturity_model.md`), this evaluates the **completeness and actionability of the document itself**.
 
 ---
 
-## 観点別チェックリスト
+## Definition of "Ready for Next Action"
 
-### Tier 1（必須）- これがないと概要が掴めない
+A state where a person reading the investigation document can answer the following 5 questions:
 
-#### 1. システム全体像
-
-| 項目 | 評価基準 | 判定 |
-|------|---------|------|
-| リポジトリ構成 | 関連リポジトリ（2個以上ある場合）の一覧・役割が記載されている | ○/△/× |
-| 技術スタック | 使用言語・フレームワーク・バージョンが記載されている | ○/△/× |
-| ディレクトリ構成 | 主要ディレクトリ（app/, services/, config/ 等）の役割が説明されている | ○/△/× |
-| エントリポイント | API/バッチ/フロントエンドのエントリポイントが列挙されている | ○/△/× |
-
-**判定基準**:
-- ○: 全項目が記載され、他の人が読んで理解できる
-- △: 一部記載されているが、説明不足・曖昧な箇所がある
-- ×: 記載がない、または断片的で理解できない
-
-#### 2. ビジネスロジック
-
-| 項目 | 評価基準 | 判定 |
-|------|---------|------|
-| 業務フロー | 主要な業務フロー（注文・決済・配送等）が図示または説明されている | ○/△/× |
-| Service/UseCase責務 | 各Service・UseCaseクラスの責務・役割が説明されている | ○/△/× |
-| データフロー | データの入力→処理→出力が追跡できる（どこから来てどこへ行くか） | ○/△/× |
-| ビジネスルール | 重要な業務ルール（価格計算・在庫判定等）が明記されている | ○/△/× |
-
-#### 3. データモデル
-
-| 項目 | 評価基準 | 判定 |
-|------|---------|------|
-| テーブル一覧 | 主要テーブルの一覧と役割が記載されている | ○/△/× |
-| テーブル関係 | テーブル間の関係（1:N、N:N等）が図示または説明されている | ○/△/× |
-| 重要カラム | 業務上重要なカラム（価格・ステータス・日時等）の説明がある | ○/△/× |
-| 制約・インデックス | 外部キー制約・ユニーク制約・インデックスの説明がある | ○/△/× |
-
-#### 4. 主要コンポーネント
-
-| 項目 | 評価基準 | 判定 |
-|------|---------|------|
-| コンポーネント責務 | 各コンポーネント（Controller/Service/Repository等）の責務が明確 | ○/△/× |
-| 依存関係 | コンポーネント間の依存関係（呼び出し方向）が説明されている | ○/△/× |
-| エントリポイント特定 | Controller/Route/コマンドハンドラ等のエントリポイントが特定されている | ○/△/× |
-| レイヤー構造 | アーキテクチャのレイヤー（Presentation/Application/Domain/Infrastructure）が説明されている | ○/△/× |
-
-#### 5. 外部依存
-
-| 項目 | 評価基準 | 判定 |
-|------|---------|------|
-| 外部API一覧 | 連携している外部API（決済・配送・通知等）の一覧がある | ○/△/× |
-| API仕様概要 | 各APIの概要（何をするか・認証方法・エンドポイント）が記載されている | ○/△/× |
-| バッチ一覧 | バッチ処理の一覧・実行スケジュール・処理内容が記載されている | ○/△/× |
-| 障害時影響 | 外部サービス障害時の影響範囲が記載されている | ○/△/× |
-
-#### 6. 変更影響分析
-
-| 項目 | 評価基準 | 判定 |
-|------|---------|------|
-| 影響ファイル列挙 | 変更時に影響を受けるファイル・メソッドが列挙されている | ○/△/× |
-| 影響度分類 | 影響度が高/中/低で分類されている | ○/△/× |
-| ファイルパス明記 | ファイルパス:行番号が明記されている（例: `app/Services/Foo.php:123`） | ○/△/× |
-| 副作用の説明 | 変更による副作用（他機能への影響）が説明されている | ○/△/× |
-
-#### 7. 実行可能性
-
-| 項目 | 評価基準 | 判定 |
-|------|---------|------|
-| Phase分割 | 実装がPhase1/Phase2/...に分割されている | ○/△/× |
-| Phase依存関係 | 各Phaseの依存関係（Phase1完了後にPhase2着手等）が明記されている | ○/△/× |
-| リスク整理 | 技術的リスク・ビジネスリスクが整理されている | ○/△/× |
-| 確認チェックリスト | 実装時の確認項目がチェックリスト形式で列挙されている | ○/△/× |
-
-#### 8. ローカル開発環境
-
-「動かすまで」に必要な情報。環境が動かなければ、調査も変更も不可能。
-
-| 項目 | 評価基準 | 判定 |
-|------|---------|------|
-| 必須ツール・バージョン | Docker, PHP, Node.js等のバージョン要件が記載されている | ○/△/× |
-| 環境構築手順 | 初回セットアップの全手順が記載されている | ○/△/× |
-| 環境変数・設定ファイル | .envサンプル、必須設定項目の一覧がある | ○/△/× |
-| データベース初期化 | マイグレーション・シード実行手順が記載されている | ○/△/× |
-| 起動・停止方法 | サービス起動・停止コマンドが明記されている | ○/△/× |
-| 動作確認方法 | 正常起動の判定基準（URL、ログ確認等）がある | ○/△/× |
-| 既知のトラブルと対処 | 頻出エラーと解決策が記載されている | ○/△/× |
+| Question | Content | Required Information |
+|----------|---------|---------------------|
+| **What** | Can identify files/methods to change | File names, class names, method names listed |
+| **Where** | Knows exact file paths and line numbers | Absolute paths, line numbers, links |
+| **How** | Can judge implementation method options | Implementation patterns, technology selections presented |
+| **Risk** | Can evaluate impact scope and side effects | Affected files, tables, APIs listed |
+| **Next** | Can plan implementation order/Phase breakdown | Phase breakdown proposal, dependency organization |
 
 ---
 
-### Tier 2（推奨）- あるとより深い理解が得られる
+## Perspective Checklists
 
-#### 1. 技術的負債
+### Tier 1 (Required) - Cannot grasp overview without these
 
-| 項目 | 評価基準 | 判定 |
-|------|---------|------|
-| ハードコード箇所 | マジックナンバー・ハードコード文字列の箇所が特定されている | ○/△/× |
-| 重複コード | 重複コードの箇所・共通化の提案がある | ○/△/× |
-| リポジトリ間差分 | 同一機能が複数リポジトリに存在する場合、差分が整理されている | ○/△/× |
-| 非推奨パターン | 非推奨のコーディングパターン（グローバル変数・SQLインジェクション等）が指摘されている | ○/△/× |
+#### 1. System Overview
 
-#### 2. 既知の問題点
+| Item | Criteria | Rating |
+|------|----------|--------|
+| Repository structure | Related repositories (when 2+) listed with roles | O/T/X |
+| Technology stack | Languages, frameworks, versions documented | O/T/X |
+| Directory structure | Roles of key directories (app/, services/, config/, etc.) explained | O/T/X |
+| Entry points | API/batch/frontend entry points listed | O/T/X |
 
-| 項目 | 評価基準 | 判定 |
-|------|---------|------|
-| バグ・不具合 | 既知のバグ・不具合が列挙されている | ○/△/× |
-| パフォーマンス懸念 | N+1問題・遅いクエリ等のパフォーマンス懸念が記載されている | ○/△/× |
-| セキュリティ懸念 | SQLインジェクション・XSS・認証不備等のセキュリティ懸念が記載されている | ○/△/× |
+**Rating criteria**:
+- O: All items documented; understandable by others
+- T: Partially documented; some areas insufficient or ambiguous
+- X: Not documented or too fragmented to understand
 
-#### 3. データフロー詳細
+#### 2. Business Logic
 
-| 項目 | 評価基準 | 判定 |
-|------|---------|------|
-| データフロー図 | データの流れが図示されている（シーケンス図・フローチャート等） | ○/△/× |
-| 状態遷移 | エンティティの状態遷移（注文ステータス等）が図示・説明されている | ○/△/× |
-| エラーフロー | エラー時のフロー（リトライ・補償トランザクション等）が記載されている | ○/△/× |
+| Item | Criteria | Rating |
+|------|----------|--------|
+| Business flow | Key business flows (ordering, payment, delivery, etc.) diagrammed or explained | O/T/X |
+| Service/UseCase responsibilities | Responsibilities of each Service/UseCase class explained | O/T/X |
+| Data flow | Data input -> processing -> output is traceable (where it comes from, where it goes) | O/T/X |
+| Business rules | Important business rules (price calculation, inventory checks, etc.) documented | O/T/X |
 
-#### 4. ローカル開発環境（発展）
+#### 3. Data Model
 
-| 項目 | 評価基準 | 判定 |
-|------|---------|------|
-| デバッグ方法 | ブレークポイント設定、ログ出力方法が記載されている | ○/△/× |
-| テスト実行方法 | ユニットテスト・統合テストの実行手順がある | ○/△/× |
-| パフォーマンス計測 | プロファイリングツールの使い方が記載されている | ○/△/× |
+| Item | Criteria | Rating |
+|------|----------|--------|
+| Table list | Key tables listed with roles | O/T/X |
+| Table relationships | Inter-table relationships (1:N, N:N, etc.) diagrammed or explained | O/T/X |
+| Important columns | Business-critical columns (prices, statuses, dates, etc.) explained | O/T/X |
+| Constraints/indexes | Foreign key constraints, unique constraints, indexes explained | O/T/X |
+
+#### 4. Key Components
+
+| Item | Criteria | Rating |
+|------|----------|--------|
+| Component responsibilities | Responsibilities of each component (Controller/Service/Repository, etc.) are clear | O/T/X |
+| Dependencies | Inter-component dependencies (call direction) explained | O/T/X |
+| Entry point identification | Controller/Route/command handlers identified | O/T/X |
+| Layer structure | Architecture layers (Presentation/Application/Domain/Infrastructure) explained | O/T/X |
+
+#### 5. External Dependencies
+
+| Item | Criteria | Rating |
+|------|----------|--------|
+| External API list | List of integrated external APIs (payment, delivery, notification, etc.) | O/T/X |
+| API specification overview | Overview of each API (purpose, authentication method, endpoint) documented | O/T/X |
+| Batch list | Batch processing list with execution schedule and content | O/T/X |
+| Failure impact | Impact scope of external service failures documented | O/T/X |
+
+#### 6. Change Impact Analysis
+
+| Item | Criteria | Rating |
+|------|----------|--------|
+| Affected files listed | Files/methods affected by changes are listed | O/T/X |
+| Impact severity classified | Impact classified as High/Medium/Low | O/T/X |
+| File paths specified | File path:line numbers specified (e.g., `app/Services/Foo.php:123`) | O/T/X |
+| Side effects explained | Side effects of changes (impact on other features) explained | O/T/X |
+
+#### 7. Actionability
+
+| Item | Criteria | Rating |
+|------|----------|--------|
+| Phase breakdown | Implementation divided into Phase 1/Phase 2/... | O/T/X |
+| Phase dependencies | Dependencies between Phases documented (e.g., start Phase 2 after Phase 1) | O/T/X |
+| Risks organized | Technical and business risks organized | O/T/X |
+| Verification checklist | Implementation verification items listed in checklist format | O/T/X |
+
+#### 8. Local Development Environment
+
+Information needed to "get it running." Investigation and changes are impossible without a working environment.
+
+| Item | Criteria | Rating |
+|------|----------|--------|
+| Required tools/versions | Docker, PHP, Node.js version requirements documented | O/T/X |
+| Environment setup procedure | Complete first-time setup procedure documented | O/T/X |
+| Environment variables/config files | .env sample, required configuration items listed | O/T/X |
+| Database initialization | Migration/seed execution procedure documented | O/T/X |
+| Start/stop method | Service start/stop commands documented | O/T/X |
+| Operational verification | Normal startup criteria (URL, log verification, etc.) documented | O/T/X |
+| Known issues and fixes | Common errors and solutions documented | O/T/X |
 
 ---
 
-### Tier 3（補足）- 将来の保守に役立つ
+### Tier 2 (Recommended) - Enables deeper understanding
 
-| 項目 | 評価基準 | 判定 |
-|------|---------|------|
-| 歴史的経緯 | なぜこの実装になったかの説明（過去の意思決定・制約条件） | ○/△/× |
-| 未使用コード | デッドコード・廃止機能が特定されている | ○/△/× |
-| テスト状況 | テストカバレッジ・テスト方針が記載されている | ○/△/× |
-| 将来拡張性 | 将来の拡張を見越した設計上の考慮点が記載されている | ○/△/× |
+#### 1. Technical Debt
 
----
+| Item | Criteria | Rating |
+|------|----------|--------|
+| Hardcoded locations | Magic numbers and hardcoded strings identified | O/T/X |
+| Duplicate code | Duplicate code locations identified with consolidation proposals | O/T/X |
+| Cross-repository differences | When same functionality exists in multiple repos, differences organized | O/T/X |
+| Anti-patterns | Deprecated coding patterns (global variables, SQL injection, etc.) identified | O/T/X |
 
-## 成熟度評価（6段階）
+#### 2. Known Issues
 
-| レベル | 状態 | 説明 | Tier 1 | Tier 2 | Tier 3 |
-|--------|------|------|--------|--------|--------|
-| **Level 0** | 未着手 | ドキュメントが存在しない | - | - | - |
-| **Level 1** | 初期調査 | システム構成・技術スタックのみ記載 | 1-2カテゴリのみ | × | × |
-| **Level 2** | 基本完成 | Tier 1（必須項目）が全て記載されている | 全8カテゴリ ○/△ | △ | × |
-| **Level 3** | 充実 | Tier 2（推奨項目）も含まれている | 全8カテゴリ ○ | ○/△ | × |
-| **Level 4** | 実行可能 | 次のステップに進める状態（実装計画・影響分析完了） | 全8カテゴリ ○ | ○ | △ |
-| **Level 5** | 完全 | Tier 3（補足項目）も含み、将来の保守に耐えうる | 全8カテゴリ ○ | ○ | ○ |
+| Item | Criteria | Rating |
+|------|----------|--------|
+| Bugs/defects | Known bugs and defects listed | O/T/X |
+| Performance concerns | N+1 problems, slow queries, etc. documented | O/T/X |
+| Security concerns | SQL injection, XSS, authentication gaps, etc. documented | O/T/X |
 
-**次のステップに進める基準: Level 4 以上**
+#### 3. Detailed Data Flow
 
----
+| Item | Criteria | Rating |
+|------|----------|--------|
+| Data flow diagram | Data flow diagrammed (sequence diagram, flowchart, etc.) | O/T/X |
+| State transitions | Entity state transitions (order status, etc.) diagrammed or explained | O/T/X |
+| Error flow | Error flow (retries, compensation transactions, etc.) documented | O/T/X |
 
-## ブロッカー検出（致命的欠陥）
+#### 4. Local Development Environment (Advanced)
 
-以下のいずれかが欠けている場合、**次のステップに進めない**（要追加調査）:
-
-| ブロッカーID | 内容 | 判定方法 |
-|-------------|------|---------|
-| **B001** | 修正対象のファイル・メソッドが特定できていない | Tier 1-6「影響ファイル列挙」が × |
-| **B002** | 影響範囲が列挙されていない | Tier 1-6「影響度分類」「副作用の説明」が × |
-| **B003** | ファイルパス:行番号が明記されていない | Tier 1-6「ファイルパス明記」が × |
-| **B004** | リスク・懸念事項が整理されていない | Tier 1-7「リスク整理」が × |
-| **B005** | 実装計画（Phase分割）がない | Tier 1-7「Phase分割」が × |
-| **B006** | 環境構築手順が欠落している、または起動方法が不明 | Tier 1-8「環境構築手順」「起動・停止方法」が × |
-
-**ブロッカーが1つでもある場合**: 次のステップに進めない（要追加調査）
+| Item | Criteria | Rating |
+|------|----------|--------|
+| Debugging methods | Breakpoint setup, log output methods documented | O/T/X |
+| Test execution | Unit test and integration test execution procedures documented | O/T/X |
+| Performance measurement | Profiling tool usage documented | O/T/X |
 
 ---
 
-## 評価の実施方法
+### Tier 3 (Supplementary) - Useful for future maintenance
 
-### 評価タイミング
+| Item | Criteria | Rating |
+|------|----------|--------|
+| Historical context | Explanation of why it's implemented this way (past decisions, constraints) | O/T/X |
+| Unused code | Dead code and deprecated features identified | O/T/X |
+| Test status | Test coverage and test strategy documented | O/T/X |
+| Future extensibility | Design considerations for future extensions documented | O/T/X |
 
-| タイミング | 目的 | 評価者 |
-|-----------|------|--------|
-| ドキュメント作成完了時 | 成熟度の把握・不足項目の特定 | 将軍（リーダー） |
-| 実装開始前のレビュー時 | 実行可能性の最終確認 | 上様（人間） |
-| Phase完了時の振り返り | ドキュメント品質と実装のズレ確認 | 開発チーム |
+---
 
-### 評価プロセス
+## Maturity Assessment (6 Levels)
+
+| Level | State | Description | Tier 1 | Tier 2 | Tier 3 |
+|-------|-------|-------------|--------|--------|--------|
+| **Level 0** | Not started | No document exists | - | - | - |
+| **Level 1** | Initial investigation | Only system structure and tech stack documented | 1-2 categories only | X | X |
+| **Level 2** | Basic completion | All Tier 1 (required) items documented | All 8 categories O/T | T | X |
+| **Level 3** | Comprehensive | Tier 2 (recommended) items also included | All 8 categories O | O/T | X |
+| **Level 4** | Actionable | Ready to proceed to next steps (implementation plan and impact analysis complete) | All 8 categories O | O | T |
+| **Level 5** | Complete | Tier 3 (supplementary) included; durable for future maintenance | All 8 categories O | O | O |
+
+**Criteria for proceeding to next steps: Level 4 or above**
+
+---
+
+## Blocker Detection (Critical Defects)
+
+If any of the following are missing, **cannot proceed to next steps** (additional investigation required):
+
+| Blocker ID | Content | Detection Method |
+|-----------|---------|-----------------|
+| **B001** | Files/methods to modify not identified | Tier 1-6 "Affected files listed" is X |
+| **B002** | Impact scope not listed | Tier 1-6 "Impact severity classified" and "Side effects explained" are X |
+| **B003** | File path:line numbers not specified | Tier 1-6 "File paths specified" is X |
+| **B004** | Risks and concerns not organized | Tier 1-7 "Risks organized" is X |
+| **B005** | No implementation plan (Phase breakdown) | Tier 1-7 "Phase breakdown" is X |
+| **B006** | Environment setup procedure missing or startup method unknown | Tier 1-8 "Environment setup procedure" and "Start/stop method" are X |
+
+**If even 1 blocker exists**: Cannot proceed to next steps (additional investigation required)
+
+---
+
+## How to Conduct Assessments
+
+### Assessment Timing
+
+| Timing | Purpose | Evaluator |
+|--------|---------|-----------|
+| Document completion | Understand maturity, identify gaps | Leader |
+| Pre-implementation review | Final actionability confirmation | User (human) |
+| Phase completion retrospective | Verify document quality vs implementation alignment | Development team |
+
+### Assessment Process
 
 ```
-1. ドキュメントを読む
-   ↓
-2. Tier 1（必須）の各カテゴリをチェック → ○/△/× を記録
-   ↓
-3. ブロッカー検出（B001-B005） → 1つでもあればNG
-   ↓
-4. Tier 2（推奨）・Tier 3（補足）をチェック
-   ↓
-5. 成熟度レベルを判定（Level 0-5）
-   ↓
-6. Level 4 未満の場合 → 不足項目を特定 → 追加調査を依頼
-   ↓
-7. Level 4 以上の場合 → 実装開始可能
+1. Read the document
+   |
+2. Check each Tier 1 (required) category -> record O/T/X
+   |
+3. Blocker detection (B001-B005) -> NG if any
+   |
+4. Check Tier 2 (recommended) and Tier 3 (supplementary)
+   |
+5. Determine maturity level (Level 0-5)
+   |
+6. If below Level 4 -> identify gaps -> request additional investigation
+   |
+7. If Level 4 or above -> implementation can begin
 ```
 
-### 改善サイクル
+### Improvement Cycle
 
 ```
-評価実施
-  ↓
-不足項目の特定（Tier 1-3のどの項目が × か）
-  ↓
-追加調査の実施（将軍に追加調査を依頼）
-  ↓
-ドキュメント更新（足軽（書記担当）が反映）
-  ↓
-再評価（Level 4 到達まで繰り返し）
+Conduct assessment
+  |
+Identify gaps (which Tier 1-3 items are X)
+  |
+Conduct additional investigation (request leader for more investigation)
+  |
+Update document (scribe reflects changes)
+  |
+Re-assess (repeat until Level 4 reached)
 ```
 
 ---
 
-## 他の評価基準との使い分け
+## Comparison with Other Assessment Criteria
 
-| 評価基準 | 評価対象 | 使用タイミング | 使用者 |
-|---------|---------|--------------|--------|
-| **legacy_document_quality.md**（本基準） | 調査ドキュメントの品質 | ドキュメント作成完了時・実装前レビュー | 将軍・上様 |
-| **legacy_system_maturity_model.md** | レガシーシステムの成熟度 | システム改善計画時・改善進捗追跡 | マネジメント層・開発チーム |
-| **evaluation_criteria_matrix.md** | システム成熟度の定量基準 | 成熟度の定量評価時 | 開発チーム |
+| Assessment Criteria | Evaluation Target | Usage Timing | Users |
+|--------------------|-------------------|-------------|-------|
+| **legacy_document_quality.md** (this document) | Investigation document quality | Document completion, pre-implementation review | Leader, user |
+| **legacy_system_maturity_model.md** | Legacy system maturity | System improvement planning, progress tracking | Management, development team |
+| **evaluation_criteria_matrix.md** | System maturity quantitative criteria | Quantitative maturity evaluation | Development team |
 
-**使い分けの目安**:
-- **システム改善の計画時**: `legacy_system_maturity_model.md` + `evaluation_criteria_matrix.md` を使用
-- **調査ドキュメントのレビュー時**: `legacy_document_quality.md`（本基準）を使用
-
----
-
-## 評価例（具体例）
-
-### 評価対象ドキュメント: `output/investigation/sample_investigation.md`
-
-#### Tier 1 チェック結果
-
-| カテゴリ | 評価 | 理由 |
-|---------|------|------|
-| 1. システム全体像 | ○ | リポジトリ構成・技術スタック・ディレクトリ構成が記載 |
-| 2. ビジネスロジック | △ | Service責務は記載されているが、データフローが不明確 |
-| 3. データモデル | ○ | テーブル一覧・関係・重要カラムが記載 |
-| 4. 主要コンポーネント | ○ | コンポーネント責務・依存関係が記載 |
-| 5. 外部依存 | ○ | バッチ一覧・API連携が記載 |
-| 6. 変更影響分析 | ○ | 影響ファイル・ファイルパス:行番号が明記 |
-| 7. 実行可能性 | △ | Phase分割はあるが、リスク整理が不十分 |
-
-#### ブロッカー検出結果
-
-| ブロッカーID | 判定 | 理由 |
-|-------------|------|------|
-| B001 | ○（OK） | 修正対象ファイル・メソッドが特定されている |
-| B002 | ○（OK） | 影響範囲が列挙されている |
-| B003 | ○（OK） | ファイルパス:行番号が明記されている |
-| B004 | ×（NG） | リスク・懸念事項が整理されていない |
-| B005 | ○（OK） | Phase分割がある |
-
-#### 成熟度レベル判定
-
-- **判定結果**: Level 2（基本完成）
-- **理由**: Tier 1の7カテゴリ中5カテゴリが ○、2カテゴリが △。ただし、B004（リスク整理）がブロッカー。
-- **次のステップ**: **実装開始不可**。リスク整理を追加調査後、再評価。
+**Usage guidelines**:
+- **Planning system improvements**: Use `legacy_system_maturity_model.md` + `evaluation_criteria_matrix.md`
+- **Reviewing investigation documents**: Use `legacy_document_quality.md` (this document)
 
 ---
 
-## 関連ドキュメント
+## Assessment Example
 
-- **legacy_system_maturity_model.md**: レガシーシステムそのものの成熟度評価（評価対象が異なる）
-- **evaluation_criteria_matrix.md**: システム成熟度の定量評価基準
+### Target Document: `output/investigation/sample_investigation.md`
+
+#### Tier 1 Check Results
+
+| Category | Rating | Reason |
+|----------|--------|--------|
+| 1. System Overview | O | Repository structure, tech stack, directory structure documented |
+| 2. Business Logic | T | Service responsibilities documented but data flow unclear |
+| 3. Data Model | O | Table list, relationships, important columns documented |
+| 4. Key Components | O | Component responsibilities, dependencies documented |
+| 5. External Dependencies | O | Batch list, API integrations documented |
+| 6. Change Impact Analysis | O | Affected files, file path:line numbers specified |
+| 7. Actionability | T | Phase breakdown exists but risk organization insufficient |
+
+#### Blocker Detection Results
+
+| Blocker ID | Judgment | Reason |
+|-----------|----------|--------|
+| B001 | O (OK) | Target files and methods identified |
+| B002 | O (OK) | Impact scope listed |
+| B003 | O (OK) | File path:line numbers specified |
+| B004 | X (NG) | Risks and concerns not organized |
+| B005 | O (OK) | Phase breakdown exists |
+
+#### Maturity Level Determination
+
+- **Result**: Level 2 (Basic completion)
+- **Reason**: 5 of 7 Tier 1 categories are O, 2 are T. However, B004 (risk organization) is a blocker.
+- **Next steps**: **Cannot start implementation**. Re-assess after additional risk organization investigation.
 
 ---
 
-## バージョン履歴
+## Related Documents
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.1 | 2026-03-02 | Tier 1にローカル開発環境カテゴリ追加、Tier 2にデバッグ・テスト関連追加、ブロッカー検出に環境構築手順の欠落を追加 |
-| 1.0 | 2026-03-02 | 初版作成。Tier 1-3のチェックリスト・6段階成熟度評価を定義 |
+- **legacy_system_maturity_model.md**: System maturity assessment (different evaluation target)
+- **evaluation_criteria_matrix.md**: System maturity quantitative criteria
+
+---
+
+## Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.1 | 2026-03-02 | Added local development environment category to Tier 1, added debug/test items to Tier 2, added environment setup procedure gap to blocker detection |
+| 1.0 | 2026-03-02 | Initial version. Defined Tier 1-3 checklists and 6-level maturity assessment |

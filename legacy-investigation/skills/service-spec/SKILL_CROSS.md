@@ -7,76 +7,76 @@ argument-hint: <Feature name> <Repository A> <Repository B>
 > This is a generic skill from [decouple-legacy](https://github.com/t-hasuike/decouple-legacy-skills).
 > Terminology can be customized via `config/terminology.md`.
 
-# [機能名：例 一括処理] 横断仕様サマリー
+# [Feature Name: e.g., Batch Processing] Cross-Repository Specification Summary
 
-## 1. ビジネスドメイン概要
-[この機能が解決するビジネス上の課題と、全体像を3行で]
-- **主な登場人物 (Actors)**: システム管理者、エンドユーザー、外部システム
-- **関連ドメイン**: input/domain/ 配下のドメイン知識
+## 1. Business Domain Overview
+[Describe the business problem this feature solves and its overall picture in 3 lines]
+- **Key Actors**: System administrators, end users, external systems
+- **Related Domain**: Domain knowledge under input/domain/
 
-## 2. システム構成・コンポーネント図
+## 2. System Architecture / Component Diagram
 
-| コンポーネント | リポジトリ | 主要な役割 |
-|--------------|-----------|-----------|
-| `OrderService` | backend | 注文データの集約・判定 |
-| `NotificationSync` | frontend   | フロントへの通知 |
-
----
-
-## 3. 横断処理フロー（シーケンス）
-1. **[Core]** `ProcessingService::execute()` が対象データを抽出
-2. **[Core]** `DataModel` を更新し、処理指示を作成
-3. **[API]** 外部APIへリクエスト
-4. **[Frontend]** Webhook経由で `UpdateService` を叩き、ステータス同期
+| Component | Repository | Primary Role |
+|-----------|-----------|-------------|
+| `OrderService` | backend | Order data aggregation and evaluation |
+| `NotificationSync` | frontend | Front-end notification |
 
 ---
 
-## 4. 影響範囲・依存関係（マトリクス）
-[既存の「依存しているクラス」を機能単位に拡張]
-
-### 関連Service/Model一覧
-- [ ] `app/Services/Processing/MainService.php` (ロジック核)
-- [ ] `app/Models/Data.php` (Scope: `eligibleForProcessing` 追加)
-
----
-
-## 5. データの整合性と差分（重要）
-- **Source of Truth**: ステータスは `backend` が保持
-- **同期タイミング**: 処理完了時に非同期Jobで `frontend` へ反映
-- **不整合時の挙動**: Backend側を優先し、Frontend側は再同期バッチでリカバリ
+## 3. Cross-Repository Processing Flow (Sequence)
+1. **[Core]** `ProcessingService::execute()` extracts target data
+2. **[Core]** Updates `DataModel` and creates processing instructions
+3. **[API]** Sends request to external API
+4. **[Frontend]** Calls `UpdateService` via Webhook to synchronize status
 
 ---
 
-## 6. 特記事項・技術的負債
-[既存の「ハードコード」「負債」セクションをそのまま利用]
+## 4. Impact Scope / Dependency Matrix (Matrix)
+[Extend existing "dependent classes" to feature-level scope]
+
+### Related Service/Model List
+- [ ] `app/Services/Processing/MainService.php` (logic core)
+- [ ] `app/Models/Data.php` (Scope: add `eligibleForProcessing`)
 
 ---
 
-## I/O仕様
+## 5. Data Consistency and Differences (Important)
+- **Source of Truth**: Status is held by `backend`
+- **Synchronization Timing**: Async Job reflects to `frontend` upon processing completion
+- **Inconsistency Behavior**: Backend side takes priority; frontend side recovers via re-sync batch
+
+---
+
+## 6. Notable Items / Technical Debt
+[Reuse existing "hardcoded" and "debt" sections as-is]
+
+---
+
+## I/O Specification
 
 ### INPUT
-| 種別 | 内容 | 必須/任意 | 例 |
-|------|------|-----------|-----|
-| 機能名 | Cross-repository feature name | 必須 | `一括処理`, `Order sync` |
-| リポジトリA | First repository | 必須 | `backend`, `core` |
-| リポジトリB | Second repository | 必須 | `frontend`, `api` |
+| Type | Description | Required/Optional | Example |
+|------|-------------|-------------------|---------|
+| Feature name | Cross-repository feature name | Required | `Batch processing`, `Order sync` |
+| Repository A | First repository | Required | `backend`, `core` |
+| Repository B | Second repository | Required | `frontend`, `api` |
 
 ### OUTPUT
-| 種別 | 形式 | 出力先 |
-|------|------|--------|
-| 横断仕様サマリー | Cross-repository specification document with data flow, sync points, and consistency rules | stdout（将軍への報告） |
+| Type | Format | Destination |
+|------|--------|-------------|
+| Cross-repository specification summary | Cross-repository specification document with data flow, sync points, and consistency rules | stdout (report to leader) |
 
-### 前提条件
-- Serena MCP が起動していること
-- 両方のリポジトリにアクセス可能であること
-- /investigate または /service-spec で各リポジトリの単体仕様を把握済みであること推奨
+### Prerequisites
+- Serena MCP is running
+- Both repositories are accessible
+- Prior understanding of each repository's individual specification via /investigate or /service-spec is recommended
 
-### 後続スキル（パイプライン）
-- `/impact-analysis` — Cross-repository change impact analysis
-- `/build-knowledge` — Persist cross-repository patterns to domain knowledge
+### Downstream Skills (Pipeline)
+- `/impact-analysis` -- Cross-repository change impact analysis
+- `/build-knowledge` -- Persist cross-repository patterns to domain knowledge
 
-### 品質チェックポイント
-- [ ] データの整合性ルールを明記したか
-- [ ] Source of Truthを明確にしたか
-- [ ] 同期タイミング・不整合時の挙動を記載したか
-- [ ] 両リポジトリの実装を確認したか（推測ではなく）
+### Quality Checkpoints
+- [ ] Documented data consistency rules
+- [ ] Identified Source of Truth clearly
+- [ ] Documented synchronization timing and inconsistency behavior
+- [ ] Confirmed implementations in both repositories (not assumptions)

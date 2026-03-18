@@ -1,26 +1,26 @@
-# Migration Guide — v0.x → v1.0 (Plugin Architecture)
+# Migration Guide -- v0.x to v1.0 (Plugin Architecture)
 
 > **Version**: 1.0
 > **Last Updated**: 2026-03-09
 
 ## Overview
 
-decouple-legacy v1.0 でプラグインアーキテクチャに移行しました。
-従来の単一 `skills/` ディレクトリから、4つの専門特化プラグインに分割されました。
+decouple-legacy v1.0 migrated to a plugin architecture.
+The previous single `skills/` directory has been split into 4 specialized plugins.
 
 ## What's New in v1.0
 
 ### 1. Plugin Architecture
-- **4つのモジュラープラグイン**: legacy-investigation, legacy-analysis, legacy-execution, legacy-knowledge
-- **個別インストール可能**: 必要なプラグインのみインストール可能
-- **Marketplace対応**: `claude plugin marketplace add` でインストール可能
+- **4 modular plugins**: legacy-investigation, legacy-analysis, legacy-execution, legacy-knowledge
+- **Individual installation**: Install only the plugins you need
+- **Marketplace support**: Install via `claude plugin marketplace add`
 
 ### 2. Commands (NEW)
-- **ワークフローの自動化**: 複数スキルをチェーンした `/investigate-flow` 等のコマンドを追加
-- **人間チェックポイント明示**: 各フェーズで人間の承認を待つタイミングが明確化
+- **Workflow automation**: Added commands like `/investigate-flow` that chain multiple skills
+- **Explicit human checkpoints**: Clearly defined timing for human approval at each phase
 
 ### 3. Quality Validation
-- **validate_plugins.py**: プラグイン構造・frontmatter の検証スクリプトを追加
+- **validate_plugins.py**: Added validation script for plugin structure and frontmatter
 
 ## Directory Changes
 
@@ -111,9 +111,9 @@ cp -r /path/to/decouple-legacy/legacy-execution/commands/* .claude/commands/
 
 ```markdown
 ## Workflow Commands
-- `/investigate-flow [target]` — Investigation pipeline
-- `/implement [proposal path]` — Implementation pipeline
-- `/review [PR number]` — Review pipeline
+- `/investigate-flow [target]` -- Investigation pipeline
+- `/implement [proposal path]` -- Implementation pipeline
+- `/review [PR number]` -- Review pipeline
 ```
 
 ### Step 5: Verify Installation
@@ -130,31 +130,31 @@ claude /investigate-flow [some target]
 
 ### No Breaking Changes
 
-スキルのパスは変更なし。プラグインインストール時に自動的に `.claude/skills/` に配置されます。
+Skill paths are unchanged. Skills are automatically placed in `.claude/skills/` during plugin installation.
 
 **Before (v0.x)**:
 ```markdown
 ## Skills
 This project uses skills from decouple-legacy:
-- /investigate — Code investigation
+- /investigate -- Code investigation
 ```
 
 **After (v1.0)**: Same! No changes needed.
 ```markdown
 ## Skills
 This project uses skills from decouple-legacy:
-- /investigate — Code investigation
+- /investigate -- Code investigation
 ```
 
 ### Optional: Document Commands
 
-新しいコマンド機能を使用する場合、CLAUDE.md に記載を推奨:
+If using the new command features, documenting in CLAUDE.md is recommended:
 
 ```markdown
 ## Workflow Commands
-- `/investigate-flow [target]` — 調査パイプライン（project-guide → investigate → service-spec → impact-analysis）
-- `/implement [proposal]` — 実装パイプライン（propose-changes → create-pr）
-- `/review [PR number]` — レビューパイプライン（project-guide → code-review）
+- `/investigate-flow [target]` -- Investigation pipeline (project-guide -> investigate -> service-spec -> impact-analysis)
+- `/implement [proposal]` -- Implementation pipeline (propose-changes -> create-pr)
+- `/review [PR number]` -- Review pipeline (project-guide -> code-review)
 ```
 
 ## New Features in v1.0
@@ -166,11 +166,11 @@ Commands are **pre-configured pipelines** that chain multiple skills together wi
 **Example**: `/investigate-flow [target]`
 
 Runs the following sequence:
-1. `/project-guide [target]` — Get context
-2. `/investigate [target]` — Find code
-3. `/service-spec [target]` — Document specification
-4. `/impact-analysis [target]` — Analyze impact
-5. 【Human Checkpoint】Review full report
+1. `/project-guide [target]` -- Get context
+2. `/investigate [target]` -- Find code
+3. `/service-spec [target]` -- Document specification
+4. `/impact-analysis [target]` -- Analyze impact
+5. [Human Checkpoint] Review full report
 
 **Benefits**:
 - Reduces manual typing of skill sequences
@@ -258,6 +258,6 @@ If you encounter issues:
 
 ## Links
 
-- [README.md](../README.md) — Full documentation
-- [ARCHITECTURE.md](../ARCHITECTURE.md) — Architecture details
-- [validate_plugins.py](../validate_plugins.py) — Validation script
+- [README.md](../README.md) -- Full documentation
+- [ARCHITECTURE.md](../ARCHITECTURE.md) -- Architecture details
+- [validate_plugins.py](../validate_plugins.py) -- Validation script

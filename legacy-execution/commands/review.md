@@ -1,35 +1,35 @@
 ---
-description: Pull Requestのコード品質・ビジネスロジック整合性をレビューする。project-guide → code-review のスキルチェーンを実行する。
-argument-hint: "<PR番号> <リポジトリ名>"
+description: Review Pull Request code quality and business logic alignment. Execute the project-guide -> code-review skill chain.
+argument-hint: "<PR number> <repository name>"
 ---
 
-# /review — PRレビューフロー
+# /review -- PR Review Flow
 
-## 概要
+## Overview
 
-PRのコード品質とビジネスロジックの整合性をレビューするワークフロー。
+A workflow for reviewing PR code quality and business logic alignment.
 
-## ワークフロー
+## Workflow
 
-### Step 1: コンテキストの準備
+### Step 1: Prepare Context
 
-**project-guide** skill を適用:
+Apply **project-guide** skill:
 
-- PRレビューに必要なドメイン知識・プロジェクト情報を特定する
-- input/domain/ から関連するドメイン知識を事前に読み込む
+- Identify domain knowledge and project information needed for PR review
+- Pre-read related domain knowledge from input/domain/
 
 $ARGUMENTS
 
-> **確認**: 「殿、レビューの準備が整いました。レビューに進んでよろしいか？」
+> **Checkpoint**: "Review preparation complete. Ready to proceed with the review?"
 
-### Step 2: コードレビュー
+### Step 2: Code Review
 
-**code-review** skill を適用:
+Apply **code-review** skill:
 
-- コード品質（可読性・保守性・セキュリティ）を評価する
-- ビジネスロジックの整合性を検証する
-- 承認（Approve）/ 修正要求（Request Changes）/ コメント（Comment）の判断を下す
+- Evaluate code quality (readability, maintainability, security)
+- Verify business logic alignment
+- Make judgment: Approve / Request Changes / Comment
 
-### Step 3: 次の行動の提案
+### Step 3: Suggest Next Actions
 
-- 「殿、修正が必要な場合は `/implement` で修正提案を作成できます」
+- "If changes are needed, use `/implement` to create a change proposal"

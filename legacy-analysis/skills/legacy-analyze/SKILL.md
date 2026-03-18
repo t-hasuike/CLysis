@@ -1,232 +1,231 @@
 ---
 name: legacy-analyze
-description: レガシーコードを「具体⇔抽象の反復」で段階的に理解するためのスキル。3つの地図（システム鳥瞰図・DFD・I/Oインターフェース）を「作る」のではなく「育てる」アプローチ。
-argument-hint: "Phase 0 | Phase 1 [変更テーマ] | Phase 2 | Phase 3"
+description: A skill for progressively understanding legacy code through iterative concrete-to-abstract cycles. Three maps (system overview, DFD, I/O interface) are "grown" rather than "built."
+argument-hint: "Phase 0 | Phase 1 [change theme] | Phase 2 | Phase 3"
 ---
 
-# /legacy-analyze — レガシーコード攻略スキル
+# /legacy-analyze -- Legacy Code Mastery Skill
 
 > This is a generic skill from [decouple-legacy](https://github.com/t-hasuike/decouple-legacy-skills).
 > Terminology can be customized via `config/terminology.md`.
 
-## 概要
-レガシーコードを「具体⇔抽象の反復」で段階的に理解するためのスキル。
-3つの地図（システム鳥瞰図・DFD・I/Oインターフェース）を「作る」のではなく「育てる」アプローチ。
+## Overview
+A skill for progressively understanding legacy code through iterative concrete-to-abstract cycles.
+Three maps (system overview, DFD, I/O interface) are "grown" rather than "built."
 
-※ See config/terminology.md for term customization
+See config/terminology.md for term customization
 
-## 前提条件
-- プロジェクト基本情報（overview.md, repositories.md, tech_stack.md）が存在すること
-  - デフォルト: `input/project/` 配下
-  - 拡張構成: `knowledge/system/` 配下（5段階フェーズ構成）
-- 図の管理場所が存在すること
-  - デフォルト: `input/project/diagrams/`
-  - 拡張構成: `knowledge/system/02_structure/` および `knowledge/system/03_behavior/`
-- schema.duckdb（DBスキーマ）が利用可能であること
+## Prerequisites
+- Project basic information (overview.md, repositories.md, tech_stack.md) must exist
+  - Default: under `input/project/`
+  - Extended: under `knowledge/system/` (5-phase structure)
+- Diagram storage location must exist
+  - Default: `input/project/diagrams/`
+  - Extended: `knowledge/system/02_structure/` and `knowledge/system/03_behavior/`
+- schema.duckdb (DB schema) must be available
 
-## Phase 0: 土台構築（初回のみ）
+## Phase 0: Foundation Building (first time only)
 
-### 目的
-コードから読み取れる「揺るがない事実」を自動収集し、人間に聞くべき最小限の質問を導き出す。
+### Purpose
+Auto-collect "indisputable facts" readable from code, and derive the minimal set of questions to ask humans.
 
-### 手順
+### Procedure
 
-**Step 1: 自動収集（人間の入力不要）**
-各リポジトリの以下を自動収集:
+**Step 1: Auto-collection (no human input required)**
+Auto-collect the following from each repository:
 - README.md
 - docker-compose.yml / Dockerfile
-- .env.example（.envは除外 — セキュリティ）
-- 依存性管理ファイル（composer.json / package.json / go.mod / build.gradle 等）
-- ルートディレクトリのファイル構成
-- routes/（APIエンドポイント構成）
+- .env.example (.env excluded -- security)
+- Dependency management files (composer.json / package.json / go.mod / build.gradle, etc.)
+- Root directory file structure
+- routes/ (API endpoint structure)
 
-DBスキーマ（schema.duckdb）があればテーブル一覧・外部キー関係も抽出。
+If DB schema (schema.duckdb) is available, extract table list and foreign key relationships.
 
-**Step 2: 「わかったこと」の整理**
-自動収集から判明する情報を整理:
-- 各リポジトリの技術スタック（フレームワーク、言語バージョン）
-- 各リポジトリの役割（READMEから）
-- リポジトリ間の連携の手がかり（.env.exampleのAPI_URL等）
-- バッチ・インフラ系の構成
+**Step 2: Organize "what we know"**
+Organize information determined from auto-collection:
+- Technology stack per repository (framework, language version)
+- Role per repository (from README)
+- Inter-repository connection clues (.env.example API_URL, etc.)
+- Batch/infrastructure configuration
 
-※ 検証結果: README/composer.json/package.json等から、全体の約65〜73%の情報が自動で判明する。
+Validation results: approximately 65-73% of information is automatically determined from README/composer.json/package.json, etc.
 
-**Step 3: 「わからないこと」を質問として提示**
-自動収集では判明しないビジネス文脈を、以下の9項目の質問として人間に提示:
+**Step 3: Present "what we don't know" as questions**
+Present business context not determinable by auto-collection as 9 questions to the human:
 
 ```
-以下の9項目を教えてください。残りは自動収集済みです:
+Please provide the following 9 items. The rest has been auto-collected:
 
-1. サービスのビジネスドメイン（1〜2文で）
-   → 何を誰に提供するサービスか
+1. Business domain of the service (1-2 sentences)
+   -> What does the service provide and to whom?
 
-2. 対象ユーザーの呼称と具体的役割
-   → READMEに「○○向け」という記述がありましたが、
-     各ユーザーの具体的な役割を教えてください
+2. Target user names and specific roles
+   -> README mentions "for XX", but please describe each user's specific role
 
-3. ドメイン固有の用語の意味
-   → 自動収集で見つかった固有名詞（プラン名等）の意味
+3. Domain-specific terminology meanings
+   -> Meanings of proprietary terms (plan names, etc.) found during auto-collection
 
-4. ユーザー種別ごとの業種・属性
-   → 「パートナー」等の呼称が指す具体的な業種
+4. Industry/attributes per user type
+   -> Specific industries that terms like "Partner" refer to
 
-5. 重要度の評価
-   → どのリポジトリが最重要か、変更頻度が高いか
+5. Importance assessment
+   -> Which repository is most critical, which has highest change frequency
 
-6. レガシーシステムの位置づけ
-   → 旧システムの移行状況、現在も使われているか
+6. Legacy system positioning
+   -> Migration status of old systems, whether still in use
 
-7. リポジトリ間連携方式の補足
-   → 自動推定できなかった連携の確認
+7. Supplementary inter-repository integration details
+   -> Confirmation of integrations that could not be auto-estimated
 
-8. 組織名・ブランド名の文脈
-   → READMEに登場する固有名詞の正式な意味
+8. Organization/brand name context
+   -> Official meanings of proper nouns appearing in README
 
-9. 本番ドメインの対応表（任意）
-   → 各サービスが稼働しているURL
+9. Production domain mapping (optional)
+   -> URLs where each service is running
 ```
 
-**Step 4: overview.md + 鳥瞰図の初版生成**
-Step 2（自動収集結果）+ Step 3（人間の回答）を統合して:
-- overview.md の初版を生成
-- システム鳥瞰図の初版（mermaid）を生成
-- 「わかったこと」リスト
-- 「まだわからないこと」リスト（※これが最重要 -- Phase 1 で掘る対象）
+**Step 4: Generate initial overview.md and overview diagram**
+Integrate Step 2 (auto-collection results) + Step 3 (human answers) to:
+- Generate initial version of overview.md
+- Generate initial system overview diagram (mermaid)
+- "Known" list
+- "Still unknown" list (this is most important -- targets for Phase 1 investigation)
 
-### 重要な原則
-- Step 1-2 は人間の入力なしで実行可能
-- Step 3 の質問は自動収集結果に基づいて動的に生成する（固定質問ではない）
-- 「何を聞けばいいかもわからない」状態を、AIが構造化する
+### Key Principles
+- Steps 1-2 can execute without human input
+- Step 3 questions are dynamically generated based on auto-collection results (not fixed questions)
+- AI structures the state of "not knowing what to ask"
 
-## Phase 1: 具体から掘る（反復の核）
+## Phase 1: Dig from the Concrete (core of iteration)
 
-### 目的
-具体的な変更テーマを1つ選び、芋づる式に追跡する。追跡の副産物として地図の断片を得る。
+### Purpose
+Select one specific change theme and trace it through the system. Map fragments emerge as a byproduct of tracing.
 
-### 手順
-1. ユーザーが変更テーマを指定（例:「新しい商品カテゴリを追加したい」）
-2. /impact-analysis で影響範囲を追跡
-3. 追跡過程で発見した以下を記録:
-   - リポジトリ間連携（API呼び出し、共有DB、共有Enum等）
-   - 隠れた出力（メール、CSV、バッチ処理、外部API連携）
-   - ハードコード箇所
-   - 技術的負債
-4. 関連Serviceを /service-spec で仕様整理
-5. リポジトリ横断の場合は /service-spec (CROSS) で差分分析
-6. 出力:
-   - 影響分析レポート（reports/ または output/）
-   - 鳥瞰図の更新差分
-   - DFDの断片
-   - 「わからないこと」リストの更新（解決したもの/新たに出たもの）
+### Procedure
+1. User specifies a change theme (e.g., "I want to add a new product category")
+2. Trace impact scope with /impact-analysis
+3. Record the following discovered during tracing:
+   - Inter-repository connections (API calls, shared DB, shared Enums, etc.)
+   - Hidden outputs (email, CSV, batch processing, external API integrations)
+   - Hardcoded locations
+   - Technical debt
+4. Organize related Services with /service-spec
+5. For cross-repository cases, use /service-spec (CROSS) for diff analysis
+6. Output:
+   - Impact analysis report (reports/ or output/)
+   - Overview diagram update diff
+   - DFD fragments
+   - "Unknown" list update (resolved items/newly discovered items)
 
-### 重要な原則
-- 「ありそうな名前」でコードを記述しない。必ずSerenaで実在を確認する
-- 修正例は実コードの構造を確認してから書く
-- 馴染みの薄いリポジトリは事前に /service-spec で全体像を把握してから組み込む
+### Key Principles
+- Do not write code using "likely names." Always verify existence with Serena
+- Write fix examples only after confirming actual code structure
+- For unfamiliar repositories, use /service-spec to understand the full picture before incorporating
 
-## Phase 2: 監査で嘘を排除
+## Phase 2: Audit to Eliminate Falsehoods
 
-### 目的
-Phase 1の成果物の正確性を検証する。AIはハルシネーションする。
+### Purpose
+Verify the accuracy of Phase 1 deliverables. AI can hallucinate.
 
-### 手順
-1. metsuke（目付役）が成果物を監査
-2. 検証項目:
-   - 全メソッド名・クラス名が実在するか
-   - 全ファイルパスが正しいか
-   - コードスニペットが実際のコードと一致するか
-   - プロジェクト固有の必須ルール（例: 論理削除条件）の考慮漏れがないか
-3. 指摘を修正し、再監査
-4. 出力: 監査済みの成果物（修正反映済み）
+### Procedure
+1. metsuke (inspector) audits deliverables
+2. Verification items:
+   - Do all method names and class names actually exist?
+   - Are all file paths correct?
+   - Do code snippets match actual code?
+   - Are project-specific mandatory rules (e.g., soft-delete conditions) properly considered?
+3. Correct findings and re-audit
+4. Output: Audited deliverables (with corrections applied)
 
-## Phase 3: 抽象に戻す
+## Phase 3: Return to the Abstract
 
-### 目的
-Phase 1-2で得た断片を統合し、3つの地図を更新する。知識を永続化する。
+### Purpose
+Integrate fragments obtained in Phase 1-2 and update the three maps. Persist knowledge.
 
-### 手順
-1. 影響分析で判明した連携・フローを鳥瞰図に追加
-2. データの流れをDFDに追加
-3. 各システムの入口・出口をI/Oインターフェース図に追加
-4. ドメイン知識をドメイン知識ディレクトリに永続化（書記が担当）
-   - デフォルト: `input/domain/`
-   - 拡張構成: `knowledge/domain/`
-5. 「わかったこと/わからないこと」リストを更新
-6. 出力:
-   - 図の管理場所の3つの図を更新
-   - ドメイン知識ディレクトリに新規知識を追加
+### Procedure
+1. Add connections/flows discovered in impact analysis to the overview diagram
+2. Add data flows to the DFD
+3. Add entry/exit points of each system to the I/O interface diagram
+4. Persist domain knowledge to the domain knowledge directory (scribe handles this)
+   - Default: `input/domain/`
+   - Extended: `knowledge/domain/`
+5. Update the "known/unknown" list
+6. Output:
+   - Update the 3 diagrams in the diagram storage location
+   - Add new knowledge to the domain knowledge directory
 
-### Phase 3 必須化ルール
+### Phase 3 Mandatory Rule
 
-**Phase 1-2 の調査完了後、Phase 3（地図更新）を必ず実施すること。**
+**After completing Phase 1-2 investigations, Phase 3 (map update) MUST be executed.**
 
-調査のみで終わると、知見がセッション内に閉じてしまい、次回以降の調査で同じ領域を再度掘ることになる。Phase 3 で地図とドメイン知識を更新することで:
-- 次回の Phase 1 の起点が前進する
-- 「わからないこと」リストが縮小する
-- チーム全体の理解が蓄積される
+If investigation ends without Phase 3, findings remain trapped in the session, and subsequent investigations will re-cover the same ground. By updating maps and domain knowledge in Phase 3:
+- The starting point for the next Phase 1 advances
+- The "unknown" list shrinks
+- Team-wide understanding accumulates
 
-## 反復
-Phase 1-3 を別の変更テーマで繰り返す。繰り返すほど:
-- 3つの地図の精度が上がる
-- 「わからないこと」リストが縮小する
-- 2つ目以降は「あ、ここも同じパターン」が効き始め、速度が上がる
+## Iteration
+Repeat Phase 1-3 with different change themes. With each iteration:
+- The accuracy of the three maps improves
+- The "unknown" list shrinks
+- From the second theme onward, "same pattern here" recognition kicks in, increasing speed
 
-## チーム編成テンプレート
+## Team Composition Templates
 
-### 中規模（標準）
-| 役割 | 担当 | モデル |
-|------|------|--------|
-| 足軽A | コード追跡・影響分析（investigator） | Sonnet |
-| 足軽B | 知識整理・図の更新（scribe） | Sonnet |
+### Medium Scale (Standard)
+| Role | Assignment | Model |
+|------|-----------|-------|
+| Worker A | Code tracing and impact analysis (investigator) | Sonnet |
+| Worker B | Knowledge organization and diagram updates (scribe) | Sonnet |
 
-### 大規模（リポジトリ横断）
-| 役割 | 担当 | モデル |
-|------|------|--------|
-| 足軽A | リポジトリA側調査（investigator） | Sonnet |
-| 足軽B | リポジトリB側調査（investigator） | Sonnet |
-| 足軽C | 知識統合・図更新（scribe） | Sonnet |
-| metsuke | 品質監査（Phase 2で起用） | Sonnet |
+### Large Scale (Cross-Repository)
+| Role | Assignment | Model |
+|------|-----------|-------|
+| Worker A | Repository A investigation (investigator) | Sonnet |
+| Worker B | Repository B investigation (investigator) | Sonnet |
+| Worker C | Knowledge integration and diagram updates (scribe) | Sonnet |
+| metsuke | Quality audit (deployed in Phase 2) | Sonnet |
 
-## エージェントパターン対応表
-| パターン | 実装形態 | Phase |
-|---------|---------|-------|
-| Advanced RAG | schema.duckdb + Serena | 全Phase |
+## Agent Pattern Mapping
+| Pattern | Implementation | Phase |
+|---------|---------------|-------|
+| Advanced RAG | schema.duckdb + Serena | All Phases |
 | ReAct | /investigate, /service-spec | Phase 1 |
-| Self-Reflection | metsuke監査 | Phase 2 |
-| Multi-Agent | 将軍+足軽チーム | Phase 1-3 |
-| Plan-and-Execute | /impact-analysis + Phase分割 | Phase 1 |
+| Self-Reflection | metsuke audit | Phase 2 |
+| Multi-Agent | Leader + Worker team | Phase 1-3 |
+| Plan-and-Execute | /impact-analysis + Phase decomposition | Phase 1 |
 | Knowledge Graph Memory | domain knowledge dir + diagrams/ | Phase 3 |
-| Sequential Chain | Phase 0→1→2→3の反復 | 全体 |
+| Sequential Chain | Phase 0->1->2->3 iteration | Overall |
 
 ---
 
-## I/O仕様
+## I/O Specification
 
 ### INPUT
-| 種別 | 内容 | 必須/任意 | 例 |
-|------|------|-----------|-----|
-| Phase | Phase 0, 1, 2, or 3 | 必須 | `Phase 0`, `Phase 1` |
-| 変更テーマ | Specific change theme (Phase 1 only) | Phase 1で必須 | `新しい商品カテゴリを追加したい` |
-| 調査対象 | Target repositories or features | 任意 | `backend`, `注文処理機能` |
+| Type | Description | Required/Optional | Example |
+|------|-------------|-------------------|---------|
+| Phase | Phase 0, 1, 2, or 3 | Required | `Phase 0`, `Phase 1` |
+| Change theme | Specific change theme (Phase 1 only) | Required for Phase 1 | `I want to add a new product category` |
+| Investigation target | Target repositories or features | Optional | `backend`, `order processing feature` |
 
 ### OUTPUT
-| 種別 | 形式 | 出力先 |
-|------|------|--------|
-| Phase 0 成果物 | overview.md + システム鳥瞰図 + わかったこと/わからないことリスト | プロジェクト情報ディレクトリ（`input/project/` or `knowledge/system/`） |
-| Phase 1 成果物 | 影響分析レポート + Service仕様 + DFD断片 + わからないことリスト更新 | `reports/`（or `output/`）, 図の管理場所 |
-| Phase 2 成果物 | 監査済み成果物（修正反映済み） | `reports/` (updated) |
-| Phase 3 成果物 | 更新された3つの地図 + ドメイン知識 | 図の管理場所, ドメイン知識ディレクトリ |
+| Type | Format | Destination |
+|------|--------|-------------|
+| Phase 0 deliverables | overview.md + system overview diagram + known/unknown list | Project information directory (`input/project/` or `knowledge/system/`) |
+| Phase 1 deliverables | Impact analysis report + Service specs + DFD fragments + unknown list update | `reports/` (or `output/`), diagram storage location |
+| Phase 2 deliverables | Audited deliverables (with corrections applied) | `reports/` (updated) |
+| Phase 3 deliverables | Updated 3 maps + domain knowledge | Diagram storage location, domain knowledge directory |
 
-### 前提条件
-- Serena MCP が起動していること
-- Phase 0: リポジトリにアクセス可能であること
-- Phase 1-3: Phase 0 完了済みであること
+### Prerequisites
+- Serena MCP is running
+- Phase 0: Repository access available
+- Phase 1-3: Phase 0 completed
 
-### 後続スキル（パイプライン）
-Phase 0 → Phase 1 → Phase 2 → Phase 3 → (Phase 1に戻って反復)
+### Downstream Skills (Pipeline)
+Phase 0 -> Phase 1 -> Phase 2 -> Phase 3 -> (return to Phase 1 and iterate)
 
-### 品質チェックポイント
-- [ ] Phase 0: 自動収集で65-73%の情報を得たか
-- [ ] Phase 1: 実コードを確認してから報告したか（推測ではなく）
-- [ ] Phase 2: 全メソッド名・クラス名が実在するか検証したか
-- [ ] Phase 3: ドメイン知識をドメイン知識ディレクトリに永続化したか
+### Quality Checkpoints
+- [ ] Phase 0: Obtained 65-73% of information through auto-collection
+- [ ] Phase 1: Confirmed actual code before reporting (not assumptions)
+- [ ] Phase 2: Verified all method names and class names actually exist
+- [ ] Phase 3: Persisted domain knowledge to the domain knowledge directory

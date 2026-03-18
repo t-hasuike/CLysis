@@ -1,289 +1,289 @@
-# レガシーシステム掌握度評価基準 - README
+# Legacy System Mastery Assessment Criteria - README
 
 > **Version**: 1.2
 > **Last Updated**: 2026-03-13
 > **Author**: ashigaru-scribe
 
-## 概要
+## Overview
 
-本ディレクトリは、**レガシーシステムの掌握度を定量的に評価するための汎用的な評価基準**を提供する。10の観点から5段階で成熟度を測定し、システムの可視化・改善優先順位の決定・進捗追跡を支援する。
+This directory provides **generic assessment criteria for quantitatively evaluating legacy system mastery**. It measures maturity across 10 perspectives at 5 levels, supporting system visualization, improvement prioritization, and progress tracking.
 
-**重要**: これは汎用的な評価基準であり、特定のシステム（例: 社内業務システム等）に特化したものではない。適用時はプロジェクト特性に応じてカスタマイズすること。
-
----
-
-## ファイル構成
-
-| ファイル | 内容 | 用途 |
-|---------|------|------|
-| **legacy_system_maturity_model.md** | 9観点×5段階の成熟度モデル定義 | 評価モデルの全体像・各観点の重要性・レベル概要 |
-| **evaluation_criteria_matrix.md** | 定量評価基準マトリクス | 各観点×各レベルの具体的な数値基準・判定方法 |
-| **legacy_document_quality.md** | 調査ドキュメント品質評価基準 | 将軍チーム出力ドキュメントの実行可能性評価 |
-| **README.md**（本ファイル） | 使い方・適用手順 | 評価の実施方法・対象読者・参考資料 |
+**Important**: These are generic assessment criteria, not specialized for any particular system (e.g., internal business systems). Customize according to project characteristics when applying.
 
 ---
 
-## 2つの評価基準の使い分け
+## File Structure
 
-本ディレクトリには**2種類の評価基準**があり、評価対象・使用タイミングが異なる:
+| File | Content | Purpose |
+|------|---------|---------|
+| **legacy_system_maturity_model.md** | 9-perspective x 5-level maturity model definition | Overall assessment model, importance of each perspective, level overview |
+| **evaluation_criteria_matrix.md** | Quantitative evaluation criteria matrix | Specific numerical criteria and judgment methods for each perspective x level |
+| **legacy_document_quality.md** | Investigation document quality assessment criteria | Evaluating actionability of leader team output documents |
+| **README.md** (this file) | Usage and application procedures | How to conduct assessments, target audience, references |
 
-| 評価基準 | 評価対象 | 使用タイミング | 使用者 |
-|---------|---------|--------------|--------|
-| **legacy_system_maturity_model.md** + **evaluation_criteria_matrix.md** | **レガシーシステムの成熟度** | システム改善計画時・改善進捗追跡 | マネジメント層・開発チーム |
-| **legacy_document_quality.md** | **調査ドキュメントの品質** | ドキュメント作成完了時・実装前レビュー | 将軍（リーダー）・上様（人間） |
+---
 
-### システム成熟度評価（legacy_system_maturity_model.md）
+## Two Types of Assessment Criteria
 
-**評価対象**: レガシーシステムそのもの（テストカバレッジ・技術的負債・セキュリティ等）
+This directory contains **2 types of assessment criteria** with different evaluation targets and usage timing:
 
-**目的**: システム全体の健全性を測定し、改善の優先順位を決定する
+| Assessment Criteria | Evaluation Target | Usage Timing | Users |
+|--------------------|-------------------|-------------|-------|
+| **legacy_system_maturity_model.md** + **evaluation_criteria_matrix.md** | **Legacy system maturity** | System improvement planning, improvement progress tracking | Management, development team |
+| **legacy_document_quality.md** | **Investigation document quality** | Document completion, pre-implementation review | Leader, user (human) |
 
-**使用例**:
-- 「このシステムのテスト成熟度はLevel 2、技術的負債はLevel 1。まずは負債返済を優先する」
-- 「四半期評価で総合スコアが19点→24点に改善。継続的改善の成果を確認」
+### System Maturity Assessment (legacy_system_maturity_model.md)
 
-### ドキュメント品質評価（legacy_document_quality.md）
+**Evaluation target**: The legacy system itself (test coverage, technical debt, security, etc.)
 
-**評価対象**: 将軍チームが出力した調査ドキュメント
+**Purpose**: Measure overall system health and determine improvement priorities
 
-**目的**: ドキュメントが「次のステップ（実装・計画）に進める品質」を満たしているかを判定する
+**Usage examples**:
+- "This system's test maturity is Level 2, technical debt is Level 1. Prioritize debt repayment first"
+- "Quarterly evaluation shows composite score improved from 19 to 24 points. Confirming continuous improvement results"
 
-**使用例**:
-- 「調査ドキュメントはLevel 4。影響範囲・Phase分割・リスクが明記されており、実装開始可能」
-- 「Level 2（基本完成）だが、ブロッカーB004（リスク整理）があり、実装開始不可。追加調査が必要」
+### Document Quality Assessment (legacy_document_quality.md)
 
-### 使い分けの判断フロー
+**Evaluation target**: Investigation documents output by the leader team
+
+**Purpose**: Determine whether documents meet the quality needed to "proceed to the next step (implementation/planning)"
+
+**Usage examples**:
+- "Investigation document is Level 4. Impact scope, Phase breakdown, and risks are documented. Ready to start implementation"
+- "Level 2 (basic completion) but blocker B004 (risk organization) prevents implementation start. Additional investigation needed"
+
+### Decision Flow for Which to Use
 
 ```
-質問: 何を評価したいか？
-  │
-  ├─ システム改善の計画を立てたい
-  │   └─→ legacy_system_maturity_model.md + evaluation_criteria_matrix.md を使用
-  │
-  └─ 調査ドキュメントが実装に進める品質かレビューしたい
-      └─→ legacy_document_quality.md を使用
+Question: What do you want to evaluate?
+  |
+  |- Want to plan system improvements
+  |   |-> Use legacy_system_maturity_model.md + evaluation_criteria_matrix.md
+  |
+  |- Want to review if investigation documents are ready for implementation
+      |-> Use legacy_document_quality.md
 ```
 
 ---
 
-## 評価モデルの概要
+## Assessment Model Overview
 
-### 10の評価観点
+### 10 Evaluation Perspectives
 
-| 観点 | 参考フレームワーク | 重要性 |
-|------|------------------|--------|
-| 1. 状態管理の健全性 | - | 保守性・変更影響の予測可能性 |
-| 2. テスト成熟度 | TMMi | 品質保証・リファクタリング安全性 |
-| 3. CI/CDパイプライン | DORA Metrics | ビジネス俊敏性・デプロイリスク低減 |
-| 4. ドメイン知識可視化 | - | 属人性排除・設計品質向上 |
-| 5. 技術スタック統一性 | SQALE | 保守コスト削減・セキュリティリスク低減 |
-| 6. 可観測性 | Observability MM | 障害対応迅速化・システム理解促進 |
-| 7. セキュリティ | OWASP Top 10 | 脆弱性リスク低減・コンプライアンス対応 |
-| 8. 依存関係健全性 | - | 保守コスト削減・脆弱性リスク低減 |
-| 9. データ品質 | - | ビジネスロジック信頼性・整合性保証 |
-| 10. コード歪み検出成熟度 | Distortion Analysis Framework | 歪み検出・管理能力の成熟度 |
+| Perspective | Reference Framework | Importance |
+|------------|-------------------|-----------|
+| 1. State Management Health | - | Maintainability, change impact predictability |
+| 2. Testing Maturity | TMMi | Quality assurance, refactoring safety |
+| 3. CI/CD Pipeline | DORA Metrics | Business agility, deployment risk reduction |
+| 4. Domain Knowledge Visibility | - | Eliminating knowledge silos, design quality improvement |
+| 5. Technology Stack Consistency | SQALE | Maintenance cost reduction, security risk reduction |
+| 6. Observability | Observability MM | Faster incident response, system understanding |
+| 7. Security | OWASP Top 10 | Vulnerability risk reduction, compliance |
+| 8. Dependency Health | - | Maintenance cost reduction, vulnerability risk reduction |
+| 9. Data Quality | - | Business logic reliability, consistency assurance |
+| 10. Code Distortion Detection Maturity | Distortion Analysis Framework | Distortion detection and management capability maturity |
 
-### 5段階成熟度レベル
+### 5-Level Maturity Scale
 
-| レベル | 名称 | 説明 | 特徴 |
-|-------|------|------|------|
-| **Level 1** | 初期段階（Ad hoc） | 文書化・自動化が欠如 | 属人的・場当たり的 |
-| **Level 2** | 管理段階（Managed） | 基本的なプロセス・計測が導入 | 部分的な改善開始 |
-| **Level 3** | 定義段階（Defined） | 標準化・体系化されたプロセス | 組織的な管理 |
-| **Level 4** | 定量管理段階（Quantitatively Managed） | メトリクス駆動の管理 | データに基づく改善 |
-| **Level 5** | 最適化段階（Optimizing） | 継続的改善・自動化による最適化 | 自律的な改善 |
+| Level | Name | Description | Characteristics |
+|-------|------|-------------|----------------|
+| **Level 1** | Initial (Ad hoc) | Lacking documentation and automation | Ad-hoc, individual-dependent |
+| **Level 2** | Managed | Basic processes and measurement introduced | Partial improvement started |
+| **Level 3** | Defined | Standardized, systematic processes | Organizational management |
+| **Level 4** | Quantitatively Managed | Metrics-driven management | Data-based improvement |
+| **Level 5** | Optimizing | Continuous improvement through automation | Autonomous improvement |
 
-### 総合成熟度の分類
+### Composite Maturity Classification
 
-合計点（最大50点）で総合成熟度を判定:
+Determine composite maturity by total score (max 50 points):
 
-| スコア範囲 | 総合成熟度 | 状態 |
-|-----------|----------|------|
-| 0-10点 | **危機的（Critical）** | 即座の改善が必要 |
-| 11-20点 | **低い（Low）** | 広範囲の改善が必要 |
-| 21-30点 | **中程度（Moderate）** | 部分的な改善が必要 |
-| 31-40点 | **高い（High）** | 継続的改善の維持 |
-| 41-50点 | **非常に高い（Very High）** | 最適化段階 |
-
----
-
-## 評価の実施方法
-
-### ステップ1: データ収集
-
-`evaluation_criteria_matrix.md` に記載された各観点の定量指標を収集する。
-
-**収集方法**:
-- **自動収集**: SonarQube、npm audit、Datadog等のツールレポート
-- **手動収集**: コードレビュー、ドキュメント調査、インタビュー
-- **計算**: Git履歴分析、DB分析クエリ
-
-**収集タイミング**: 評価実施の1-2週間前に開始
-
-### ステップ2: レベル判定
-
-各観点について、収集したデータを `evaluation_criteria_matrix.md` の基準と照合し、Level 1～5を決定する。
-
-**判定ルール**:
-- 複数指標がある場合、**最も低いレベル**を採用（保守的評価）
-- 境界値の場合、関係者でレビュー・議論して決定
-- 判定根拠を記録（後でトレーサビリティ確保）
-
-### ステップ3: レビュー
-
-評価結果を関係者（開発チーム、マネージャー、ステークホルダー）でレビューする。
-
-**レビューポイント**:
-- 判定が妥当か（データの信頼性・基準の解釈）
-- プロジェクト特性による補正の必要性
-- 重み付けの必要性
-
-### ステップ4: 改善計画策定
-
-低レベル観点について改善施策を立案し、優先順位を決定する。
-
-**優先順位付けの観点**:
-- ビジネスインパクト（売上・顧客満足度への影響）
-- 実現可能性（工数・リソース・技術的難易度）
-- 波及効果（他観点への好影響）
-- 重み付け（プロジェクト特性による重要度）
-
-**改善施策の例**:
-- Level 1→2: 基本的なツール導入・プロセス定義
-- Level 2→3: 標準化・自動化の拡大
-- Level 3→4: メトリクス駆動の管理体制構築
-- Level 4→5: 自動化・自律化の高度化
-
-### ステップ5: トレンド分析
-
-過去の評価結果と比較し、改善効果を可視化する。
-
-**分析方法**:
-- **時系列グラフ**: 総合スコア・各観点スコアの推移
-- **レーダーチャート**: 前回評価との比較
-- **改善速度**: レベルアップに要した期間
+| Score Range | Composite Maturity | Status |
+|------------|-------------------|--------|
+| 0-10 points | **Critical** | Immediate improvement needed |
+| 11-20 points | **Low** | Broad improvement needed |
+| 21-30 points | **Moderate** | Partial improvement needed |
+| 31-40 points | **High** | Maintain continuous improvement |
+| 41-50 points | **Very High** | Optimization stage |
 
 ---
 
-## 対象読者
+## How to Conduct Assessments
 
-### 開発チーム
-- **用途**: 詳細な技術改善の立案・実施
-- **活用資料**: `evaluation_criteria_matrix.md` の定量基準・測定ツール
+### Step 1: Data Collection
 
-### マネジメント層
-- **用途**: 改善優先順位の決定・リソース配分
-- **活用資料**: `legacy_system_maturity_model.md` の総合評価・レーダーチャート
+Collect quantitative indicators for each perspective as described in `evaluation_criteria_matrix.md`.
 
-### ステークホルダー
-- **用途**: 改善進捗の追跡・投資判断
-- **活用資料**: 総合スコア・時系列グラフ
+**Collection methods**:
+- **Automatic collection**: Tool reports from SonarQube, npm audit, Datadog, etc.
+- **Manual collection**: Code review, document investigation, interviews
+- **Calculation**: Git history analysis, DB analysis queries
 
----
+**Collection timing**: Start 1-2 weeks before assessment
 
-## プロジェクト特性によるカスタマイズ
+### Step 2: Level Determination
 
-本評価基準は汎用的であるため、プロジェクト特性に応じてカスタマイズを推奨する。
+For each perspective, compare collected data against criteria in `evaluation_criteria_matrix.md` to determine Level 1-5.
 
-### カスタマイズ例
+**Determination rules**:
+- If multiple indicators exist, adopt the **lowest level** (conservative assessment)
+- For boundary values, review and discuss with stakeholders
+- Record determination rationale (ensure traceability)
 
-**EC系システムの場合**:
-- セキュリティの重み: 2.0（個人情報・決済情報保護）
-- データ品質の重み: 1.5（在庫・注文整合性）
-- 可観測性の重み: 1.5（売上機会損失の防止）
+### Step 3: Review
 
-**社内基幹システムの場合**:
-- ドメイン知識可視化の重み: 2.0（属人性排除の重要性）
-- CI/CDの重み: 0.8（デプロイ頻度の重要性低）
+Review assessment results with stakeholders (development team, managers, stakeholders).
 
-**SaaS製品の場合**:
-- CI/CDの重み: 2.0（俊敏性がビジネス優位性）
-- テスト成熟度の重み: 1.8（品質がブランド価値）
+**Review points**:
+- Is the determination appropriate? (data reliability, criteria interpretation)
+- Need for project-specific corrections?
+- Need for weighting?
 
-### 基準値の調整
+### Step 4: Improvement Planning
 
-プロジェクトの現状に応じて、各レベルの閾値を調整可能。
+Develop improvement measures for low-level perspectives and determine priorities.
 
-**例**: 既に高成熟度のプロジェクトでは、Level 3の基準を引き上げる
-- テストカバレッジ Level 3: 40-70% → 60-80%
+**Prioritization perspectives**:
+- Business impact (revenue, customer satisfaction impact)
+- Feasibility (effort, resources, technical difficulty)
+- Ripple effect (positive impact on other perspectives)
+- Weighting (importance based on project characteristics)
 
----
+**Improvement measure examples**:
+- Level 1->2: Basic tool introduction, process definition
+- Level 2->3: Standardization, automation expansion
+- Level 3->4: Metrics-driven management system construction
+- Level 4->5: Advanced automation and autonomy
 
-## 評価頻度の推奨
+### Step 5: Trend Analysis
 
-| 頻度 | 目的 | 適用タイミング |
-|------|------|--------------|
-| **四半期毎** | 定期的なトレンド追跡 | 継続的改善フェーズ |
-| **マイルストーン毎** | 改善施策の効果測定 | リファクタリング完了時 |
-| **プロジェクト開始時** | ベースライン設定 | レガシーシステム掌握の開始時 |
+Compare with past assessment results to visualize improvement effectiveness.
 
----
-
-## 評価結果の活用方法
-
-### エグゼクティブレポート
-- **内容**: 総合スコア・レーダーチャート・改善トレンド
-- **頻度**: 四半期毎
-- **目的**: 投資判断・リソース配分の根拠
-
-### 技術チーム向けレポート
-- **内容**: 各観点の詳細スコア・判定根拠・改善施策案
-- **頻度**: 評価実施毎
-- **目的**: 具体的な技術改善の立案・実施
-
-### ステークホルダー向けダッシュボード
-- **内容**: 総合スコア時系列・重要観点の進捗
-- **頻度**: リアルタイム更新（ツール連携）
-- **目的**: 透明性の確保・改善進捗の可視化
+**Analysis methods**:
+- **Time series graph**: Composite score and per-perspective score trends
+- **Radar chart**: Comparison with previous assessment
+- **Improvement velocity**: Time required for level-up
 
 ---
 
-## 参考フレームワーク
+## Target Audience
 
-本評価基準は以下の業界標準フレームワークを参考にしている:
+### Development Team
+- **Usage**: Detailed technical improvement planning and execution
+- **Resources**: Quantitative criteria and measurement tools in `evaluation_criteria_matrix.md`
 
-| フレームワーク | 適用観点 | 説明 |
-|--------------|---------|------|
-| **CMMI** (Capability Maturity Model Integration) | 全体構造 | 成熟度5段階モデルの基本構造 |
-| **DORA Metrics** | CI/CD | DevOps Research and Assessmentによるデプロイメント評価基準 |
-| **SQALE** | 技術的負債 | Software Quality Assessment based on Lifecycle Expectations |
-| **TMMi** | テスト | Test Maturity Model integration |
-| **Observability Maturity Model** | 可観測性 | ログ・メトリクス・トレーシングの成熟度評価 |
-| **OWASP Top 10** | セキュリティ | Webアプリケーションセキュリティリスクのトップ10 |
+### Management
+- **Usage**: Improvement priority decisions, resource allocation
+- **Resources**: Composite assessment and radar chart in `legacy_system_maturity_model.md`
 
----
-
-## 注意事項
-
-### 汎用性について
-本評価基準は汎用的な枠組みであり、特定システム（例: 社内業務システム等）に特化していない。適用時は以下を考慮すること:
-
-- プロジェクト特性に応じた重み付け
-- 基準値の調整（現状に応じた閾値設定）
-- 観点の追加・削除（ビジネス要件による）
-
-### データの信頼性
-定量評価の前提としてデータの正確性が重要。以下に注意:
-
-- ツールの設定ミス・バグによる誤計測
-- 手動収集データの主観性
-- データ収集タイミングの統一
-
-### 継続的な改善
-評価は「一度きり」ではなく、継続的な改善サイクルとして運用すること:
-
-1. 評価実施
-2. 改善施策立案
-3. 施策実施
-4. 再評価（効果測定）
-5. 基準の見直し（必要に応じて）
+### Stakeholders
+- **Usage**: Improvement progress tracking, investment decisions
+- **Resources**: Composite score, time series graphs
 
 ---
 
-## バージョン履歴
+## Project-Specific Customization
 
-| バージョン | 日付 | 変更内容 |
-|-----------|------|---------|
-| 1.2 | 2026-03-13 | 第10観点「コード歪み検出成熟度」追加。総合スコア上限を50点に更新 |
-| 1.1 | 2026-03-02 | legacy_document_quality.md追加。2つの評価基準の使い分けを説明 |
-| 1.0 | 2026-03-01 | 初版作成。ディレクトリ概要・評価実施手順を定義 |
+These assessment criteria are generic; customization is recommended based on project characteristics.
+
+### Customization Examples
+
+**For EC systems**:
+- Security weight: 2.0 (personal information, payment data protection)
+- Data quality weight: 1.5 (inventory, order consistency)
+- Observability weight: 1.5 (preventing sales opportunity loss)
+
+**For internal business systems**:
+- Domain knowledge visibility weight: 2.0 (importance of eliminating knowledge silos)
+- CI/CD weight: 0.8 (lower importance of deployment frequency)
+
+**For SaaS products**:
+- CI/CD weight: 2.0 (agility as business advantage)
+- Testing maturity weight: 1.8 (quality as brand value)
+
+### Threshold Adjustment
+
+Adjust threshold values for each level based on current project state.
+
+**Example**: For already high-maturity projects, raise Level 3 criteria
+- Test coverage Level 3: 40-70% -> 60-80%
+
+---
+
+## Recommended Assessment Frequency
+
+| Frequency | Purpose | Application Timing |
+|-----------|---------|-------------------|
+| **Quarterly** | Regular trend tracking | Continuous improvement phase |
+| **Per milestone** | Improvement measure effectiveness measurement | Refactoring completion |
+| **Project start** | Baseline setting | Legacy system mastery initiation |
+
+---
+
+## How to Use Assessment Results
+
+### Executive Report
+- **Content**: Composite score, radar chart, improvement trends
+- **Frequency**: Quarterly
+- **Purpose**: Investment decisions, resource allocation basis
+
+### Technical Team Report
+- **Content**: Detailed scores per perspective, determination rationale, improvement measure proposals
+- **Frequency**: Per assessment
+- **Purpose**: Specific technical improvement planning and execution
+
+### Stakeholder Dashboard
+- **Content**: Composite score time series, key perspective progress
+- **Frequency**: Real-time updates (tool integration)
+- **Purpose**: Transparency, improvement progress visibility
+
+---
+
+## Reference Frameworks
+
+These assessment criteria reference the following industry standard frameworks:
+
+| Framework | Applied Perspective | Description |
+|-----------|-------------------|-------------|
+| **CMMI** (Capability Maturity Model Integration) | Overall structure | Basic structure of 5-level maturity model |
+| **DORA Metrics** | CI/CD | DevOps Research and Assessment deployment evaluation criteria |
+| **SQALE** | Technical debt | Software Quality Assessment based on Lifecycle Expectations |
+| **TMMi** | Testing | Test Maturity Model integration |
+| **Observability Maturity Model** | Observability | Log, metrics, tracing maturity assessment |
+| **OWASP Top 10** | Security | Top 10 web application security risks |
+
+---
+
+## Notes
+
+### Regarding Generality
+These assessment criteria are a generic framework, not specialized for any particular system (e.g., internal business systems). Consider the following when applying:
+
+- Weighting based on project characteristics
+- Threshold adjustments (according to current state)
+- Adding/removing perspectives (based on business requirements)
+
+### Data Reliability
+Data accuracy is critical as a prerequisite for quantitative assessment. Be aware of:
+
+- Tool configuration errors/bugs causing measurement errors
+- Subjectivity in manually collected data
+- Consistency of data collection timing
+
+### Continuous Improvement
+Assessments should be operated as a continuous improvement cycle, not a "one-time" event:
+
+1. Conduct assessment
+2. Develop improvement measures
+3. Execute measures
+4. Re-assess (measure effectiveness)
+5. Review criteria (as needed)
+
+---
+
+## Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.2 | 2026-03-13 | Added 10th perspective "Code Distortion Detection Maturity." Updated composite score max to 50 points |
+| 1.1 | 2026-03-02 | Added legacy_document_quality.md. Explained usage of 2 types of assessment criteria |
+| 1.0 | 2026-03-01 | Initial version. Defined directory overview and assessment procedures |

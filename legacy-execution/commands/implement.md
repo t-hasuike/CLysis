@@ -1,37 +1,37 @@
 ---
-description: 影響分析結果をもとに、修正提案からPR作成までを実行する。propose-changes → (人間確認) → create-pr のスキルチェーンを実行する。
-argument-hint: "<影響分析レポートパス>"
+description: Based on impact analysis results, propose changes and create PR. Execute the propose-changes -> (human review) -> create-pr skill chain.
+argument-hint: "<impact analysis report path>"
 ---
 
-# /implement — 修正提案・実装フロー
+# /implement -- Change Proposal and Implementation Flow
 
-## 概要
+## Overview
 
-影響分析の結果をもとに、具体的なコード修正を提案し、承認後にPRを作成するワークフロー。
-**2段階の人間確認ポイント** を含む。
+A workflow for proposing specific code changes based on impact analysis results and creating PR after approval.
+Includes **2 human confirmation points**.
 
-## ワークフロー
+## Workflow
 
-### Step 1: 修正提案の作成
+### Step 1: Create Change Proposal
 
-**propose-changes** skill を適用:
+Apply **propose-changes** skill:
 
-- 影響分析レポートを読み込み、Phase別の修正内容をdiff形式で提示する
-- 修正理由・影響範囲・テスト方針を含む
+- Read the impact analysis report and present Phase-specific changes in diff format
+- Includes change reason, impact scope, and test strategy
 
 $ARGUMENTS
 
-> **【人間確認ポイント1】**: 「殿、修正提案書ができました。内容をご確認くだされ。承認いただければPR作成に進みます。」
+> **[Human Confirmation Point 1]**: "Change proposal is ready. Please review the content. PR creation will proceed upon approval."
 
-### Step 2: PR作成
+### Step 2: Create PR
 
-**create-pr** skill を適用:
+Apply **create-pr** skill:
 
-- 承認された修正提案書を読み込む
-- ブランチ作成 → コード修正 → コミット → Push → PR作成を自動実行する
+- Read the approved change proposal
+- Automatically execute branch creation -> code modification -> commit -> push -> PR creation
 
-> **【人間確認ポイント2】**: 「殿、PRを作成しました。最終レビュー・マージはお殿様のご判断にお任せいたします。」
+> **[Human Confirmation Point 2]**: "PR has been created. Final review and merge is at your discretion."
 
-### Step 3: 次の行動の提案
+### Step 3: Suggest Next Actions
 
-- 「殿、PRのレビューには `/review` をお使いくだされ」
+- "For PR review, use `/review`"

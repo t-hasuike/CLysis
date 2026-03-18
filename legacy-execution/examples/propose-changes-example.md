@@ -1,49 +1,49 @@
-# /propose-changes 使用例
+# /propose-changes Usage Example
 
-## シナリオ: Express Shipping 機能追加 - Phase 0（基盤整備）
+## Scenario: Express Shipping Feature Addition - Phase 0 (Foundation Setup)
 
-### 前提
+### Prerequisites
 
-1. `/impact-analysis` で影響分析レポートが作成済み
-   - ファイルパス: `output/impact_reports/add_express_shipping.md`
-   - Phase 0 で ShippingMethod Enum 作成、OrderService 修正が必要と判明
+1. `/impact-analysis` has created an impact analysis report
+   - File path: `output/impact_reports/add_express_shipping.md`
+   - Phase 0 determined that ShippingMethod Enum creation and OrderService modification are needed
 
-### 実行
+### Execution
 
 ```
 /propose-changes output/impact_reports/add_express_shipping.md Phase 0
 ```
 
-### 出力例
+### Output Example
 
-`output/proposals/add_express_shipping_phase0.md` に以下の修正提案書が生成される:
+The following change proposal is generated at `output/proposals/add_express_shipping_phase0.md`:
 
 ---
 
 ```markdown
-# Express Shipping 追加 修正提案書 - Phase 0
+# Express Shipping Addition Change Proposal - Phase 0
 
-**作成日**: 2026-03-08
-**対象リポジトリ**: my-ecommerce-app
-**元レポート**: `output/impact_reports/add_express_shipping.md`
-
----
-
-## 修正概要
-
-ShippingMethod Enum を作成し、OrderService のハードコードされた配送方法を動的取得に変更する。
+**Created**: 2026-03-08
+**Target Repository**: my-ecommerce-app
+**Source Report**: `output/impact_reports/add_express_shipping.md`
 
 ---
 
-## 修正内容一覧
+## Change Overview
 
-### 修正1: ShippingMethod Enum 作成
+Create ShippingMethod Enum and change OrderService's hardcoded shipping methods to dynamic retrieval.
 
-**ファイルパス**: `app/Enums/ShippingMethod.php`（新規）
-**影響度**: 高
-**修正理由**: 配送方法のハードコードを排除し、一元管理する
+---
 
-#### 修正内容（新規ファイル）
+## Change List
+
+### Change 1: ShippingMethod Enum Creation
+
+**File Path**: `app/Enums/ShippingMethod.php` (new)
+**Impact**: High
+**Change Reason**: Eliminate hardcoded shipping methods and centralize management
+
+#### Change Content (new file)
 
 ```php
 <?php
@@ -55,7 +55,7 @@ namespace App\Enums;
 enum ShippingMethod: string
 {
     case STANDARD = 'standard';
-    case EXPRESS = 'express';    // 新規追加
+    case EXPRESS = 'express';    // New addition
 
     public static function getAll(): array
     {
@@ -72,23 +72,23 @@ enum ShippingMethod: string
 }
 ```
 
-#### テスト方針
+#### Test Strategy
 
-- **ユニットテスト**: getAll() が全配送方法を返すことを検証
-- **ユニットテスト**: getDeliveryDays() が正しい日数を返すことを検証
+- **Unit test**: Verify getAll() returns all shipping methods
+- **Unit test**: Verify getDeliveryDays() returns correct number of days
 
 ---
 
-### 修正2: OrderService - 配送方法の動的取得化
+### Change 2: OrderService - Dynamic Shipping Method Retrieval
 
-**ファイルパス**: `app/Services/OrderService.php`
-**影響度**: 高
-**修正理由**: ハードコード配列を Enum からの動的取得に変更
+**File Path**: `app/Services/OrderService.php`
+**Impact**: High
+**Change Reason**: Change hardcoded array to dynamic retrieval from Enum
 
-#### 修正前のコード（該当箇所）
+#### Code Before Change (relevant section)
 
 ```php
-// 行番号: 45-48
+// Line numbers: 45-48
 private const SHIPPING_METHODS = ['standard'];
 
 public function getDeliveryDays(string $method): int
@@ -97,7 +97,7 @@ public function getDeliveryDays(string $method): int
 }
 ```
 
-#### 修正後のコード（diff形式）
+#### Code After Change (diff format)
 
 ```diff
 --- a/app/Services/OrderService.php
@@ -127,54 +127,54 @@ public function getDeliveryDays(string $method): int
      }
 ```
 
-#### 影響範囲
+#### Impact Scope
 
-| 影響箇所 | 変更内容 | リスク評価 |
-|---------|---------|-----------|
-| OrderController::create() | getAvailableMethods() の呼び出しに変更 | 中 |
-| CheckoutService::validate() | SHIPPING_METHODS 定数の参照を変更 | 中 |
+| Affected Area | Change Description | Risk Assessment |
+|---------------|-------------------|-----------------|
+| OrderController::create() | Change to getAvailableMethods() call | Medium |
+| CheckoutService::validate() | Change SHIPPING_METHODS constant reference | Medium |
 
-#### テスト方針
+#### Test Strategy
 
-- **ユニットテスト**: getAvailableMethods() が Enum から取得することを検証
-- **統合テスト**: OrderController が新しい配送方法を受け付けることを確認
+- **Unit test**: Verify getAvailableMethods() retrieves from Enum
+- **Integration test**: Verify OrderController accepts new shipping methods
 
 ---
 
-## 修正順序（依存関係）
+## Change Order (Dependencies)
 
 ```
-1. ShippingMethod Enum 作成
-   ↓
-2. OrderService 修正（Enum を使用）
-   ↓
-3. OrderController 修正（Phase 1 で対応）
-```
-
----
-
-## 承認チェックリスト
-
-- [x] 全ての修正箇所にdiffを提示したか
-- [x] 修正理由が明確か
-- [x] 影響範囲を分析したか
-- [x] テスト方針が具体的か
-- [x] リスク・副作用を洗い出したか
-- [x] 修正順序が適切か
-
----
-
-## 次のアクション
-
-1. **上様のご裁可**: この修正提案書をレビュー・承認
-2. **`/create-pr` 起動**: 承認後、この提案書を入力として PR 作成
+1. Create ShippingMethod Enum
+   |
+2. Modify OrderService (uses Enum)
+   |
+3. Modify OrderController (address in Phase 1)
 ```
 
 ---
 
-### ポイント
+## Approval Checklist
 
-- diff 形式で修正前後が一目瞭然
-- 修正理由・影響範囲・テスト方針が各修正に紐づく
-- 人間が承認してから次工程（/create-pr）に進む
-- 根幹思想「AIが提示、人が確認」を体現
+- [x] Presented diffs for all modification points
+- [x] Change reasons are clear
+- [x] Analyzed impact scope
+- [x] Test strategy is specific
+- [x] Identified risks and side effects
+- [x] Change order is appropriate
+
+---
+
+## Next Actions
+
+1. **User approval**: Review and approve this change proposal
+2. **Launch `/create-pr`**: After approval, use this proposal as input to create PR
+```
+
+---
+
+### Key Points
+
+- Before/after clearly visible in diff format
+- Change reason, impact scope, and test strategy linked to each change
+- Proceeds to next step (/create-pr) only after human approval
+- Embodies the core philosophy: "AI presents, humans review"

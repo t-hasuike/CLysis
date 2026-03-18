@@ -224,23 +224,23 @@ Human reviews synthesis & selects approach
 
 ## Agent Team Architecture
 
-### Roles (Sengoku / 戦国 Style by Default)
+### Roles (Sengoku Style by Default)
 
 | Role (JA) | Role (EN) | Responsibility | Modifiable via config/terminology.md |
 |-----------|-----------|----------------|-------------------------------------|
-| **上様 (Uesama)** | Lord / User | The human who gives instructions | Yes |
-| **将軍 (Shogun)** | General / Leader | Team coordination, task delegation | Yes |
-| **家老 (Karo)** | Chief Retainer / Planner | Task decomposition, dependency management | Yes |
-| **足軽 (Ashigaru)** | Foot Soldier / Worker | Task execution (backend, frontend, docs, investigation, devops) | Yes |
-| **目付 (Metsuke)** | Inspector / QA | Quality assurance, compliance verification | Yes |
+| **Uesama** | Lord / User | The human who gives instructions | Yes |
+| **Shogun** | General / Leader | Team coordination, task delegation | Yes |
+| **Karo** | Chief Retainer / Planner | Task decomposition, dependency management | Yes |
+| **Ashigaru** | Foot Soldier / Worker | Task execution (backend, frontend, docs, investigation, devops) | Yes |
+| **Metsuke** | Inspector / QA | Quality assurance, compliance verification | Yes |
 
 ### Hierarchy & Communication
 
 ```
-上様 (User)
+Uesama (User)
   │
   ▼ Gives instructions
-将軍 (Leader)
+Shogun (Leader)
   │
   ├─ Requests team formation approval from User
   ├─ Creates agent team after approval
@@ -251,9 +251,9 @@ Human reviews synthesis & selects approach
 ┌────────────────────────────────────────┐
 │         Agent Team Members             │
 ├────────────────────────────────────────┤
-│  家老 (Planner) — Large task breakdown │
-│  足軽 (Workers) — Execution            │
-│  目付 (Inspector) — Quality audit      │
+│  Karo (Planner) — Large task breakdown │
+│  Ashigaru (Workers) — Execution            │
+│  Metsuke (Inspector) — Quality audit   │
 └────────────────────────────────────────┘
   │
   ▼ Shared resources
@@ -338,7 +338,7 @@ Edit `config/terminology.md`:
 ```markdown
 | Default (JA) | Default (EN) | Your Custom | Role Description |
 |-------------|-------------|-------------|-----------------|
-| 将軍 (Shogun) | General | **Tech Lead** | Team leader who coordinates agents |
+| Shogun | General | **Tech Lead** | Team leader who coordinates agents |
 | 足軽 (Ashigaru) | Foot Soldier | **Engineer** | Task execution specialist |
 ```
 
@@ -348,8 +348,8 @@ All skills and agents reference this file for term adaptation.
 
 | Style | Example |
 |-------|---------|
-| **Sengoku Japanese** (default) | 「上様、任務を承りました」 |
-| **Business Japanese** | 「承知しました。タスクを開始します」 |
+| **Sengoku Japanese** (default) | "My lord, I have received the mission." |
+| **Business Japanese** | "Understood. Starting the task now." |
 | **English Casual** | "Got it! Starting the task now." |
 | **English Formal** | "Understood. Initiating the assigned task." |
 
@@ -555,9 +555,9 @@ Phase 2: Part A/B/C Creation
    - Add note: `> This is a generic agent from decouple-legacy.`
 
 4. Document communication:
-   - **作業手順** (Workflow steps)
-   - **報告形式** (Report format)
-   - **言葉遣い** (Communication style, if applicable)
+   - **Workflow steps**
+   - **Report format**
+   - **Communication style** (if applicable)
 
 ### Adding Examples
 
@@ -709,7 +709,7 @@ This separation ensures that investigation produces clean, unbiased analysis wit
 
 When directory structure or knowledge management configuration changes, the leader MUST verify that all reference paths in the following files remain valid:
 
-- Agent definitions (`agents/*.md`) -- reference paths in "参照先" sections
+- Agent definitions (`agents/*.md`) -- reference paths in "References" sections
 - Skill definitions (`legacy-*/skills/*/SKILL.md`) -- I/O specification paths
 - CLAUDE.md -- directory references
 - ARCHITECTURE.md -- path examples

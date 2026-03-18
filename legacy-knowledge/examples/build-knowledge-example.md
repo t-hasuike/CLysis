@@ -5,97 +5,97 @@
 ### INPUT
 
 ```
-/build-knowledge コードレビューで判明した割引計算のビジネスルール
+/build-knowledge Discount calculation business rules discovered during code review
 
 Context:
-- PR#123のレビューで、割引計算ロジックが3箇所に分散していることが判明
-- ビジネスルールが暗黙知化しており、ドキュメント化が必要
-- DiscountService, OrderService, CheckoutController で異なる計算式
+- PR#123 review revealed that discount calculation logic is spread across 3 locations
+- Business rules have become tacit knowledge and need documentation
+- Different calculation formulas in DiscountService, OrderService, and CheckoutController
 ```
 
 ### OUTPUT
 
 ```
-「上様、ドメイン知識を蓄積いたしました。
+"Domain knowledge has been accumulated.
 
-【作業】新規作成
-【対象ファイル】input/domain/discount_rules.md
+[Action] New creation
+[Target File] input/domain/discount_rules.md
 
-【内容】
-- 割引計算の3つのビジネスルール整理
-- コード散在箇所の特定
-- 統一化推奨事項
+[Content]
+- Organized 3 discount calculation business rules
+- Identified code dispersion locations
+- Unification recommendations
 
-【判断理由】
-既存の pricing_methods.md は価格設定の種類のみ記載。
-割引計算ロジックは別ドメインと判断し、新規ファイル作成。
+[Judgment Reason]
+Existing pricing_methods.md only describes pricing types.
+Judged discount calculation logic as a separate domain and created a new file.
 
 ---
 
-# 割引計算ルール
+# Discount Calculation Rules
 
 > **Version**: 1.0
 > **Last Updated**: 2026-03-06
 > **Source**: PR#123 Code Review
 
-## 概要
+## Overview
 
-割引は「顧客ランク」「注文金額」「キャンペーン」の3要素で決定される。
-現状、計算ロジックが3箇所に分散しており、統一が必要。
-
----
-
-## ビジネスルール
-
-### 1. 顧客ランク別割引率
-
-| ランク | 割引率 | 備考 |
-|--------|--------|------|
-| 一般 | 0% | デフォルト |
-| シルバー | 5% | 累計購入額10万以上 |
-| ゴールド | 10% | 累計購入額50万以上 |
-
-### 2. 注文金額による追加割引
-
-| 条件 | 追加割引 |
-|------|---------|
-| 注文金額 >= 10,000 | +2% |
-| 注文金額 >= 50,000 | +5% |
-| 注文金額 >= 100,000 | +8% |
-
-### 3. キャンペーン割引の併用ルール
-
-| 条件 | 適用 |
-|------|------|
-| ランク割引 + 金額割引 | 併用可（加算） |
-| ランク割引 + キャンペーン割引 | 高い方のみ適用 |
-| 最大割引率 | 20%を上限とする |
+Discounts are determined by 3 factors: 'customer rank,' 'order amount,' and 'campaign.'
+Currently, calculation logic is spread across 3 locations and needs unification.
 
 ---
 
-## 現状の実装箇所
+## Business Rules
 
-### 分散している計算ロジック
+### 1. Customer Rank-Based Discount Rate
 
-| File | Line | 計算内容 | 問題点 |
-|------|------|---------|-------|
-| `DiscountService.php` | 145-180 | ランク割引 + 金額割引 | キャンペーン割引未考慮 |
-| `OrderService.php` | 234-256 | キャンペーン割引判定のみ | ランク割引を考慮せず |
-| `CheckoutController.php` | 89-102 | 最終割引計算(API応答) | ロジック重複(DiscountService呼び出すべき) |
+| Rank | Discount Rate | Notes |
+|------|--------------|-------|
+| General | 0% | Default |
+| Silver | 5% | Cumulative purchases over 100,000 |
+| Gold | 10% | Cumulative purchases over 500,000 |
 
-### 問題の影響
+### 2. Additional Discount by Order Amount
 
-1. **不整合リスク**: 3箇所で異なる計算式 → 顧客に誤った割引表示の可能性
-2. **保守性低下**: ルール変更時に3ファイル修正必要
-3. **テスト困難**: 統一されたテストケースが作成できない
+| Condition | Additional Discount |
+|-----------|-------------------|
+| Order amount >= 10,000 | +2% |
+| Order amount >= 50,000 | +5% |
+| Order amount >= 100,000 | +8% |
+
+### 3. Campaign Discount Combination Rules
+
+| Condition | Application |
+|-----------|------------|
+| Rank discount + Amount discount | Can combine (additive) |
+| Rank discount + Campaign discount | Higher one only applies |
+| Maximum discount rate | Capped at 20% |
 
 ---
 
-## 推奨事項
+## Current Implementation Locations
 
-### 1. 単一責務化
+### Dispersed Calculation Logic
 
-DiscountService に割引計算を集約:
+| File | Line | Calculation Content | Issue |
+|------|------|-------------------|-------|
+| `DiscountService.php` | 145-180 | Rank discount + Amount discount | Campaign discount not considered |
+| `OrderService.php` | 234-256 | Campaign discount determination only | Rank discount not considered |
+| `CheckoutController.php` | 89-102 | Final discount calculation (API response) | Logic duplication (should call DiscountService) |
+
+### Impact of the Problem
+
+1. **Inconsistency risk**: Different formulas in 3 locations -> possible incorrect discount display to customers
+2. **Reduced maintainability**: 3 files need modification when rules change
+3. **Testing difficulty**: Cannot create unified test cases
+
+---
+
+## Recommendations
+
+### 1. Single Responsibility
+
+Consolidate discount calculation into DiscountService:
 
 ```php
 class DiscountService
@@ -112,14 +112,14 @@ class DiscountService
         $baseDiscount = $rankDiscount->add($amountDiscount);
         $finalDiscount = max($baseDiscount, $campaignDiscount);
 
-        return min($finalDiscount, Percentage::of(20)); // 上限20%
+        return min($finalDiscount, Percentage::of(20)); // Cap at 20%
     }
 }
 ```
 
-### 2. ルールの外部化
+### 2. Externalize Rules
 
-割引ルールを `config/discount.php` に定義:
+Define discount rules in `config/discount.php`:
 
 ```php
 return [
@@ -137,37 +137,37 @@ return [
 ];
 ```
 
-### 3. テスト戦略
+### 3. Test Strategy
 
-統一されたテストケースを作成:
+Create unified test cases:
 
 ```php
 public function test_discount_for_silver_rank_customer()
 {
-    // Given: シルバーランク、注文金額8,000円
-    // When: calculateDiscount() 実行
-    // Then: 5%（ランク割引のみ）
+    // Given: Silver rank, order amount 8,000
+    // When: Execute calculateDiscount()
+    // Then: 5% (rank discount only)
 }
 
 public function test_discount_cap_at_maximum()
 {
-    // Given: ゴールドランク、注文金額100,000円、キャンペーン15%
-    // When: calculateDiscount() 実行
-    // Then: 20%（上限適用）
+    // Given: Gold rank, order amount 100,000, campaign 15%
+    // When: Execute calculateDiscount()
+    // Then: 20% (cap applied)
 }
 ```
 
 ---
 
-## バージョン履歴
+## Version History
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2026-03-06 | 初版作成(PR#123レビュー結果) |
+| 1.0 | 2026-03-06 | Initial version (PR#123 review results) |
 
 ---
 
-以上、報告完了でござる。」
+Report complete."
 ```
 
 ### Notes

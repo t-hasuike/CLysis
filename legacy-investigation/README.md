@@ -1,13 +1,13 @@
 # Legacy Investigation
 
-レガシーシステムの調査・理解を支援するスキル群。
+Skills for investigating and understanding legacy systems.
 
 ## Skills
-- **project-guide** — タスクに応じた参照ガイド
-- **investigate** — コードベース調査
-- **service-spec** — Service仕様の詳細整理（単体・横断）
+- **project-guide** -- Task-specific reference guide
+- **investigate** -- Codebase investigation
+- **service-spec** -- Service specification documentation (single and cross-repository)
 
 ## Commands
-- `/investigate-flow` — 影響調査フロー
-- `/bug-hunt` — バグ調査フロー
-- `/understand` — コード理解フロー
+- `/investigate-flow` -- Impact investigation flow
+- `/bug-hunt` -- Bug investigation flow
+- `/understand` -- Code comprehension flow

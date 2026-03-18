@@ -44,10 +44,10 @@ decouple-legacy-skills/
 
 | Plugin | Skills | Commands | Description |
 |--------|--------|----------|-------------|
-| [legacy-investigation](./legacy-investigation/) | 3 | 3 | 調査・理解（project-guide, investigate, service-spec） |
-| [legacy-analysis](./legacy-analysis/) | 3 | 1 | 分析・計画（impact-analysis, legacy-analyze, distortion-analysis） |
-| [legacy-execution](./legacy-execution/) | 3 | 2 | 実行・レビュー（propose-changes, create-pr, code-review） |
-| [legacy-knowledge](./legacy-knowledge/) | 3 | 0 | 知識蓄積（build-knowledge, archive-output, templates） |
+| [legacy-investigation](./legacy-investigation/) | 3 | 3 | Investigation & understanding (project-guide, investigate, service-spec) |
+| [legacy-analysis](./legacy-analysis/) | 3 | 1 | Analysis & planning (impact-analysis, legacy-analyze, distortion-analysis) |
+| [legacy-execution](./legacy-execution/) | 3 | 2 | Execution & review (propose-changes, create-pr, code-review) |
+| [legacy-knowledge](./legacy-knowledge/) | 3 | 0 | Knowledge accumulation (build-knowledge, archive-output, templates) |
 
 ## Prerequisites
 
@@ -233,12 +233,12 @@ claude plugin install legacy-investigation@decouple-legacy legacy-analysis@decou
 
 | Command | Plugin | Description |
 |---------|--------|-------------|
-| `/investigate-flow` | legacy-investigation | 影響調査フロー（4スキルチェーン） |
-| `/bug-hunt` | legacy-investigation | バグ調査フロー |
-| `/understand` | legacy-investigation | コード理解フロー |
-| `/deep-dive` | legacy-analysis | システム全体の深掘り分析 |
-| `/implement` | legacy-execution | 修正提案→PR作成（2段階人間確認） |
-| `/review` | legacy-execution | PRレビューフロー |
+| `/investigate-flow` | legacy-investigation | Impact investigation flow (4-skill chain) |
+| `/bug-hunt` | legacy-investigation | Bug investigation flow |
+| `/understand` | legacy-investigation | Code comprehension flow |
+| `/deep-dive` | legacy-analysis | In-depth system-wide analysis |
+| `/implement` | legacy-execution | Change proposal to PR creation (2-stage human approval) |
+| `/review` | legacy-execution | PR review flow |
 
 ## Skills Overview
 
@@ -408,10 +408,10 @@ This project uses **Sengoku-style terminology** based on Japanese feudal hierarc
 
 | Default Term | English | Role |
 |--------------|---------|------|
-| 将軍 (Shogun) | General | Team leader who coordinates agents |
-| 足軽 (Ashigaru) | Foot Soldier | Worker agents executing specific tasks |
-| 家老 (Karo) | Chief Retainer | Task planner and decomposition specialist |
-| 目付 (Metsuke) | Inspector | Quality assurance and code review specialist |
+| Shogun | General | Team leader who coordinates agents |
+| Ashigaru | Foot Soldier | Worker agents executing specific tasks |
+| Karo | Chief Retainer | Task planner and decomposition specialist |
+| Metsuke | Inspector | Quality assurance and code review specialist |
 
 See `config/terminology.md` for full customization instructions.
 
@@ -424,13 +424,13 @@ Edit `config/terminology.md` to customize role names and communication style:
 ```markdown
 | Default (JA) | Default (EN) | Your Custom | Role Description |
 |-------------|-------------|-------------|-----------------|
-| 将軍 (Shogun) | General | Tech Lead | Team leader who coordinates agents |
-| 足軽 (Ashigaru) | Foot Soldier | Engineer | Task execution specialist |
+| Shogun | General | Tech Lead | Team leader who coordinates agents |
+| Ashigaru | Foot Soldier | Engineer | Task execution specialist |
 ```
 
 Supported styles:
-- **Sengoku Japanese** (default): 「上様、任務を承りました」
-- **Business Japanese**: 「承知しました。タスクを開始します」
+- **Sengoku Japanese** (default): "My lord, I have received the mission."
+- **Business Japanese**: "Understood. Starting the task now."
 - **English Casual**: "Got it! Starting the task now."
 - **English Formal**: "Understood. Initiating the assigned task."
 

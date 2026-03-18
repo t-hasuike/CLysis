@@ -1,243 +1,243 @@
 ---
 name: impact-analysis
-description: 新機能追加・仕様変更時の影響範囲を体系的に調査し、影響分析レポートを作成する。Service仕様サマリーと組み合わせて使用。
-argument-hint: <変更内容の説明>
+description: Systematically investigate the impact scope when adding new features or changing specifications, and create an impact analysis report. Used in combination with service specification summaries.
+argument-hint: <description of the change>
 ---
 
 > This is a generic skill from [decouple-legacy](https://github.com/t-hasuike/decouple-legacy-skills).
 > Terminology can be customized via `config/terminology.md`.
 
-# 影響分析スキル
+# Impact Analysis Skill
 
-## 概要
+## Overview
 
-新機能追加・仕様変更時の影響範囲を体系的に調査し、レポートを作成する。
+Systematically investigate the impact scope when adding new features or changing specifications, and create a report.
 
-※ See config/terminology.md for term customization
+See config/terminology.md for term customization
 
-## 調査対象
+## Investigation Target
 
 $ARGUMENTS
 
-## 調査フロー
+## Investigation Flow
 
 ```
-1. 変更概要の整理
+1. Organize change overview
    |
-2. 影響範囲の特定（ファイル・テーブル一覧）
+2. Identify impact scope (file and table list)
    |
-3. 影響度の分類（高/中/低）
+3. Classify impact severity (High/Medium/Low)
    |
-4. 高影響箇所の詳細調査（Service仕様サマリー）
+4. Detailed investigation of high-impact areas (Service specification summary)
    |
-5. リスク・懸念事項の整理
+5. Organize risks and concerns
    |
-6. 実装計画（Phase分割）
+6. Implementation plan (Phase breakdown)
 ```
 
-## 影響度の判断基準
+## Impact Severity Criteria
 
-| 影響度 | 基準 | 対応 |
-|--------|------|------|
-| 高 | コード修正が必須（ハードコード、switch文追加等） | 詳細調査必須 |
-| 中 | 確認が必要（動的取得だが検証必要） | 動作確認必要 |
-| 低 | 自動対応（完全に動的取得） | 確認のみ |
+| Severity | Criteria | Response |
+|----------|----------|----------|
+| High | Code modification required (hardcoded values, switch statement additions, etc.) | Detailed investigation required |
+| Medium | Verification needed (dynamic retrieval but requires validation) | Behavior verification needed |
+| Low | Automatic handling (fully dynamic retrieval) | Confirmation only |
 
-## 出力形式
+## Output Format
 
 ```markdown
-# [機能名] 影響調査レポート
+# [Feature Name] Impact Analysis Report
 
-## ADR（Architecture Decision Record）
+## ADR (Architecture Decision Record)
 
-### 決定事項
-[変更内容を簡潔に記載]
+### Decision
+[Briefly describe the change]
 
-### 背景
-[変更の理由・ビジネス要件]
+### Context
+[Reason for change / business requirements]
 
-### 技術的決定
-[アーキテクチャ上の判断とその理由]
+### Technical Decision
+[Architectural judgment and rationale]
 
 ---
 
-## 影響範囲分析
+## Impact Scope Analysis
 
-### 影響度サマリー
+### Impact Summary
 
-| 影響度 | 件数 | 割合 |
-|--------|------|------|
-| 高（修正必須） | X | XX% |
-| 中（要確認） | X | XX% |
-| 低（自動対応） | X | XX% |
+| Severity | Count | Percentage |
+|----------|-------|------------|
+| High (modification required) | X | XX% |
+| Medium (verification needed) | X | XX% |
+| Low (automatic handling) | X | XX% |
 
-### カテゴリ別影響一覧
+### Impact List by Category
 
-#### 1. データベース
+#### 1. Database
 
-| テーブル名 | 変更内容 | 影響度 | 備考 |
-|-----------|---------|--------|------|
-| xxx | カラム追加 | 高 | ... |
+| Table Name | Change Description | Severity | Notes |
+|------------|-------------------|----------|-------|
+| xxx | Column addition | High | ... |
 
 #### 2. Model/Enum
 
-| ファイル | 変更内容 | 影響度 | 備考 |
-|---------|---------|--------|------|
-| xxx.php | 定数追加 | 高 | ... |
+| File | Change Description | Severity | Notes |
+|------|-------------------|----------|-------|
+| xxx.php | Constant addition | High | ... |
 
 #### 3. Service/UseCase
 
-| ファイル | 変更内容 | 影響度 | 備考 |
-|---------|---------|--------|------|
-| xxxService.php | メソッド修正 | 高 | ... |
+| File | Change Description | Severity | Notes |
+|------|-------------------|----------|-------|
+| xxxService.php | Method modification | High | ... |
 
-#### 4. バッチ処理
+#### 4. Batch Processing
 
-| バッチ名 | 変更内容 | 影響度 | 備考 |
-|---------|---------|--------|------|
-| xxxBatch | ... | 中 | ... |
-
----
-
-## 高影響箇所 詳細分析
-
-### [Service名1]
-
-※ Service仕様サマリー形式で記載（/service-spec スキルを使用）
+| Batch Name | Change Description | Severity | Notes |
+|------------|-------------------|----------|-------|
+| xxxBatch | ... | Medium | ... |
 
 ---
 
-## リスク・懸念事項
+## High-Impact Area Detailed Analysis
 
-### 高リスク（実装前に解決必須）
+### [Service Name 1]
 
-| 項目 | 内容 | 確認先 | 期限 |
-|------|------|--------|------|
-| xxx | ... | 関係部門 | Phase X前 |
+Use Service specification summary format (/service-spec skill)
 
-### 中リスク（実装中に確認）
+---
 
-| 項目 | 内容 | 確認先 |
-|------|------|--------|
+## Risks and Concerns
+
+### High Risk (must resolve before implementation)
+
+| Item | Description | Contact | Deadline |
+|------|-------------|---------|----------|
+| xxx | ... | Related department | Before Phase X |
+
+### Medium Risk (verify during implementation)
+
+| Item | Description | Contact |
+|------|-------------|---------|
 | xxx | ... | ... |
 
-### 低リスク（実装後の確認で対応可能）
+### Low Risk (can address after implementation)
 
-| 項目 | 内容 |
-|------|------|
+| Item | Description |
+|------|-------------|
 | xxx | ... |
 
 ---
 
-## 実装計画
+## Implementation Plan
 
-### Phase 0: [名称]
-- 目的: ...
-- 対象: ...
-- 完了条件: ...
+### Phase 0: [Name]
+- Objective: ...
+- Scope: ...
+- Completion criteria: ...
 
-### Phase 1: [名称]
-- 目的: ...
-- 対象: ...
-- 完了条件: ...
+### Phase 1: [Name]
+- Objective: ...
+- Scope: ...
+- Completion criteria: ...
 
 ---
 
-## チェックリスト
+## Checklist
 
 ### Phase 0
-- [ ] タスク1
-- [ ] タスク2
+- [ ] Task 1
+- [ ] Task 2
 
 ### Phase 1
-- [ ] タスク1
-- [ ] タスク2
+- [ ] Task 1
+- [ ] Task 2
 
 ---
 
-## バージョン履歴
+## Version History
 
-| バージョン | 日付 | 内容 |
-|-----------|------|------|
-| 1.0 | YYYY-MM-DD | 初版作成 |
+| Version | Date | Description |
+|---------|------|-------------|
+| 1.0 | YYYY-MM-DD | Initial version |
 ```
 
-## 品質チェック
+## Quality Checks
 
-### 1. 網羅性
-- [ ] 全リポジトリを調査したか
-- [ ] DB・Model・Service・バッチを網羅したか
-- [ ] ハードコード箇所を特定したか
+### 1. Completeness
+- [ ] Investigated all repositories
+- [ ] Covered DB, Model, Service, and batch processing
+- [ ] Identified hardcoded locations
 
-### 2. 正確性
-- [ ] 実際のコードを確認したか（推測ではなく）
-- [ ] ファイルパス:行番号を明記したか
-- [ ] リポジトリ間の差分を確認したか
+### 2. Accuracy
+- [ ] Verified with actual code (not assumptions)
+- [ ] Included file path:line numbers
+- [ ] Checked cross-repository differences
 
-### 3. 実用性
-- [ ] 影響度の判断基準が明確か
-- [ ] 修正内容が具体的か
-- [ ] 確認先・期限が明記されているか
+### 3. Practicality
+- [ ] Impact severity criteria are clear
+- [ ] Change descriptions are specific
+- [ ] Contacts and deadlines are specified
 
-### 4. Service仕様サマリー
-- [ ] 高影響のService/UseCaseについて仕様サマリーを作成したか
-- [ ] 役割・機能・依存・特記事項の4項目を含めたか
+### 4. Service Specification Summary
+- [ ] Created specification summaries for high-impact Services/UseCases
+- [ ] Included all 4 items: role, features, dependencies, and notes
 
-## 出力テンプレート
+## Output Templates
 
-### リスク登録テンプレート
+### Risk Registry Template
 
-影響分析で発見したリスク・懸念事項を以下のテンプレートで記録し、追跡管理する。
+Record risks and concerns discovered during impact analysis using the following template for tracking.
 
-| ID | リスク内容 | 発見日 | 影響度 | 対応状況 | 対応策 |
-|----|----------|--------|--------|---------|--------|
-| R001 | [リスク内容] | YYYY-MM-DD | 高/中/低 | 未対応/対応中/解決済 | [対応策] |
+| ID | Risk Description | Discovery Date | Severity | Status | Mitigation |
+|----|-----------------|----------------|----------|--------|------------|
+| R001 | [Risk description] | YYYY-MM-DD | High/Medium/Low | Unresolved/In Progress/Resolved | [Mitigation] |
 
-**記入例**:
+**Example**:
 
-| ID | リスク内容 | 発見日 | 影響度 | 対応状況 | 対応策 |
-|----|----------|--------|--------|---------|--------|
-| R001 | 既存データ移行スクリプト未対応（Enum化による構造変更） | 2026-03-15 | 高 | 対応中 | マイグレーションスクリプト作成予定（Phase 0） |
-| R002 | 外部連携先の仕様変更確認必要 | 2026-03-15 | 中 | 未対応 | 確認期限設定済み |
-| R003 | 既存テスト失敗の可能性（計算ロジック変更） | 2026-03-16 | 中 | 対応中 | テスト修正案作成済み |
+| ID | Risk Description | Discovery Date | Severity | Status | Mitigation |
+|----|-----------------|----------------|----------|--------|------------|
+| R001 | Data migration script not yet created (structural change due to Enum conversion) | 2026-03-15 | High | In Progress | Migration script planned (Phase 0) |
+| R002 | Need to verify external integration partner specification changes | 2026-03-15 | Medium | Unresolved | Confirmation deadline set |
+| R003 | Existing tests may fail (calculation logic change) | 2026-03-16 | Medium | In Progress | Test fix proposal created |
 
 ---
 
-## 御庭番衆の起用
+## Parallel Investigation with Scouts
 
-影響範囲が広い場合、複数の御庭番衆（Task tool）を並列で起用して調査を効率化する。
+When the impact scope is wide, use multiple scouts (Task tool) in parallel to improve investigation efficiency.
 
 ```
-例: 商品カテゴリ追加の影響調査
-  → 御庭番衆1: ValidationService 調査
-  → 御庭番衆2: PriceCalculationService 調査
-  → 御庭番衆3: CatalogUseCase 調査
+Example: Impact investigation for adding a product category
+  -> Scout 1: ValidationService investigation
+  -> Scout 2: PriceCalculationService investigation
+  -> Scout 3: CatalogUseCase investigation
 ```
 
 ---
 
-## I/O仕様
+## I/O Specification
 
 ### INPUT
-| 種別 | 内容 | 必須/任意 | 例 |
-|------|------|-----------|-----|
-| 変更内容 | 追加・変更する機能の説明 | 必須 | `新カテゴリの追加`, `価格計算ロジック変更` |
-| 事前調査結果 | /investigate や /service-spec の出力 | 任意 | 調査レポート参照 |
+| Type | Description | Required/Optional | Example |
+|------|-------------|-------------------|---------|
+| Change description | Description of the feature being added/changed | Required | `New category addition`, `Price calculation logic change` |
+| Prior investigation results | Output from /investigate or /service-spec | Optional | Reference investigation report |
 
 ### OUTPUT
-| 種別 | 形式 | 出力先 |
-|------|------|--------|
-| 影響分析レポート | ADR形式 Markdown（影響ファイル一覧・リスク・実装計画） | stdout（将軍への報告） |
+| Type | Format | Destination |
+|------|--------|-------------|
+| Impact analysis report | ADR-format Markdown (affected files list, risks, implementation plan) | stdout (report to leader) |
 
-### 前提条件
-- 変更対象の仕様が把握済みであること（/service-spec で事前調査推奨）
-- Service責務定義を参照可能であること（`input/project/service_responsibilities.md` or `knowledge/system/04_change_impact/service_responsibilities.md`）
+### Prerequisites
+- Change target specification has been understood (prior investigation with /service-spec recommended)
+- Service responsibility definitions are accessible (`input/project/service_responsibilities.md` or `knowledge/system/04_change_impact/service_responsibilities.md`)
 
-### 後続スキル（パイプライン）
-- なし（最終成果物。実装フェーズへの引き継ぎ資料）
+### Downstream Skills (Pipeline)
+- None (final deliverable; handoff material for implementation phase)
 
-### 品質チェックポイント
-- [ ] 影響ファイルにパス:行番号を明記したか
-- [ ] 影響度を分類したか（高/中/低）
-- [ ] リスク・懸念事項を整理したか
-- [ ] Phase分割の実装計画があるか
+### Quality Checkpoints
+- [ ] Included path:line numbers for affected files
+- [ ] Classified impact severity (High/Medium/Low)
+- [ ] Organized risks and concerns
+- [ ] Created phased implementation plan

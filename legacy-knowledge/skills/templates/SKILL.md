@@ -1,6 +1,6 @@
 ---
 name: templates
-description: 将軍のテンプレート集（上様への伺い、チーム起動例、操作方法）
+description: Template collection for the leader (user inquiries, team launch examples, operation methods)
 disable-model-invocation: true
 user-invocable: true
 argument-hint: template-name
@@ -9,49 +9,49 @@ argument-hint: template-name
 > This is a generic skill from [decouple-legacy](https://github.com/t-hasuike/decouple-legacy-skills).
 > Terminology can be customized via `config/terminology.md`.
 
-# 将軍テンプレート集
+# Leader Template Collection
 
-※ See config/terminology.md for term customization
+See config/terminology.md for term customization
 
-## 上様への判断伺い
+## User Approval Request
 
-「上様、任務を承りました。
+"Mission received.
 
-【任務】○○○○
+[Mission] XXXX
 
-【分析】
-- ○○のため、△△が必要と判断
+[Analysis]
+- Determined that YY is needed because of XX
 
-【チーム編成】
-- 足軽A: ○○担当（Sonnet）
-- 足軽B: ○○担当（Sonnet）
-- （必要に応じて追加）
+[Team Composition]
+- Worker A: XX assignment (Sonnet)
+- Worker B: XX assignment (Sonnet)
+- (Add as needed)
 
-【理由】
-○○○○
+[Reason]
+XXXX
 
-ご裁可をお願いいたします。」
+Requesting approval."
 
-## チーム起動例
+## Team Launch Example
 
-TeamCreateでチームを作成し、Taskでメンバーを起動する。
+Create a team with TeamCreate and launch members with Tasks.
 
-各メンバーには以下を指定:
-- subagent_type: エージェント種別（ashigaru-backend, ashigaru-frontend等）
-- team_name: チーム名
-- name: メンバー名
-- model: sonnet（通常）
-- prompt: 具体的な任務内容
+Specify the following for each member:
+- subagent_type: Agent type (ashigaru-backend, ashigaru-frontend, etc.)
+- team_name: Team name
+- name: Member name
+- model: sonnet (standard)
+- prompt: Specific mission content
 
-## 操作方法
+## Operation Methods
 
-### チームメンバーとの対話
-- **Shift+Up/Down**: チームメンバー選択（in-process モード）
-- **Shift+Tab**: デリゲートモード切替
-- **Ctrl+T**: タスクリスト表示切替
+### Communicating with Team Members
+- **Shift+Up/Down**: Select team member (in-process mode)
+- **Shift+Tab**: Toggle delegate mode
+- **Ctrl+T**: Toggle task list display
 
-### チームのライフサイクル
+### Team Lifecycle
 
-1. チーム起動: TeamCreateでチーム作成 → Taskでメンバー起動
-2. 作業中: デリゲートモードで監視・調整
-3. 完了後: SendMessage(type: shutdown_request)で各メンバー停止 → TeamDeleteでリソース削除
+1. Team launch: Create team with TeamCreate -> Launch members with Tasks
+2. During work: Monitor and adjust in delegate mode
+3. After completion: Stop each member with SendMessage(type: shutdown_request) -> Delete resources with TeamDelete

@@ -1,155 +1,155 @@
 ---
 name: service-spec
-description: Service/UseCase/Modelの仕様を体系的に調査し、Service仕様サマリー形式で整理する。レガシーコード調査、影響分析、新機能追加時の事前調査に活用。
-argument-hint: <Service/UseCase/Model名> [リポジトリ名]
+description: Systematically investigate Service/UseCase/Model specifications and organize them in Service specification summary format. Used for legacy code investigation, impact analysis, and pre-investigation for new feature additions.
+argument-hint: <Service/UseCase/Model name> [repository name]
 ---
 
 > This is a generic skill from [decouple-legacy](https://github.com/t-hasuike/decouple-legacy-skills).
 > Terminology can be customized via `config/terminology.md`.
 
-# Service仕様サマリー作成スキル
+# Service Specification Summary Skill
 
-## 概要
+## Overview
 
-指定されたService/UseCase/Modelの仕様を調査し、統一フォーマットで整理する。
+Investigate the specification of the specified Service/UseCase/Model and organize it in a unified format.
 
-## 調査対象
+## Investigation Target
 
 $ARGUMENTS
 
-## 調査手順
+## Investigation Procedure
 
-1. **ドメイン知識の確認**: input/domain/ 配下のドメイン知識ファイルを確認し、調査対象に関連する知識を事前に把握
-   - input/domain/ 配下のファイル一覧を確認
-   - タスクのキーワードに関連するファイルを読み込み
-   - 既知のビジネスルール・制約を把握した上で調査を開始
-2. **対象ファイル特定**: Serena の find_symbol でファイルパスを特定
-3. **シンボル概要取得**: get_symbols_overview でメソッド一覧を取得
-4. **依存関係調査**: find_referencing_symbols で呼び出し元・呼び出し先を特定
-5. **詳細読み込み**: 重要メソッドのみ find_symbol で本体を読み込み
-6. **差分確認**: 複数リポジトリに同名クラスがある場合、差分を確認
+1. **Domain knowledge check**: Check domain knowledge files under input/domain/ to understand knowledge related to the investigation target
+   - Check the file list under input/domain/
+   - Read files related to the task keywords
+   - Start investigation with understanding of known business rules and constraints
+2. **Target file identification**: Identify file paths using Serena's find_symbol
+3. **Symbol overview retrieval**: Get method list using get_symbols_overview
+4. **Dependency investigation**: Identify callers/callees using find_referencing_symbols
+5. **Detailed reading**: Read only important method bodies using find_symbol
+6. **Diff check**: If the same class exists in multiple repositories, check differences
 
-## 出力形式
+## Output Format
 
 ```markdown
-# [Service/UseCase名] 仕様サマリー
+# [Service/UseCase Name] Specification Summary
 
-**ファイルパス**: `app/Services/xxx/xxxService.php`
-**リポジトリ**: [対象リポジトリ（複数の場合は各リポジトリ）]
-**最終調査日**: YYYY-MM-DD
-
----
-
-## 1. 役割（責務）
-
-[このService/UseCaseが担う責務を1-2文で説明]
-
-**呼び出し元**:
-- [Controller/UseCase名]: [用途]
-- [バッチ名]: [用途]
+**File Path**: `app/Services/xxx/xxxService.php`
+**Repository**: [Target repository (each repository if multiple)]
+**Last Investigation Date**: YYYY-MM-DD
 
 ---
 
-## 2. 主要な機能一覧
+## 1. Role (Responsibility)
 
-| メソッド名 | 概要 | 可視性 | 行番号 |
-|-----------|------|--------|--------|
+[Explain the responsibility of this Service/UseCase in 1-2 sentences]
+
+**Callers**:
+- [Controller/UseCase name]: [Purpose]
+- [Batch name]: [Purpose]
+
+---
+
+## 2. Key Feature List
+
+| Method Name | Description | Visibility | Line Numbers |
+|-------------|-------------|------------|--------------|
 | `methodA()` | ... | public | 45-67 |
 | `methodB()` | ... | private | 70-85 |
 
-### 主要メソッド詳細
+### Key Method Details
 
 #### methodA()
-- **概要**: ...
-- **引数**: `$param1` (型), `$param2` (型)
-- **戻り値**: 型
-- **処理フロー**:
+- **Description**: ...
+- **Parameters**: `$param1` (type), `$param2` (type)
+- **Return value**: type
+- **Processing flow**:
   1. ...
   2. ...
 
 ---
 
-## 3. 依存しているクラス/モジュール
+## 3. Dependent Classes/Modules
 
-### 内部依存（同一リポジトリ）
+### Internal Dependencies (same repository)
 
-| 種別 | クラス名 | 用途 | ファイルパス |
-|------|---------|------|-------------|
+| Type | Class Name | Purpose | File Path |
+|------|-----------|---------|-----------|
 | Model | xxx | ... | app/xxx.php |
 | Enum | xxx | ... | app/Enums/xxx.php |
 
-### 外部依存（他リポジトリ・外部サービス）
+### External Dependencies (other repositories / external services)
 
-| 種別 | 名称 | 用途 |
-|------|------|------|
+| Type | Name | Purpose |
+|------|------|---------|
 | API | xxx | ... |
-| DB | xxxテーブル | ... |
+| DB | xxx table | ... |
 
 ---
 
-## 4. 特記事項（レガシーコード・技術的負債）
+## 4. Notable Items (Legacy Code / Technical Debt)
 
-### ハードコード箇所
+### Hardcoded Locations
 
-| 行番号 | 内容 | 影響 | 改善案 |
-|--------|------|------|--------|
-| 25-30 | カテゴリ配列 | 新カテゴリ追加時に修正必要 | DB/Enumから動的取得 |
+| Line Number | Content | Impact | Improvement Proposal |
+|-------------|---------|--------|---------------------|
+| 25-30 | Category array | Requires modification when adding new categories | Dynamic retrieval from DB/Enum |
 
-### 技術的負債
+### Technical Debt
 
-| 項目 | 詳細 | 優先度 |
-|------|------|--------|
-| typo | `ClassName` の typo | 中 |
-| 重複 | xxxとyyyの処理重複 | 低 |
+| Item | Details | Priority |
+|------|---------|----------|
+| typo | Typo in `ClassName` | Medium |
+| duplication | Processing duplication between xxx and yyy | Low |
 
-### リポジトリ間差分
+### Cross-Repository Differences
 
-| 項目 | リポジトリA | リポジトリB | 対応方針 |
-|------|-----------|---------|---------|
-| xxx | あり | なし | そのまま |
+| Item | Repository A | Repository B | Response Policy |
+|------|-------------|-------------|-----------------|
+| xxx | Present | Absent | No action needed |
 
 ---
 
-## 変更履歴
+## Change History
 
-| 日付 | 内容 |
-|------|------|
-| YYYY-MM-DD | 初版作成 |
+| Date | Description |
+|------|-------------|
+| YYYY-MM-DD | Initial version |
 ```
 
-## 品質チェック
+## Quality Checks
 
-調査完了時、以下を確認:
+Upon investigation completion, verify the following:
 
-- [ ] 実際のコードを確認したか（推測ではなく）
-- [ ] ファイルパス:行番号を明記したか
-- [ ] リポジトリ間の差分を確認したか
-- [ ] ハードコード箇所を特定したか
+- [ ] Confirmed with actual code (not assumptions)
+- [ ] Included file path:line numbers
+- [ ] Checked cross-repository differences
+- [ ] Identified hardcoded locations
 
 ---
 
-## I/O仕様
+## I/O Specification
 
 ### INPUT
-| 種別 | 内容 | 必須/任意 | 例 |
-|------|------|-----------|-----|
-| 対象クラス | Service/UseCase/Model名 | 必須 | `OrderService`, `CreateOrderUseCase` |
-| リポジトリ | 対象リポジトリ指定 | 任意 | `backend`, `frontend` |
+| Type | Description | Required/Optional | Example |
+|------|-------------|-------------------|---------|
+| Target class | Service/UseCase/Model name | Required | `OrderService`, `CreateOrderUseCase` |
+| Repository | Target repository specification | Optional | `backend`, `frontend` |
 
 ### OUTPUT
-| 種別 | 形式 | 出力先 |
-|------|------|--------|
-| Service仕様サマリー | 詳細Markdown（メソッド一覧・依存関係・ビジネスルール） | stdout（将軍への報告） |
+| Type | Format | Destination |
+|------|--------|-------------|
+| Service specification summary | Detailed Markdown (method list, dependencies, business rules) | stdout (report to leader) |
 
-### 前提条件
-- Serena MCP が起動していること
-- 対象ファイルが特定済みであること（/investigate で事前調査推奨）
+### Prerequisites
+- Serena MCP is running
+- Target file has been identified (prior investigation with /investigate recommended)
 
-### 後続スキル（パイプライン）
-- `/impact-analysis` — 仕様を把握した上で影響分析
+### Downstream Skills (Pipeline)
+- `/impact-analysis` -- Impact analysis with specification understanding
 
-### 品質チェックポイント
-- [ ] publicメソッド全てを網羅したか
-- [ ] 依存関係（DI）を明記したか
-- [ ] ビジネスルール・バリデーションを抽出したか
-- [ ] ファイルパス:行番号を明記したか
+### Quality Checkpoints
+- [ ] Covered all public methods
+- [ ] Documented dependencies (DI)
+- [ ] Extracted business rules and validations
+- [ ] Included file path:line numbers

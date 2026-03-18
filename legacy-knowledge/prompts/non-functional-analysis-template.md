@@ -1,440 +1,440 @@
-# 非機能要求調査実行手順
+# Non-Functional Requirements Investigation Procedure
 
-## 概要
-この手順は、リビルドプロジェクトにおける非機能要求（As-Is）を、GitHubソースコードから自動抽出するためのものです。
+## Overview
+This procedure is for automatically extracting non-functional requirements (As-Is) from GitHub source code for rebuild projects.
 
-## 前提条件
-- Serenaが起動済み
-- 対象リポジトリが以下のパスに存在: `<REPOSITORY_ROOT_PATH>`
-  - **<REPO_NAME_1>**: <説明>
-  - **<REPO_NAME_2>**: <説明>
-  - **<REPO_NAME_3>**: <説明>
-- GitHubへのアクセス権限（MCPツール経由）
+## Prerequisites
+- Serena is running
+- Target repositories exist at: `<REPOSITORY_ROOT_PATH>`
+  - **<REPO_NAME_1>**: <description>
+  - **<REPO_NAME_2>**: <description>
+  - **<REPO_NAME_3>**: <description>
+- Access to GitHub (via MCP tools)
 
-**注意**: 調査時は全リポジトリを対象にすること。特定リポジトリのみに絞る場合は、その旨を明記すること。
-
----
-
-## 実行ステップ
-
-### Step 1: Serena による静的コード解析
-
-以下の非機能項目をSerenaで調査してください。
-
-#### 1.1. 可用性（Availability）
-
-**調査項目**:
-| 項目 | 調査対象 | 調査方法 |
-|------|---------|---------|
-| 外部連携リトライ | <外部連携サービス名> | `Services/<連携先>/`配下でリトライロジックを検索 |
-| タイムアウト設定 | HTTP通信・DB接続 | `config/`配下とHTTPクライアント設定を確認 |
-| エラーハンドリング | 例外処理パターン | `try-catch`ブロックの使用状況をパターン検索 |
-
-**Serena実行例**:
-```
-search_for_pattern("retry|timeout", relative_path="app/Services/<連携先>")
-find_symbol("<HTTPクライアント名>", include_body=true)
-```
-
-#### 1.2. 性能（Performance）
-
-**調査項目**:
-| 項目 | 調査対象 | 調査方法 |
-|------|---------|---------|
-| DBインデックス | 論理削除を含むクエリ | <ORM/クエリビルダー>で削除フラグ条件を検索 |
-| キャッシュ戦略 | キャッシュ使用箇所 | キャッシュAPI使用箇所を検索 |
-| クエリ最適化 | N+1問題の有無 | Eager loading等の使用状況 |
-
-**Serena実行例**:
-```
-search_for_pattern("<削除フラグ条件パターン>", relative_path="app")
-search_for_pattern("<キャッシュAPI>", relative_path="app")
-```
-
-#### 1.3. セキュリティ（Security）
-
-**調査項目**:
-| 項目 | 調査対象 | 調査方法 |
-|------|---------|---------|
-| 認証方式 | Middleware・認証設定 | `config/auth.*`と`app/<Middleware Path>` |
-| 認可制御 | アクセス制御実装 | `app/<Authorization Path>`配下を確認 |
-| 入力バリデーション | バリデーション実装 | `app/<Validation Path>`配下を確認 |
-| SQL Injection対策 | クエリビルダー使用状況 | 生SQLクエリ使用箇所の有無を検索 |
-
-**Serena実行例**:
-```
-find_symbol("<認証Middleware名>", relative_path="app/<Middleware Path>")
-search_for_pattern("<生SQL実行パターン>", relative_path="app")
-```
-
-#### 1.4. 運用性（Operability）
-
-**調査項目**:
-| 項目 | 調査対象 | 調査方法 |
-|------|---------|---------|
-| ログ出力 | ログレベル別使用状況 | ログAPI使用箇所を検索 |
-| バッチスケジュール | スケジューラー設定 | スケジューラー設定ファイルの確認 |
-| 監視・アラート | 外部監視ツール連携 | 監視ツール設定を確認 |
-
-**Serena実行例**:
-```
-search_for_pattern("<ログAPIパターン>", relative_path="app")
-find_symbol("schedule", relative_path="<スケジューラー設定パス>", include_body=true)
-```
+**Note**: Investigate all repositories. If narrowing to specific repositories, state this explicitly.
 
 ---
 
-### Step 2: クラウド環境情報の手動確認（参考）
+## Execution Steps
 
-**注意**: このステップはClaude実行不可。手動で実行する場合の参考コマンド。
+### Step 1: Static Code Analysis with Serena
 
-#### 2.1. データベース
+Investigate the following non-functional items with Serena.
+
+#### 1.1. Availability
+
+**Investigation Items**:
+| Item | Investigation Target | Investigation Method |
+|------|---------------------|---------------------|
+| External integration retry | <External integration service name> | Search for retry logic under `Services/<integration>/` |
+| Timeout settings | HTTP communication, DB connections | Check `config/` and HTTP client settings |
+| Error handling | Exception handling patterns | Pattern search for `try-catch` block usage |
+
+**Serena execution example**:
+```
+search_for_pattern("retry|timeout", relative_path="app/Services/<integration>")
+find_symbol("<HTTP client name>", include_body=true)
+```
+
+#### 1.2. Performance
+
+**Investigation Items**:
+| Item | Investigation Target | Investigation Method |
+|------|---------------------|---------------------|
+| DB indexes | Queries including soft-delete | Search for delete flag conditions in <ORM/query builder> |
+| Cache strategy | Cache usage locations | Search for cache API usage |
+| Query optimization | N+1 problem presence | Check Eager loading usage |
+
+**Serena execution example**:
+```
+search_for_pattern("<delete flag condition pattern>", relative_path="app")
+search_for_pattern("<cache API>", relative_path="app")
+```
+
+#### 1.3. Security
+
+**Investigation Items**:
+| Item | Investigation Target | Investigation Method |
+|------|---------------------|---------------------|
+| Authentication method | Middleware, auth settings | `config/auth.*` and `app/<Middleware Path>` |
+| Authorization control | Access control implementation | Check `app/<Authorization Path>` |
+| Input validation | Validation implementation | Check `app/<Validation Path>` |
+| SQL Injection prevention | Query builder usage | Search for raw SQL query usage |
+
+**Serena execution example**:
+```
+find_symbol("<Auth Middleware name>", relative_path="app/<Middleware Path>")
+search_for_pattern("<raw SQL execution pattern>", relative_path="app")
+```
+
+#### 1.4. Operability
+
+**Investigation Items**:
+| Item | Investigation Target | Investigation Method |
+|------|---------------------|---------------------|
+| Log output | Log level usage | Search for log API usage |
+| Batch schedule | Scheduler settings | Check scheduler configuration files |
+| Monitoring and alerts | External monitoring tool integration | Check monitoring tool settings |
+
+**Serena execution example**:
+```
+search_for_pattern("<log API pattern>", relative_path="app")
+find_symbol("schedule", relative_path="<scheduler config path>", include_body=true)
+```
+
+---
+
+### Step 2: Manual Cloud Environment Verification (Reference)
+
+**Note**: This step cannot be executed by Claude. Reference commands for manual execution.
+
+#### 2.1. Database
 ```bash
-# 例: AWS RDS
+# Example: AWS RDS
 aws rds describe-db-instances --region <REGION> \
   --query 'DBInstances[*].[DBInstanceIdentifier,DBInstanceClass,MultiAZ,StorageType]'
 ```
 
-#### 2.2. コンピューティングリソース
+#### 2.2. Compute Resources
 ```bash
-# 例: サーバーレス関数
+# Example: Serverless functions
 <CLI command to list functions> --region <REGION>
 
-# 例: コンテナサービス
+# Example: Container services
 <CLI command to list clusters> --region <REGION>
 ```
 
-#### 2.3. ストレージ
+#### 2.3. Storage
 ```bash
-# 例: オブジェクトストレージ
+# Example: Object storage
 <CLI command to get storage policy> --bucket <BUCKET_NAME>
 
-# ライフサイクルルール
+# Lifecycle rules
 <CLI command to get lifecycle config> --bucket <BUCKET_NAME>
 ```
 
-#### 2.4. キャッシュ
+#### 2.4. Cache
 ```bash
-# 例: マネージドキャッシュサービス
+# Example: Managed cache service
 <CLI command to describe cache clusters> --region <REGION>
 ```
 
 ---
 
-### Step 3: バックグラウンド処理機能一覧の抽出
+### Step 3: Background Processing Feature List Extraction
 
-**目的**: UI上から見えづらいバッチ処理や時間トリガーの処理を機能として識別し、開発者が認識しやすい形で一覧化する。
+**Purpose**: Identify batch processing and time-triggered processing that is not visible from the UI, and list them in a developer-friendly format.
 
-#### 3.1. 調査対象となる処理の種類
+#### 3.1. Types of Processing to Investigate
 
-以下のようなバックグラウンド処理を調査対象とします：
+The following background processing types are investigation targets:
 
-##### A. 時間トリガー型（UI非表示）
+##### A. Time-Triggered (UI invisible)
 
-| 処理種別 | 説明 | 調査箇所 |
-|---------|------|---------|
-| **スケジュールバッチ** | スケジューラーで定期実行される処理 | 各リポジトリの`<スケジューラー設定パス>` |
-| **CLIコマンド** | 手動またはスケジューラーから実行されるコマンド | 各リポジトリの`<コマンド実装パス>`配下 |
-| **非同期ジョブ** | 非同期で実行されるジョブ | 各リポジトリの`<ジョブ実装パス>`配下 |
-| **イベントリスナー** | 特定のイベント発火時に実行される処理 | 各リポジトリの`<リスナー実装パス>`配下 |
+| Processing Type | Description | Investigation Location |
+|----------------|-------------|----------------------|
+| **Scheduled batch** | Processing executed periodically by scheduler | Each repository's `<scheduler config path>` |
+| **CLI commands** | Commands executed manually or from scheduler | Each repository's `<command implementation path>` |
+| **Async jobs** | Jobs executed asynchronously | Each repository's `<job implementation path>` |
+| **Event listeners** | Processing executed on specific event firing | Each repository's `<listener implementation path>` |
 
-**調査対象リポジトリ**: <REPO_NAME_1>, <REPO_NAME_2>, <REPO_NAME_3>, ...
+**Target repositories**: <REPO_NAME_1>, <REPO_NAME_2>, <REPO_NAME_3>, ...
 
-##### B. オンデマンド実行型（ユーザー/外部トリガー）
+##### B. On-Demand Execution (User/External Trigger)
 
-ユーザー操作または外部システムからのリクエストで実行される、**裏側で複雑な処理が行われている機能**を調査対象とします。
+Investigate features triggered by user actions or external system requests that have **complex backend processing**.
 
-**実行経路の種類**:
+**Execution path types**:
 
-| 実行経路 | 説明 | URL例 | 機能ID範囲 |
-|---------|------|-------|-----------|
-| **<実行経路A>** | <説明A> | <URL_PATTERN_A> | 101～149 |
-| **<実行経路B>** | <説明B> | <URL_PATTERN_B> | 151～199 |
-| **<実行経路C>** | <説明C> | <URL_PATTERN_C> | 201～299 |
+| Execution Path | Description | URL Example | Feature ID Range |
+|---------------|-------------|------------|-----------------|
+| **<Path A>** | <Description A> | <URL_PATTERN_A> | 101-149 |
+| **<Path B>** | <Description B> | <URL_PATTERN_B> | 151-199 |
+| **<Path C>** | <Description C> | <URL_PATTERN_C> | 201-299 |
 
-**処理種別**:
+**Processing types**:
 
-| 処理種別 | 説明 | 調査箇所 | 調査ポイント |
-|---------|------|---------|------------|
-| **ファイル生成・変換処理** | PDF生成、CSV出力、画像変換等 | Controller→Service→外部ライブラリ | ストレージ保存、一時ファイル、変換ライブラリ |
-| **データエクスポート** | 大量データのCSV/Excel出力 | Controller→UseCase→Repository | メモリ制限、ストリーミング出力、圧縮 |
-| **一括操作** | 複数レコードの一括更新・削除 | Controller→Service→トランザクション | ロック制御、ロールバック、進捗管理 |
-| **外部ストレージ操作** | クラウドストレージへのファイル操作 | Service→SDK | バケット名、権限、リージョン、暗号化 |
-| **外部システム連携** | 外部APIへのデータ送信・呼び出し | Service→HTTP Client | API仕様、認証方式、リトライ制御 |
-| **データインポート** | CSV/Excelからのデータ取り込み | Controller→UseCase→バリデーション | バリデーションルール、エラー処理、ロールバック |
-| **エラー処理・リカバリ** | エラー発生時の復旧処理、補償トランザクション | Service→Exception Handler→Recovery | ロールバック戦略、リトライ制御、エラー通知 |
-| **外部依存が多い処理** | 複数の外部システムに依存する処理 | Service→複数外部API | 依存関係、フォールバック、タイムアウト |
-| **データ整合性チェック・修復** | データ不整合の検知・修復処理 | Controller→Validation Service→Repair | 整合性ルール、修復ロジック、実行権限 |
-| **パフォーマンスクリティカル処理** | レスポンス時間が重要な処理、SLA対象 | Controller→Cache→Optimized Query | キャッシュ戦略、クエリ最適化、モニタリング |
+| Processing Type | Description | Investigation Location | Investigation Focus |
+|----------------|-------------|----------------------|-------------------|
+| **File generation/conversion** | PDF generation, CSV output, image conversion, etc. | Controller -> Service -> External library | Storage, temp files, conversion library |
+| **Data export** | Large volume CSV/Excel output | Controller -> UseCase -> Repository | Memory limits, streaming output, compression |
+| **Bulk operations** | Bulk update/delete of multiple records | Controller -> Service -> Transaction | Lock control, rollback, progress management |
+| **External storage operations** | File operations on cloud storage | Service -> SDK | Bucket name, permissions, region, encryption |
+| **External system integration** | Data transmission/API calls to external systems | Service -> HTTP Client | API spec, auth method, retry control |
+| **Data import** | Data intake from CSV/Excel | Controller -> UseCase -> Validation | Validation rules, error handling, rollback |
+| **Error handling/recovery** | Recovery processing on error, compensation transactions | Service -> Exception Handler -> Recovery | Rollback strategy, retry control, error notification |
+| **Multi-external dependency processing** | Processing dependent on multiple external systems | Service -> Multiple external APIs | Dependencies, fallback, timeout |
+| **Data consistency check/repair** | Data inconsistency detection/repair processing | Controller -> Validation Service -> Repair | Consistency rules, repair logic, execution permissions |
+| **Performance-critical processing** | Response time-critical processing, SLA targets | Controller -> Cache -> Optimized Query | Cache strategy, query optimization, monitoring |
 
-**調査対象リポジトリ**: <REPO_NAME_1>, <REPO_NAME_2>, <REPO_NAME_3>, ...
+**Target repositories**: <REPO_NAME_1>, <REPO_NAME_2>, <REPO_NAME_3>, ...
 
-**調査時の注意点**:
-- ボタンのラベルだけでは処理内容が不明な場合が多いため、実装を確認する
-- 例: 「<ボタン名A>」→ 実際には<具体的処理内容A>
-- 例: 「<ボタン名B>」→ <具体的処理内容B>
-- 裏側の処理を具体的に記載する（「<抽象的名称>」ではなく「<具体的処理フロー>」）
-- **実行経路別に機能IDを分けて採番**し、CSVに「実行経路」列を追加する
-- **全リポジトリを調査対象とする**（特定リポジトリのみに絞る場合は明記すること）
+**Investigation notes**:
+- Button labels alone often don't reveal processing content -- verify the implementation
+- Example: "<Button A>" -> Actually <specific processing content A>
+- Example: "<Button B>" -> <specific processing content B>
+- Document backend processing specifically (not "<abstract name>" but "<specific processing flow>")
+- **Number feature IDs by execution path** and add "Execution Path" column to CSV
+- **Investigate all repositories** (explicitly state if narrowing to specific repositories)
 
-#### 3.2. 機能名の命名規則
+#### 3.2. Feature Naming Convention
 
-機能名は、**開発者が認識して開発できる粒度**で記述してください。
+Feature names should be described at a **granularity that developers can recognize and develop against**.
 
-**良い例**:
-- <外部システムA>・<処理内容A>
-- <外部システムB>・<処理内容B>
-- <機能名C>・<処理内容C>
+**Good examples**:
+- <External System A> - <Processing Content A>
+- <External System B> - <Processing Content B>
+- <Feature C> - <Processing Content C>
 
-**悪い例**（粒度が細かすぎる）:
-- <クラス名>実行
-- <設定ファイル名>の実行
+**Bad examples** (too granular):
+- Execute <ClassName>
+- Run <ConfigFileName>
 
-**悪い例**（粒度が大きすぎる）:
-- <大カテゴリ>処理
-- バッチ処理
+**Bad examples** (too broad):
+- <Major Category> processing
+- Batch processing
 
-#### 3.3. 調査方法
+#### 3.3. Investigation Method
 
-##### A. 時間トリガー型の調査
+##### A. Time-Triggered Investigation
 
 ```
-# スケジュールバッチの調査
-find_symbol("schedule", relative_path="<スケジューラー設定パス>", include_body=true)
+# Scheduled batch investigation
+find_symbol("schedule", relative_path="<scheduler config path>", include_body=true)
 
-# CLIコマンドの調査
-search_for_pattern("<コマンド定義パターン>", relative_path="<コマンド実装パス>")
+# CLI command investigation
+search_for_pattern("<command definition pattern>", relative_path="<command implementation path>")
 
-# 非同期ジョブの調査
-search_for_pattern("<ジョブ定義パターン>", relative_path="<ジョブ実装パス>")
+# Async job investigation
+search_for_pattern("<job definition pattern>", relative_path="<job implementation path>")
 ```
 
-##### B. ユーザートリガー型の調査
+##### B. User-Triggered Investigation
 
-**調査手順**:
+**Investigation procedure**:
 
-1. **Controllerメソッドの特定**
+1. **Identify Controller methods**
    ```
-   # ファイル生成・ダウンロード系
-   search_for_pattern("<ファイル生成パターン>", relative_path="<Controller Path>")
+   # File generation/download
+   search_for_pattern("<file generation pattern>", relative_path="<Controller Path>")
 
-   # ストレージ操作系
-   search_for_pattern("<ストレージ操作パターン>", relative_path="<Service Path>")
+   # Storage operations
+   search_for_pattern("<storage operation pattern>", relative_path="<Service Path>")
 
-   # 一括操作系
-   search_for_pattern("<一括操作パターン>", relative_path="<Controller Path>")
+   # Bulk operations
+   search_for_pattern("<bulk operation pattern>", relative_path="<Controller Path>")
 
-   # エラー処理・リカバリ系
-   search_for_pattern("<エラー処理パターン>", relative_path="<Service Path>")
+   # Error handling/recovery
+   search_for_pattern("<error handling pattern>", relative_path="<Service Path>")
 
-   # 外部依存が多い処理
-   search_for_pattern("<外部API呼び出しパターン>", relative_path="<Service Path>")
+   # Multi-external dependency processing
+   search_for_pattern("<external API call pattern>", relative_path="<Service Path>")
 
-   # データ整合性チェック・修復系
-   search_for_pattern("<整合性チェックパターン>", relative_path="<Controller Path>")
+   # Data consistency check/repair
+   search_for_pattern("<consistency check pattern>", relative_path="<Controller Path>")
 
-   # パフォーマンスクリティカル系
-   search_for_pattern("<キャッシュ使用パターン>", relative_path="<Controller Path>")
-   search_for_pattern("<クエリ最適化パターン>", relative_path="<Repository Path>")
+   # Performance-critical
+   search_for_pattern("<cache usage pattern>", relative_path="<Controller Path>")
+   search_for_pattern("<query optimization pattern>", relative_path="<Repository Path>")
    ```
 
-2. **UseCase/Serviceの実装確認**
-   - Controllerから呼び出されているUseCase/Serviceクラスを特定
-   - 実際の処理フロー（DB操作→外部API呼び出し→ファイル保存等）を追跡
-   - 外部システム連携の有無を確認
+2. **Verify UseCase/Service implementation**
+   - Identify UseCase/Service classes called from Controllers
+   - Trace actual processing flow (DB operations -> external API calls -> file storage, etc.)
+   - Check for external system integration
 
-3. **処理内容の具体化**
-   - 単に「<抽象的処理名>」ではなく、以下の粒度で記載：
-     - ライブラリ使用（<ライブラリ名>等）
-     - ストレージへのアップロード（バケット名・パス）
-     - DBへのメタデータ保存（テーブル・カラム）
-     - URLの発行方法（署名付きURL、公開URL等）
+3. **Detail the processing content**
+   - Not just "<abstract process name>" but at this granularity:
+     - Library usage (<library name>, etc.)
+     - Upload to storage (bucket name, path)
+     - Save metadata to DB (table, column)
+     - URL generation method (signed URL, public URL, etc.)
 
-4. **実装ファイルパスの記録**
-   - Controller: `<Controller実装パス例>`
-   - UseCase: `<UseCase実装パス例>`
-   - Service: `<Service実装パス例>`
+4. **Record implementation file paths**
+   - Controller: `<Controller implementation path example>`
+   - UseCase: `<UseCase implementation path example>`
+   - Service: `<Service implementation path example>`
 
-**調査例**:
+**Investigation example**:
 
 ```markdown
-機能名: <機能名>
-トリガー: <トリガー内容>
-処理フロー:
-1. <ステップ1>
-2. <ステップ2>（<詳細>）
-3. <ステップ3>（<詳細>）
-4. <ステップ4>（<詳細>）
-5. <ステップ5>（<詳細>）
-6. <ステップ6>
+Feature name: <Feature Name>
+Trigger: <Trigger content>
+Processing flow:
+1. <Step 1>
+2. <Step 2> (<Details>)
+3. <Step 3> (<Details>)
+4. <Step 4> (<Details>)
+5. <Step 5> (<Details>)
+6. <Step 6>
 ```
 
-#### 3.4. CSV出力フォーマット
+#### 3.4. CSV Output Format
 
-以下のCSV形式で出力してください。最終的にスプレッドシートで展開できるようにします。
+Output in the following CSV format. Designed for final expansion in a spreadsheet.
 
-**CSV列定義**:
+**CSV column definitions**:
 
-| 列名 | 説明 | 記入例（時間トリガー型） | 記入例（オンデマンド実行型） |
-|------|------|----------------------|------------------------|
-| 機能ID | 実行経路別の連番 | 1, 2, 3... | 101（<実行経路A>）, 151（<実行経路B>）, 201（<実行経路C>） |
-| 実行経路 | 実行経路の種類（オンデマンド型のみ） | （空欄） | <実行経路A> / <実行経路B> / <実行経路C> |
-| 機能名 | 人が認識できる機能名 | <外部システムA>・<処理内容A> | <機能名B>・<処理内容B> |
-| 機能カテゴリ | 処理の種別 | スケジュールバッチ / CLIコマンド / 非同期ジョブ / イベントリスナー | ファイル生成・変換処理 / データエクスポート / 一括操作 / 外部ストレージ操作 |
-| 説明 | 機能の詳細説明 | <詳細説明A> | <詳細説明B> |
-| 実行トリガー | いつ実行されるか | cron式: `<cron式>` / daily / hourly / イベント発火時 | <画面名>の「<ボタン名>」ボタンクリック / 外部システムAPIコール |
-| 実行頻度 | 人が読める頻度 | 毎日<時刻> / 毎時<分> / 毎月<日><時刻> / リアルタイム | ユーザー操作時 / 外部システムトリガー |
-| トリガー画面/URL | どの画面/URLから実行されるか（オンデマンド型のみ） | （空欄） | <画面名> / <URL例> |
-| HTTPメソッド | リクエストメソッド（オンデマンド型のみ） | （空欄） | POST / GET / PUT / DELETE |
-| 実装ファイルパス | 実装されているファイル（リポジトリ名含む） | <REPO_NAME>/<ファイルパス> | <REPO_NAME>/<ファイルパス> |
-| 関連コマンド/クラス | コマンド名やクラス名 | <コマンド名> / <クラス名> | <クラス名>::<メソッド名> / <UseCase名> |
-| 処理フロー | 具体的な処理の流れ（オンデマンド型で重要） | （簡潔に記載） | 1. <ステップ1> 2. <ステップ2> 3. <ステップ3> ... |
-| 外部システム連携 | 連携先の外部システム | <外部システムA> / <外部システムB> / <クラウドサービス> | <クラウドサービス> / <ライブラリ> |
-| 備考 | 補足事項 | 本番環境のみ実行 / <特定期間>のみ実行 | メモリ制限<値> / 有効期限<期間> / 外部システムからのAPI呼び出し |
+| Column Name | Description | Example (Time-triggered) | Example (On-demand) |
+|------------|-------------|--------------------------|---------------------|
+| Feature ID | Sequential number by execution path | 1, 2, 3... | 101 (<Path A>), 151 (<Path B>), 201 (<Path C>) |
+| Execution Path | Execution path type (on-demand only) | (blank) | <Path A> / <Path B> / <Path C> |
+| Feature Name | Human-recognizable feature name | <External System A> - <Processing A> | <Feature B> - <Processing B> |
+| Feature Category | Processing type | Scheduled batch / CLI command / Async job / Event listener | File generation/conversion / Data export / Bulk operation / External storage operation |
+| Description | Detailed feature description | <Detail A> | <Detail B> |
+| Execution Trigger | When it executes | cron expression: `<cron>` / daily / hourly / on event | <Screen name> "<Button>" button click / External system API call |
+| Execution Frequency | Human-readable frequency | Daily at <time> / Hourly at <minute> / Monthly on <day> at <time> / Real-time | On user action / External system trigger |
+| Trigger Screen/URL | Which screen/URL triggers it (on-demand only) | (blank) | <Screen name> / <URL example> |
+| HTTP Method | Request method (on-demand only) | (blank) | POST / GET / PUT / DELETE |
+| Implementation File Path | Implementation file (including repo name) | <REPO_NAME>/<file path> | <REPO_NAME>/<file path> |
+| Related Command/Class | Command or class name | <Command name> / <Class name> | <ClassName>::<MethodName> / <UseCase name> |
+| Processing Flow | Specific processing flow (important for on-demand) | (brief) | 1. <Step 1> 2. <Step 2> 3. <Step 3> ... |
+| External System Integration | External system integration target | <External System A> / <External System B> / <Cloud Service> | <Cloud Service> / <Library> |
+| Notes | Supplementary information | Production environment only / <Specific period> only | Memory limit <value> / Expiration <period> / External system API call |
 
-**CSV出力例**:
+**CSV output examples**:
 
-##### A. 時間トリガー型
+##### A. Time-Triggered
 ```csv
-機能ID,機能名,機能カテゴリ,説明,実行トリガー,実行頻度,トリガー画面/URL,HTTPメソッド,実装ファイルパス,関連コマンド/クラス,処理フロー,外部システム連携,備考
-1,<外部システムA>・<処理内容A>,スケジュールバッチ,<詳細説明>,hourlyAt(55),毎時55分,,,<REPO_NAME>/<ファイルパス>,<コマンド名>,<処理フロー概要>,<外部システムA>,
-2,<機能名B>・<処理内容B>,スケジュールバッチ,<詳細説明>,dailyAt('02:30'),毎日02時30分,,,<REPO_NAME>/<ファイルパス>,<コマンド名>,<処理フロー概要>,,
+Feature ID,Feature Name,Feature Category,Description,Execution Trigger,Execution Frequency,Trigger Screen/URL,HTTP Method,Implementation File Path,Related Command/Class,Processing Flow,External System Integration,Notes
+1,<External System A> - <Processing A>,Scheduled batch,<Detail>,hourlyAt(55),Every hour at :55,,,<REPO_NAME>/<file path>,<Command>,<Flow overview>,<External System A>,
+2,<Feature B> - <Processing B>,Scheduled batch,<Detail>,dailyAt('02:30'),Daily at 02:30,,,<REPO_NAME>/<file path>,<Command>,<Flow overview>,,
 ```
 
-##### B. オンデマンド実行型（ユーザー/外部トリガー）
+##### B. On-Demand Execution (User/External Trigger)
 ```csv
-機能ID,実行経路,機能名,機能カテゴリ,説明,実行トリガー,実行頻度,トリガー画面/URL,HTTPメソッド,実装ファイルパス,関連コマンド/クラス,処理フロー,外部システム連携,備考
-101,<実行経路A>,<機能名A>,ファイル生成・変換処理,<詳細説明>,<画面名>の「<ボタン名>」ボタン,ユーザー操作時,<URL>,POST,<REPO_NAME>/<ファイルパス>,<クラス名>::<メソッド名> / <UseCase名>,<処理フロー詳細>,<ライブラリ>,
-153,<実行経路B>,<機能名B>,ファイル生成・変換処理,<詳細説明>,<画面名>の「<ボタン名>」ボタン,ユーザー操作時,<URL>,POST,<REPO_NAME>/<ファイルパス>,<クラス名>::<メソッド名>,<処理フロー詳細>,<クラウドサービス> / <ライブラリ>,<制限事項>
-201,<実行経路C>,<機能名C>,データインポート,<詳細説明>,<外部システム>からのリクエスト,外部システムトリガー,<URL>,POST,<REPO_NAME>/<ファイルパス>,<UseCase名>,<処理フロー詳細>,<外部システム>,外部システム連携・エラー時は<ステータス>
+Feature ID,Execution Path,Feature Name,Feature Category,Description,Execution Trigger,Execution Frequency,Trigger Screen/URL,HTTP Method,Implementation File Path,Related Command/Class,Processing Flow,External System Integration,Notes
+101,<Path A>,<Feature A>,File generation/conversion,<Detail>,<Screen> "<Button>" button,On user action,<URL>,POST,<REPO_NAME>/<file path>,<ClassName>::<MethodName> / <UseCase>,<Detailed flow>,<Library>,
+153,<Path B>,<Feature B>,File generation/conversion,<Detail>,<Screen> "<Button>" button,On user action,<URL>,POST,<REPO_NAME>/<file path>,<ClassName>::<MethodName>,<Detailed flow>,<Cloud Service> / <Library>,<Restriction>
+201,<Path C>,<Feature C>,Data import,<Detail>,Request from <external system>,External system trigger,<URL>,POST,<REPO_NAME>/<file path>,<UseCase>,<Detailed flow>,<External System>,External system integration - <Status> on error
 ```
 
-#### 3.5. 実行手順
+#### 3.5. Execution Procedure
 
-##### A. 時間トリガー型の調査手順
+##### A. Time-Triggered Investigation Procedure
 
-**調査対象リポジトリ**: <REPO_NAME_1>, <REPO_NAME_2>, <REPO_NAME_3>, ...
+**Target repositories**: <REPO_NAME_1>, <REPO_NAME_2>, <REPO_NAME_3>, ...
 
-1. 各リポジトリの`<スケジューラー設定パス>`を読み取る
-2. 各スケジュール定義から以下を抽出：
-   - 実行されるコマンドまたはジョブ
-   - 実行トリガー（cron式、daily、hourly等）
-   - timezone設定
-   - when条件（特定月のみ実行等）
-3. コマンドクラスを特定し、処理内容から機能名を決定
-4. 外部システム連携の有無を確認（<連携先パス>配下等）
-5. CSV形式で出力（機能ID: 1～）
-6. **重要**: リポジトリごとに機能を明記し、実装ファイルパスにはリポジトリ名を含める
+1. Read `<scheduler config path>` in each repository
+2. Extract from each schedule definition:
+   - Command or job being executed
+   - Execution trigger (cron expression, daily, hourly, etc.)
+   - timezone setting
+   - when conditions (specific months only, etc.)
+3. Identify command classes and determine feature names from processing content
+4. Check for external system integration (under `<integration path>`, etc.)
+5. Output in CSV format (Feature ID: starting from 1)
+6. **Important**: Clearly state features per repository and include repository name in implementation file paths
 
-##### B. ユーザートリガー型の調査手順
+##### B. User-Triggered Investigation Procedure
 
-**調査対象リポジトリ**: <REPO_NAME_1>, <REPO_NAME_2>, <REPO_NAME_3>, ...
+**Target repositories**: <REPO_NAME_1>, <REPO_NAME_2>, <REPO_NAME_3>, ...
 
-1. **各リポジトリでController検索して重い処理を特定**
-   - ファイル生成・ダウンロード処理を検索
-   - ストレージ操作を検索
-   - 一括操作を検索
+1. **Search Controllers in each repository to identify heavy processing**
+   - Search for file generation/download processing
+   - Search for storage operations
+   - Search for bulk operations
 
-2. **ルート定義からURL・HTTPメソッドを特定**
-   - 各リポジトリの`<ルート定義ファイルパス>`を確認
-   - Controller→メソッドのマッピングを確認
+2. **Identify URLs and HTTP methods from route definitions**
+   - Check `<route definition file path>` in each repository
+   - Verify Controller -> method mapping
 
-3. **処理フローを追跡**
-   - Controller → UseCase/Service → Repository → 外部システム
-   - 各ステップで何をしているかを具体的に記録
-   - 特に以下を重点的に確認：
-     - ファイル生成（<形式>, <形式>, <形式>）
-     - ストレージ操作（バケット名、パス、権限）
-     - DB操作（トランザクション、ロック）
-     - 外部API呼び出し
+3. **Trace processing flow**
+   - Controller -> UseCase/Service -> Repository -> External system
+   - Record specifically what each step does
+   - Focus particularly on:
+     - File generation (<format>, <format>, <format>)
+     - Storage operations (bucket name, path, permissions)
+     - DB operations (transactions, locks)
+     - External API calls
 
-4. **画面情報を記録**
-   - どの画面から実行されるか（画面名・URL）
-   - どのリポジトリに実装されているか
-   - ボタンのラベル（例: 「<ボタン名A>」、「<ボタン名B>」）
+4. **Record screen information**
+   - Which screen triggers it (screen name, URL)
+   - Which repository implements it
+   - Button labels (e.g., "<Button A>", "<Button B>")
 
-5. **CSV形式で出力（機能ID: 101～）**
-   - 時間トリガー型と区別するため、機能IDは101から開始
-   - トリガー画面/URL、HTTPメソッド、処理フローを必ず記載
-
----
-
-### Step 4: 非機能要求調査結果の出力
-
-調査結果を以下のテーブル形式で出力してください。
-
-#### 4.1. 可用性（Availability）
-
-| 項目 | 現状の実装・設定（As-Is） | 根拠（ファイル名・行番号） | 備考 |
-|------|--------------------------|------------------------|------|
-| 継続性 | <リトライ実装> | <ファイルパス>:<行番号> | <使用ライブラリ/フレームワーク> |
-| タイムアウト | HTTP通信<秒>秒・DB接続<秒>秒 | <ファイルパス>:<行番号> | |
-| 障害検知 | <監視ツール>連携あり・<閾値> | <ファイルパス>:<行番号> | |
-
-#### 4.2. 性能（Performance）
-
-| 項目 | 現状の実装・設定（As-Is） | 根拠（ファイル名・行番号） | 備考 |
-|------|--------------------------|------------------------|------|
-| DBインデックス | <状況> | <ファイルパス>:<行番号> | <問題の有無> |
-| キャッシュ戦略 | <キャッシュ内容>を<期間>キャッシュ | <ファイルパス>:<行番号> | <キャッシュシステム> |
-| クエリ最適化 | <最適化手法>使用 | <ファイルパス>:<行番号> | <具体的手法> |
-
-#### 4.3. セキュリティ（Security）
-
-| 項目 | 現状の実装・設定（As-Is） | 根拠（ファイル名・行番号） | 備考 |
-|------|--------------------------|------------------------|------|
-| 認証方式 | <認証方式> | <ファイルパス>:<行番号> | <用途> |
-| 認可制御 | <認可実装状況> | <ファイルパス>:<行番号> | |
-| 入力バリデーション | <バリデーション実装率> | <ファイルパス> | <例外状況> |
-| SQL Injection対策 | 生SQL使用箇所<件数>件 | <ファイルパス>:<行番号> | <使用API> |
-
-#### 4.4. 運用性（Operability）
-
-| 項目 | 現状の実装・設定（As-Is） | 根拠（ファイル名・行番号） | 備考 |
-|------|--------------------------|------------------------|------|
-| ログレベル | <ログレベル使い分け状況> | 全体的に実装済み | <統計情報> |
-| バッチスケジュール | <バッチ数>種のバッチを<頻度>実行 | <ファイルパス>:<行番号> | <バッチ内容> |
-| 監視・アラート | <監視ツールA> + <監視ツールB> | <ファイルパス>:<行番号> | <通知先> |
+5. **Output in CSV format (Feature ID: starting from 101)**
+   - Feature IDs start from 101 to distinguish from time-triggered
+   - Always include Trigger Screen/URL, HTTP Method, Processing Flow
 
 ---
 
-## 調査時の注意点
+### Step 4: Non-Functional Requirements Investigation Results Output
 
-### 1. ファイルパスの正確な記録
-- 行番号まで含めて記録（例: `<ファイルパス>:<行番号>`）
-- バージョン管理されていない設定ファイルは「要確認」と明記
+Output investigation results in the following table format.
 
-### 2. 動的な設定値
-- 環境変数で設定される値は「環境依存」と明記
-- 本番環境と開発環境で異なる可能性を考慮
+#### 4.1. Availability
 
-### 3. クラウド環境情報の扱い
-- クラウド情報は手動確認が必要な場合、「確認待ち」と明記
-- 権限不足で確認できない場合は、その旨を記載
+| Item | Current Implementation/Setting (As-Is) | Evidence (File:Line) | Notes |
+|------|---------------------------------------|---------------------|-------|
+| Continuity | <Retry implementation> | <file path>:<line> | <Library/Framework> |
+| Timeout | HTTP <sec>s, DB <sec>s | <file path>:<line> | |
+| Failure detection | <Monitoring tool> integration, <threshold> | <file path>:<line> | |
 
-### 4. 優先度の判定
-- 高: セキュリティ・可用性に直接影響
-- 中: 性能・運用性に影響
-- 低: 改善推奨だが影響は限定的
+#### 4.2. Performance
+
+| Item | Current Implementation/Setting (As-Is) | Evidence (File:Line) | Notes |
+|------|---------------------------------------|---------------------|-------|
+| DB indexes | <Status> | <file path>:<line> | <Issues> |
+| Cache strategy | <Cached content> for <duration> | <file path>:<line> | <Cache system> |
+| Query optimization | <Optimization technique> used | <file path>:<line> | <Specific technique> |
+
+#### 4.3. Security
+
+| Item | Current Implementation/Setting (As-Is) | Evidence (File:Line) | Notes |
+|------|---------------------------------------|---------------------|-------|
+| Authentication | <Auth method> | <file path>:<line> | <Purpose> |
+| Authorization | <Authorization status> | <file path>:<line> | |
+| Input validation | <Validation coverage> | <file path> | <Exceptions> |
+| SQL Injection prevention | <count> raw SQL usage locations | <file path>:<line> | <API used> |
+
+#### 4.4. Operability
+
+| Item | Current Implementation/Setting (As-Is) | Evidence (File:Line) | Notes |
+|------|---------------------------------------|---------------------|-------|
+| Log levels | <Log level usage status> | Generally implemented | <Statistics> |
+| Batch schedule | <count> types of batches at <frequency> | <file path>:<line> | <Batch content> |
+| Monitoring/alerts | <Monitoring Tool A> + <Monitoring Tool B> | <file path>:<line> | <Notification target> |
 
 ---
 
-## 実行例
+## Investigation Notes
+
+### 1. Accurate File Path Recording
+- Record including line numbers (e.g., `<file path>:<line>`)
+- Mark "needs verification" for settings files not under version control
+
+### 2. Dynamic Configuration Values
+- Mark values set by environment variables as "environment-dependent"
+- Consider potential differences between production and development environments
+
+### 3. Cloud Environment Information Handling
+- Mark "pending verification" for cloud info requiring manual verification
+- State when unable to verify due to insufficient permissions
+
+### 4. Priority Determination
+- High: Directly impacts security and availability
+- Medium: Impacts performance and operability
+- Low: Improvement recommended but limited impact
+
+---
+
+## Execution Example
 
 ```markdown
-### 可用性調査の実行
+### Availability Investigation Execution
 
-1. <外部連携A>のリトライロジック調査
-   - Serena: search_for_pattern("retry", relative_path="<連携先パス>")
-   - 結果: <ファイルパス>:<行番号>で<ライブラリ>使用確認
-   - As-Is: リトライ<回数>回、<間隔>秒間隔
+1. <External Integration A> retry logic investigation
+   - Serena: search_for_pattern("retry", relative_path="<integration path>")
+   - Result: Confirmed <library> usage at <file path>:<line>
+   - As-Is: <count> retries at <interval> second intervals
 
-2. タイムアウト設定調査
+2. Timeout settings investigation
    - Serena: find_symbol("timeout", relative_path="config")
-   - 結果: <ファイルパス>:<行番号>でDB接続タイムアウト<秒>秒
-   - As-Is: HTTP通信<秒>秒、DB接続<秒>秒
+   - Result: DB connection timeout <sec>s at <file path>:<line>
+   - As-Is: HTTP <sec>s, DB <sec>s
 ```
 
 ---
 
-**最終更新**: YYYY-MM-DD
+**Last Updated**: YYYY-MM-DD

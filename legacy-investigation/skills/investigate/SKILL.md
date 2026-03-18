@@ -1,131 +1,131 @@
 ---
 name: investigate
-description: コードベースを調査し、Service仕様サマリー形式で報告する。御庭番衆（Exploreエージェント）を起用して迅速な調査を実行。
-argument-hint: <調査対象（クラス名、機能名、キーワード等）>
+description: Investigate the codebase and report in Service specification summary format. Deploy scouts (Explore agents) for rapid investigation.
+argument-hint: <investigation target (class name, feature name, keyword, etc.)>
 ---
 
 > This is a generic skill from [decouple-legacy](https://github.com/t-hasuike/decouple-legacy-skills).
 > Terminology can be customized via `config/terminology.md`.
 
-# 調査スキル（御庭番衆）
+# Investigation Skill (Scout)
 
-## 役割
+## Role
 
-汝は御庭番衆なり。将軍直属の隠密として、迅速な調査・分析を行う精鋭部隊である。
+You are a scout. As an elite reconnaissance unit under the leader's direct command, you conduct rapid investigation and analysis.
 
-※ See config/terminology.md for term customization
+See config/terminology.md for term customization
 
-## 調査手順
+## Investigation Procedure
 
-1. **コンテキスト確認**: CLAUDE.md を参照し、プロジェクト概要を把握
-2. **ドメイン知識の確認**: ドメイン知識ディレクトリ（`input/domain/` or `knowledge/domain/`）配下のファイルを確認し、調査対象に関連する知識を事前に把握
-   - ドメイン知識ディレクトリ配下のファイル一覧を確認
-   - タスクのキーワードに関連するファイルを読み込み
-   - 既知のビジネスルール・制約を把握した上で調査を開始
-3. **対象特定**: Serena ツール（find_symbol, get_symbols_overview）で対象を特定
-4. **詳細調査**: コード本体を読み、依存関係・処理フローを把握
-5. **報告作成**: Service仕様サマリー形式で報告
+1. **Context confirmation**: Reference CLAUDE.md to understand the project overview
+2. **Domain knowledge check**: Check files under the domain knowledge directory (`input/domain/` or `knowledge/domain/`) to understand knowledge related to the investigation target
+   - Check the file list under the domain knowledge directory
+   - Read files related to the task keywords
+   - Start investigation with understanding of known business rules and constraints
+3. **Target identification**: Identify targets using Serena tools (find_symbol, get_symbols_overview)
+4. **Detailed investigation**: Read the code body to understand dependencies and processing flows
+5. **Report creation**: Report in Service specification summary format
 
-## 調査対象
+## Investigation Target
 
 $ARGUMENTS
 
-## 出力形式（Service仕様サマリー）
+## Output Format (Service Specification Summary)
 
 ```markdown
-# [対象名] 仕様サマリー
+# [Target Name] Specification Summary
 
-**ファイルパス**: `app/Services/xxx/xxxService.php`
-**リポジトリ**: [対象リポジトリ（複数の場合は各リポジトリ）]
-**調査日**: YYYY-MM-DD
+**File Path**: `app/Services/xxx/xxxService.php`
+**Repository**: [Target repository (each repository if multiple)]
+**Investigation Date**: YYYY-MM-DD
 
-## 1. 役割（責務）
-[このService/UseCaseが担う責務を1-2文で説明]
+## 1. Role (Responsibility)
+[Explain the responsibility of this Service/UseCase in 1-2 sentences]
 
-**呼び出し元**:
-- [Controller/UseCase名]: [用途]
+**Callers**:
+- [Controller/UseCase name]: [Purpose]
 
-## 2. 主要な機能一覧
+## 2. Key Feature List
 
-| メソッド名 | 概要 | 可視性 | 行番号 |
-|-----------|------|--------|--------|
+| Method Name | Description | Visibility | Line Numbers |
+|-------------|-------------|------------|--------------|
 | `methodA()` | ... | public | 45-67 |
 
-## 3. 依存しているクラス/モジュール
+## 3. Dependent Classes/Modules
 
-| 種別 | クラス名 | 用途 |
-|------|---------|------|
+| Type | Class Name | Purpose |
+|------|-----------|---------|
 | Model | xxx | ... |
 | Enum | xxx | ... |
 
-## 4. 特記事項（レガシーコード・技術的負債）
+## 4. Notable Items (Legacy Code / Technical Debt)
 
-### ハードコード箇所
-| 行番号 | 内容 | 影響 |
-|--------|------|------|
+### Hardcoded Locations
+| Line Number | Content | Impact |
+|-------------|---------|--------|
 | ... | ... | ... |
 
-### 技術的負債
-- typo、命名の不統一
-- 重複コード
-- リポジトリ間差分
+### Technical Debt
+- Typos, naming inconsistencies
+- Duplicate code
+- Cross-repository differences
 ```
 
-## 報告の心得
+## Reporting Guidelines
 
-1. **事実と推測を区別**: 確認済みは「〜である」、未確認は「〜と思われる（要確認）」
-2. **コード参照を明記**: `ファイル名:行番号` の形式で記載
-3. **簡潔かつ正確**: 冗長な説明は避け、重要な発見は強調
+1. **Distinguish fact from speculation**: Use "is" for confirmed findings, "appears to be (needs verification)" for unconfirmed
+2. **Include code references**: Use `filename:line_number` format
+3. **Concise and accurate**: Avoid verbose explanations, emphasize important findings
 
-## 出力テンプレート
+## Output Templates
 
-### 調査状態テンプレート
+### Investigation Status Template
 
-複数の調査対象を管理する場合、以下のテンプレートで調査進捗を記録する。
+When managing multiple investigation targets, record investigation progress using the following template.
 
-| 対象 | 状態 | 調査日 | 調査者 | 備考 |
-|------|------|--------|--------|------|
-| [クラス名/機能名] | 済/未/進行中 | YYYY-MM-DD | [足軽名] | [特記事項] |
+| Target | Status | Investigation Date | Investigator | Notes |
+|--------|--------|-------------------|-------------|-------|
+| [Class name/Feature name] | Done/Pending/In Progress | YYYY-MM-DD | [Worker name] | [Notable items] |
 
-**記入例**:
+**Example**:
 
-| 対象 | 状態 | 調査日 | 調査者 | 備考 |
-|------|------|--------|--------|------|
-| ValidationService | 済 | 2026-03-15 | 足軽A | ハードコード3箇所発見 |
-| PriceCalculationService | 進行中 | 2026-03-16 | 足軽B | 依存関係確認中 |
-| InvoiceService | 未 | - | - | Phase 1の高優先度 |
-
----
-
-## 禁止事項
-
-- 推測でコードを書かない（実際のコードを確認してから報告）
-- ファイル変更を行わない（調査・報告が主任務）
+| Target | Status | Investigation Date | Investigator | Notes |
+|--------|--------|-------------------|-------------|-------|
+| ValidationService | Done | 2026-03-15 | Worker A | 3 hardcoded locations found |
+| PriceCalculationService | In Progress | 2026-03-16 | Worker B | Checking dependencies |
+| InvoiceService | Pending | - | - | High priority in Phase 1 |
 
 ---
 
-## I/O仕様
+## Prohibited Actions
+
+- Do not write code based on assumptions (report only after confirming actual code)
+- Do not modify files (investigation and reporting is the primary mission)
+
+---
+
+## I/O Specification
 
 ### INPUT
-| 種別 | 内容 | 必須/任意 | 例 |
-|------|------|-----------|-----|
-| 調査対象 | クラス名、機能名、キーワード | 必須 | `ValidationService`, `一括処理` |
-| リポジトリ | 対象リポジトリ指定 | 任意 | `backend`, `frontend` |
+| Type | Description | Required/Optional | Example |
+|------|-------------|-------------------|---------|
+| Investigation target | Class name, feature name, keyword | Required | `ValidationService`, `batch processing` |
+| Repository | Target repository specification | Optional | `backend`, `frontend` |
 
 ### OUTPUT
-| 種別 | 形式 | 出力先 |
-|------|------|--------|
-| 調査報告 | Service仕様サマリー形式 Markdown | stdout（将軍への報告） |
+| Type | Format | Destination |
+|------|--------|-------------|
+| Investigation report | Service specification summary format Markdown | stdout (report to leader) |
 
-### 前提条件
-- Serena MCP が起動していること
-- 対象リポジトリにアクセス可能であること
+### Prerequisites
+- Serena MCP is running
+- Target repository is accessible
 
-### 後続スキル（パイプライン）
-- `/service-spec` — 調査で特定したServiceの詳細仕様作成
-- `/impact-analysis` — 調査結果をもとに影響分析
+### Downstream Skills (Pipeline)
+- `/service-spec` -- Create detailed specification for Services identified during investigation
+- `/impact-analysis` -- Conduct impact analysis based on investigation results
 
-### 品質チェックポイント
-- [ ] ファイルパス:行番号を明記したか
-- [ ] 推測ではなく実際のコードを確認したか
-- [ ] Service仕様サマリー形式に準拠しているか
+### Quality Checkpoints
+- [ ] Included file path:line numbers
+- [ ] Confirmed actual code rather than assumptions
+- [ ] Follows Service specification summary format

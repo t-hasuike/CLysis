@@ -5,15 +5,15 @@
 ### INPUT
 
 ```
-/impact-analysis 新しい配送方法（エクスプレス配送）の追加
+/impact-analysis Adding a new shipping method (Express Shipping)
 ```
 
 ### OUTPUT
 
 ```
-「上様、影響分析レポートを献上いたします。
+"Impact analysis report submitted.
 
-# ADR: エクスプレス配送機能の追加
+# ADR: Adding Express Shipping Feature
 
 > **Status**: Proposed
 > **Date**: 2026-03-06
@@ -21,100 +21,100 @@
 
 ## Context
 
-現在の配送方法は「通常配送（3-5日）」「速達配送（1-2日）」の2種類。
-顧客から「当日配送」の要望が多く、競合他社も対応済み。
-新たに「エクスプレス配送（当日）」を追加する。
+Current shipping methods are "Standard Shipping (3-5 days)" and "Priority Shipping (1-2 days)."
+Customers frequently request "same-day delivery," and competitors already offer it.
+Adding "Express Shipping (same-day)" as a new option.
 
 ---
 
 ## Decision
 
-ShippingService に Express配送ロジックを追加し、以下を実装:
+Add Express shipping logic to ShippingService and implement the following:
 
-1. 配送方法の追加（shipping_methods テーブル）
-2. 配送料金計算ロジックの拡張
-3. 在庫確保・配送業者API連携
-4. UI: 購入フロー内での配送方法選択肢追加
+1. Add shipping method (shipping_methods table)
+2. Extend shipping fee calculation logic
+3. Inventory reservation and carrier API integration
+4. UI: Add shipping method selection in the checkout flow
 
 ---
 
 ## Consequences
 
-### 影響範囲（ファイル一覧）
+### Impact Scope (File List)
 
-#### バックエンド
+#### Backend
 | File | Impact | Change Type |
 |------|--------|-------------|
-| `app/Services/Shipping/ShippingService.php` | 高 | Method追加: `calculateExpressFee()` |
-| `app/Services/Order/OrderService.php` | 中 | Express配送時の在庫確保ロジック追加 |
-| `database/migrations/2026_03_06_add_express_shipping.php` | 高 | shipping_methods テーブルにレコード追加 |
-| `app/Models/ShippingMethod.php` | 低 | 定数追加: `TYPE_EXPRESS = 'express'` |
-| `app/Http/Controllers/CheckoutController.php` | 中 | API レスポンスに配送方法追加 |
+| `app/Services/Shipping/ShippingService.php` | High | Add method: `calculateExpressFee()` |
+| `app/Services/Order/OrderService.php` | Medium | Add inventory reservation logic for Express shipping |
+| `database/migrations/2026_03_06_add_express_shipping.php` | High | Add record to shipping_methods table |
+| `app/Models/ShippingMethod.php` | Low | Add constant: `TYPE_EXPRESS = 'express'` |
+| `app/Http/Controllers/CheckoutController.php` | Medium | Add shipping method to API response |
 
-#### フロントエンド
+#### Frontend
 | File | Impact | Change Type |
 |------|--------|-------------|
-| `resources/js/components/Checkout/ShippingOptions.tsx` | 高 | Express配送の選択肢追加（UI/UX） |
-| `resources/js/api/shipping.ts` | 中 | API型定義更新: `ShippingMethod` enum |
+| `resources/js/components/Checkout/ShippingOptions.tsx` | High | Add Express shipping option (UI/UX) |
+| `resources/js/api/shipping.ts` | Medium | Update API type definition: `ShippingMethod` enum |
 
-#### インフラ
+#### Infrastructure
 | File | Impact | Change Type |
 |------|--------|-------------|
-| `config/shipping.php` | 中 | 配送業者API設定追加（Express専用） |
-| `.env.example` | 低 | 環境変数追加: `EXPRESS_SHIPPING_API_KEY` |
+| `config/shipping.php` | Medium | Add carrier API configuration (Express-specific) |
+| `.env.example` | Low | Add environment variable: `EXPRESS_SHIPPING_API_KEY` |
 
 ---
 
-### リスク
+### Risks
 
 | Risk | Severity | Mitigation |
 |------|----------|------------|
-| 配送業者APIのレート制限 | 高 | リトライ機構 + キャッシュ導入 |
-| 在庫切れ時の顧客体験悪化 | 中 | リアルタイム在庫チェック + UI警告表示 |
-| 配送料金計算の複雑化 | 低 | Strategy pattern適用で保守性確保 |
+| Carrier API rate limiting | High | Retry mechanism + cache introduction |
+| Poor customer experience when out of stock | Medium | Real-time stock check + UI warning display |
+| Increased complexity of shipping fee calculation | Low | Apply Strategy pattern to ensure maintainability |
 
 ---
 
-### 実装計画
+### Implementation Plan
 
-#### Phase 1: バックエンド実装（1週間）
-- [ ] Migration作成・実行
-- [ ] ShippingService拡張
-- [ ] 配送業者API連携（サンドボックス）
-- [ ] Unit tests作成
+#### Phase 1: Backend Implementation (1 week)
+- [ ] Create and run migration
+- [ ] Extend ShippingService
+- [ ] Carrier API integration (sandbox)
+- [ ] Create unit tests
 
-#### Phase 2: フロントエンド実装（3日）
-- [ ] UI/UX設計レビュー
-- [ ] ShippingOptions コンポーネント更新
-- [ ] E2E tests作成
+#### Phase 2: Frontend Implementation (3 days)
+- [ ] UI/UX design review
+- [ ] Update ShippingOptions component
+- [ ] Create E2E tests
 
-#### Phase 3: 統合テスト（2日）
-- [ ] ステージング環境デプロイ
-- [ ] QA実施（配送料金計算・在庫連携）
-- [ ] パフォーマンステスト
+#### Phase 3: Integration Testing (2 days)
+- [ ] Deploy to staging environment
+- [ ] QA execution (shipping fee calculation, stock integration)
+- [ ] Performance testing
 
-#### Phase 4: 本番リリース（1日）
-- [ ] Feature flag有効化（段階的ロールアウト）
-- [ ] モニタリング設定（配送業者API成功率）
-- [ ] ロールバック手順確認
-
----
-
-### 代替案
-
-#### Alternative 1: 外部配送業者のみ対応（自社配送は対象外）
-- Pros: 実装コスト削減（50%減）
-- Cons: 顧客体験の一貫性低下
-
-#### Alternative 2: 特定地域のみ提供
-- Pros: リスク低減、段階的展開
-- Cons: 機能利用可否が複雑化（郵便番号チェック必要）
-
-**決定**: 全地域・全配送業者で対応（Alternative案は採用せず）
+#### Phase 4: Production Release (1 day)
+- [ ] Enable feature flag (gradual rollout)
+- [ ] Monitoring setup (carrier API success rate)
+- [ ] Verify rollback procedure
 
 ---
 
-以上、報告完了でござる。」
+### Alternatives
+
+#### Alternative 1: Support External Carriers Only (exclude self-delivery)
+- Pros: 50% reduction in implementation cost
+- Cons: Reduced consistency of customer experience
+
+#### Alternative 2: Offer in Specific Regions Only
+- Pros: Risk reduction, gradual rollout
+- Cons: Feature availability becomes complex (postal code check required)
+
+**Decision**: Support all regions and all carriers (alternatives not adopted)
+
+---
+
+Report complete."
 ```
 
 ### Notes

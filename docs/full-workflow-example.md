@@ -11,27 +11,27 @@ This example demonstrates an end-to-end workflow using all skills sequentially.
 ### INPUT
 
 ```
-/project-guide QRコード決済の追加
+/project-guide Adding QR code payment
 ```
 
 ### OUTPUT
 
 ```
-「上様、参照先を特定いたしました。
+"Reference targets identified.
 
-【任務】QRコード決済の追加
+[Mission] Adding QR code payment
 
-【参照すべきファイル】
-1. input/project/repositories.md → 決済機能の責務境界確認
-2. input/domain/payment_methods.md → 既存決済方法の仕様
-3. app/Services/Payment/PaymentService.php → 決済処理のコア実装
+[Files to Reference]
+1. input/project/repositories.md -> Verify payment feature responsibility boundaries
+2. input/domain/payment_methods.md -> Existing payment method specifications
+3. app/Services/Payment/PaymentService.php -> Payment processing core implementation
 
-【調査順序】
-1. /investigate PaymentService → 現状把握
-2. /service-spec PaymentService → 詳細仕様確認
-3. /impact-analysis QRコード決済追加 → 影響範囲分析
+[Investigation Order]
+1. /investigate PaymentService -> Understand current state
+2. /service-spec PaymentService -> Detailed specification verification
+3. /impact-analysis Adding QR code payment -> Impact scope analysis
 
-以上、報告完了でござる。」
+Report complete."
 ```
 
 ---
@@ -47,27 +47,27 @@ This example demonstrates an end-to-end workflow using all skills sequentially.
 ### OUTPUT (Abbreviated)
 
 ```
-「上様、PaymentService の調査完了でござる。
+"PaymentService investigation complete.
 
-【概要】
-- 現在サポート: クレジットカード、銀行振込
-- Strategy pattern 採用（Gateway抽象化）
-- 新規決済方法追加は GatewayInterface 実装で可能
+[Overview]
+- Currently supported: Credit card, bank transfer
+- Strategy pattern adopted (Gateway abstraction)
+- New payment method addition possible via GatewayInterface implementation
 
-【主要メソッド】
-- processPayment(): 決済実行
-- refund(): 返金処理
-- validatePaymentMethod(): 決済方法検証
+[Key Methods]
+- processPayment(): Execute payment
+- refund(): Refund processing
+- validatePaymentMethod(): Payment method validation
 
-【依存関係】
-- StripeGateway (クレジットカード)
-- BankTransferGateway (銀行振込)
-- PaymentRepository (DB永続化)
+[Dependencies]
+- StripeGateway (credit card)
+- BankTransferGateway (bank transfer)
+- PaymentRepository (DB persistence)
 
-【拡張ポイント】
-QRコード決済は新規 QRCodeGateway 実装で対応可能。
+[Extension Point]
+QR code payment addressable via new QRCodeGateway implementation.
 
-以上、報告完了でござる。」
+Report complete."
 ```
 
 ---
@@ -83,30 +83,30 @@ QRコード決済は新規 QRCodeGateway 実装で対応可能。
 ### OUTPUT (Abbreviated)
 
 ```
-「上様、PaymentService 仕様書を作成いたしました。
+"PaymentService specification document created.
 
-# PaymentService 仕様サマリー
+# PaymentService Specification Summary
 
-## 公開メソッド
+## Public Methods
 
 ### processPayment(Order $order, PaymentMethod $method): PaymentResult
 
-**処理フロー**:
-1. GatewayFactory::make($method->type) でGateway取得
-2. Gateway::charge($order->total) 実行
-3. PaymentRepository::save() で記録
-4. PaymentResult 返却
+**Processing Flow**:
+1. Get Gateway via GatewayFactory::make($method->type)
+2. Execute Gateway::charge($order->total)
+3. Record via PaymentRepository::save()
+4. Return PaymentResult
 
-**拡張方法**:
-新規Gateway追加時:
-1. GatewayInterface 実装
-2. GatewayFactory に登録
-3. PaymentMethod enum に追加
+**Extension Method**:
+When adding new Gateway:
+1. Implement GatewayInterface
+2. Register in GatewayFactory
+3. Add to PaymentMethod enum
 
-## 依存関係
-[詳細略]
+## Dependencies
+[Details omitted]
 
-以上、報告完了でござる。」
+Report complete."
 ```
 
 ---
@@ -116,66 +116,66 @@ QRコード決済は新規 QRCodeGateway 実装で対応可能。
 ### INPUT
 
 ```
-/impact-analysis QRコード決済（PayPay）の追加
+/impact-analysis Adding QR code payment (PayPay)
 ```
 
 ### OUTPUT (Abbreviated)
 
 ```
-「上様、影響分析レポートを献上いたします。
+"Impact analysis report submitted.
 
-# ADR: QRコード決済機能の追加
+# ADR: Adding QR Code Payment Feature
 
 ## Decision
 
-PayPayを決済方法として追加。PayPayGateway を実装し、既存アーキテクチャに統合。
+Add PayPay as a payment method. Implement PayPayGateway and integrate with existing architecture.
 
 ## Consequences
 
-### 影響範囲
+### Impact Scope
 
-#### バックエンド
+#### Backend
 | File | Impact | Change Type |
 |------|--------|-------------|
-| `app/Gateways/PayPayGateway.php` | 高 | 新規作成（GatewayInterface実装） |
-| `app/Services/Payment/GatewayFactory.php` | 中 | PayPay登録 |
-| `app/Models/PaymentMethod.php` | 低 | ENUM追加: `PAYPAY = 'paypay'` |
-| `database/migrations/2026_03_06_add_paypay.php` | 高 | payment_methods テーブル更新 |
+| `app/Gateways/PayPayGateway.php` | High | New creation (GatewayInterface implementation) |
+| `app/Services/Payment/GatewayFactory.php` | Medium | Register PayPay |
+| `app/Models/PaymentMethod.php` | Low | ENUM addition: `PAYPAY = 'paypay'` |
+| `database/migrations/2026_03_06_add_paypay.php` | High | payment_methods table update |
 
-#### フロントエンド
+#### Frontend
 | File | Impact | Change Type |
 |------|--------|-------------|
-| `resources/js/components/Checkout/PaymentOptions.tsx` | 高 | QRコード表示UI追加 |
-| `resources/js/api/payment.ts` | 中 | PayPay API型定義追加 |
+| `resources/js/components/Checkout/PaymentOptions.tsx` | High | QR code display UI addition |
+| `resources/js/api/payment.ts` | Medium | PayPay API type definition addition |
 
-### リスク
+### Risks
 
 | Risk | Severity | Mitigation |
 |------|----------|------------|
-| PayPay API障害時の顧客体験悪化 | 高 | Fallback UI + 管理者通知 |
-| QRコード有効期限切れ | 中 | 自動リフレッシュ機構 |
+| Poor customer experience during PayPay API outage | High | Fallback UI + admin notification |
+| QR code expiration | Medium | Auto-refresh mechanism |
 
-### 実装計画
+### Implementation Plan
 
-#### Phase 1: PayPayGateway実装（3日）
-- [ ] PayPay API連携（サンドボックス）
-- [ ] QRコード生成・検証ロジック
-- [ ] Unit tests（決済成功/失敗/タイムアウト）
+#### Phase 1: PayPayGateway Implementation (3 days)
+- [ ] PayPay API integration (sandbox)
+- [ ] QR code generation/verification logic
+- [ ] Unit tests (payment success/failure/timeout)
 
-#### Phase 2: UI実装（2日）
-- [ ] QRコード表示コンポーネント
-- [ ] リアルタイム決済ステータス更新（WebSocket）
+#### Phase 2: UI Implementation (2 days)
+- [ ] QR code display component
+- [ ] Real-time payment status update (WebSocket)
 
-#### Phase 3: 統合テスト（2日）
+#### Phase 3: Integration Testing (2 days)
 - [ ] E2E tests
-- [ ] パフォーマンステスト（QRコード生成時間）
+- [ ] Performance tests (QR code generation time)
 
-以上、報告完了でござる。」
+Report complete."
 ```
 
-**【Human Checkpoint】**
+**[Human Checkpoint]**
 
-上様に影響分析レポート（output/impact_analysis_paypay.md）を提出し、承認をいただく。
+Submit impact analysis report (output/impact_analysis_paypay.md) to user for approval.
 
 ---
 
@@ -190,25 +190,25 @@ PayPayを決済方法として追加。PayPayGateway を実装し、既存アー
 ### OUTPUT (Abbreviated)
 
 ```
-「上様、修正提案を献上いたします。
+"Change proposal submitted.
 
-# PayPay決済追加 修正提案
+# PayPay Payment Addition Change Proposal
 
-**元レポート**: output/impact_analysis_paypay.md
-**提案日**: 2026-03-08
+**Source Report**: output/impact_analysis_paypay.md
+**Proposal Date**: 2026-03-08
 
-## 変更サマリー
+## Change Summary
 
-- PayPayGateway 新規作成
-- GatewayFactory への PayPay 登録
-- PaymentMethod enum へ PAYPAY 追加
-- PaymentOptions UI への QRコード表示追加
+- PayPayGateway new creation
+- Register PayPay in GatewayFactory
+- Add PAYPAY to PaymentMethod enum
+- Add QR code display to PaymentOptions UI
 
 ---
 
-## 修正内容（diff形式）
+## Changes (diff format)
 
-### 1. app/Gateways/PayPayGateway.php（新規作成）
+### 1. app/Gateways/PayPayGateway.php (new creation)
 
 ```diff
 + <?php
@@ -224,7 +224,7 @@ PayPayを決済方法として追加。PayPayGateway を実装し、既存アー
 + {
 +     public function charge(Order $order, Money $amount): PaymentResult
 +     {
-+         // QRコード生成ロジック
++         // QR code generation logic
 +         $qrCode = $this->paypayClient->createQRCode([
 +             'amount' => $amount->toInt(),
 +             'orderId' => $order->id,
@@ -239,7 +239,7 @@ PayPayを決済方法として追加。PayPayGateway を実装し、既存アー
 +
 +     public function refund(string $transactionId, Money $amount): bool
 +     {
-+         // 返金処理
++         // Refund processing
 +     }
 + }
 ```
@@ -281,8 +281,8 @@ PayPayを決済方法として追加。PayPayGateway を実装し、既存アー
     return (
       <div>
         <select onChange={(e) => setSelectedMethod(e.target.value)}>
-          <option value="credit_card">クレジットカード</option>
-          <option value="bank_transfer">銀行振込</option>
+          <option value="credit_card">Credit Card</option>
+          <option value="bank_transfer">Bank Transfer</option>
 +         <option value="paypay">PayPay</option>
         </select>
 
@@ -296,19 +296,19 @@ PayPayを決済方法として追加。PayPayGateway を実装し、既存アー
 
 ---
 
-## レビューポイント
+## Review Points
 
-- [ ] PayPayGateway のエラーハンドリングは十分か
-- [ ] QRコード有効期限（5分）の UI 表示は適切か
-- [ ] Webhook署名検証の実装は含まれているか
-- [ ] テストケースは網羅的か
+- [ ] Is PayPayGateway error handling sufficient?
+- [ ] Is the QR code expiration (5 min) UI display appropriate?
+- [ ] Is Webhook signature verification included?
+- [ ] Are test cases comprehensive?
 
-以上、報告完了でござる。」
+Report complete."
 ```
 
-**【Human Checkpoint】**
+**[Human Checkpoint]**
 
-上様に修正提案を確認いただき、承認をいただく。
+Submit change proposal to user for review and approval.
 
 ---
 
@@ -323,41 +323,41 @@ PayPayを決済方法として追加。PayPayGateway を実装し、既存アー
 ### OUTPUT (Abbreviated)
 
 ```
-「上様、PR作成完了でござる。
+"PR creation complete.
 
-【作業内容】
-1. ブランチ作成: feature/add-paypay-payment
-2. コード修正: 提案diff通りに実装
-3. コミット: "Add PayPay payment gateway integration"
-4. PR作成: #456
+[Work Performed]
+1. Branch creation: feature/add-paypay-payment
+2. Code changes: Implemented per proposal diffs
+3. Commit: "Add PayPay payment gateway integration"
+4. PR created: #456
 
-【PR URL】
+[PR URL]
 https://github.com/your-org/backend/pull/456
 
-【PR内容】
-# PayPay決済ゲートウェイ追加
+[PR Content]
+# Add PayPay Payment Gateway
 
 ## Summary
-- PayPayGateway 実装
-- GatewayFactory に PayPay 登録
-- PaymentMethod enum に PAYPAY 追加
-- QRコード表示 UI 追加
+- PayPayGateway implementation
+- Register PayPay in GatewayFactory
+- Add PAYPAY to PaymentMethod enum
+- Add QR code display UI
 
 ## Test Plan
 - [ ] Unit tests (PayPayGatewayTest)
-- [ ] Integration tests (決済フロー E2E)
-- [ ] Manual QA (サンドボックス環境で QRコード決済実行)
+- [ ] Integration tests (payment flow E2E)
+- [ ] Manual QA (QR code payment in sandbox environment)
 
 ## Related
 - Impact Analysis: output/impact_analysis_paypay.md
 - Change Proposal: output/propose_changes_paypay.md
 
-以上、報告完了でござる。」
+Report complete."
 ```
 
-**【Human Checkpoint】**
+**[Human Checkpoint]**
 
-上様が PR をレビュー・承認し、マージを指示する。
+User reviews, approves, and instructs merge of the PR.
 
 ---
 
@@ -366,51 +366,51 @@ https://github.com/your-org/backend/pull/456
 ### INPUT
 
 ```
-/build-knowledge PayPay決済のビジネスルールと実装パターン
+/build-knowledge PayPay payment business rules and implementation patterns
 
 Context:
-- 影響分析で判明した実装パターンをドメイン知識として蓄積
-- 今後のQRコード決済（LINE Pay, d払い等）追加時の参考資料
+- Accumulate implementation patterns discovered during impact analysis as domain knowledge
+- Reference material for future QR code payment additions (LINE Pay, d-pay, etc.)
 ```
 
 ### OUTPUT (Abbreviated)
 
 ```
-「上様、ドメイン知識を蓄積いたしました。
+"Domain knowledge accumulated.
 
-【作業】新規作成
-【対象ファイル】input/domain/qr_code_payment_rules.md
+[Action] New creation
+[Target File] input/domain/qr_code_payment_rules.md
 
-【内容】
-- QRコード決済の共通パターン
-- PayPay固有の仕様
-- セキュリティ要件
+[Content]
+- QR code payment common patterns
+- PayPay-specific specifications
+- Security requirements
 
-# QRコード決済ルール
+# QR Code Payment Rules
 
-## 共通パターン
+## Common Patterns
 
-すべてのQRコード決済は以下フローに従う:
+All QR code payments follow this flow:
 
-1. QRコード生成リクエスト（サーバー → 決済プロバイダ）
-2. QRコード表示（UI）
-3. 顧客がスマホアプリでスキャン
-4. 決済完了通知（Webhook）
-5. 注文ステータス更新
+1. QR code generation request (server -> payment provider)
+2. QR code display (UI)
+3. Customer scans with smartphone app
+4. Payment completion notification (Webhook)
+5. Order status update
 
-## PayPay固有仕様
+## PayPay-Specific Specifications
 
-- QRコード有効期限: 5分
-- リトライ: 3回まで（指数バックオフ）
-- Webhook署名検証必須（HMAC-SHA256）
+- QR code expiration: 5 minutes
+- Retry: Up to 3 times (exponential backoff)
+- Webhook signature verification required (HMAC-SHA256)
 
-## セキュリティ要件
+## Security Requirements
 
-- QRコードに注文IDを含めない（ワンタイムトークンのみ）
-- Webhook受信時は署名検証 + IPホワイトリスト
-- 決済完了後、QRコードを無効化
+- Do not include order ID in QR code (one-time token only)
+- On Webhook receipt: signature verification + IP whitelist
+- Invalidate QR code after payment completion
 
-以上、報告完了でござる。」
+Report complete."
 ```
 
 ---
@@ -419,19 +419,19 @@ Context:
 
 | Phase | Skill | Purpose | Output |
 |-------|-------|---------|--------|
-| 1 | `/project-guide` | 参照先特定 | 調査順序のガイダンス |
-| 2 | `/investigate` | 現状把握 | Service概要・拡張ポイント |
-| 3 | `/service-spec` | 詳細仕様確認 | メソッド仕様・依存関係 |
-| 4 | `/impact-analysis` | 影響範囲分析 | ADR形式のレポート |
-| 5 | `/propose-changes` | 修正提案作成 | diff形式の変更提案 |
-| 6 | `/create-pr` | PR作成 | ブランチ・コミット・PR |
-| 7 | `/build-knowledge` | ドメイン知識蓄積 | input/domain/ への追加 |
+| 1 | `/project-guide` | Identify references | Investigation order guidance |
+| 2 | `/investigate` | Understand current state | Service overview, extension points |
+| 3 | `/service-spec` | Detailed specification verification | Method specifications, dependencies |
+| 4 | `/impact-analysis` | Impact scope analysis | ADR-format report |
+| 5 | `/propose-changes` | Create change proposal | Diff-format change proposal |
+| 6 | `/create-pr` | Create PR | Branch, commit, PR |
+| 7 | `/build-knowledge` | Accumulate domain knowledge | Addition to input/domain/ |
 
 ### Key Benefits
 
-- **段階的理解**: 概要 → 詳細 → 影響 → 知識化
-- **再利用可能**: 次回類似タスク時に input/domain/ 参照
-- **チーム共有**: ドキュメントがそのままオンボーディング資料に
+- **Progressive understanding**: Overview -> detail -> impact -> knowledge capture
+- **Reusable**: Reference input/domain/ for similar future tasks
+- **Team sharing**: Documents serve as onboarding materials
 
 ### Typical Timeline
 

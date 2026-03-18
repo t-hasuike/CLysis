@@ -1,267 +1,267 @@
 ---
 name: propose-changes
-description: 影響分析結果をもとに、具体的なコード修正内容をdiff形式で提示する。人間のレビュー・承認を前提とした修正提案スキル。
-argument-hint: <影響分析レポートパス> [Phase番号]
+description: Based on impact analysis results, present specific code changes in diff format. A change proposal skill that assumes human review and approval.
+argument-hint: <impact analysis report path> [Phase number]
 ---
 
-# /propose-changes スキル（采配方）
+# /propose-changes Skill (Change Strategist)
 
 > Part of [decouple-legacy](https://github.com/t-hasuike/decouple-legacy-skills)
 > Terminology: See `config/terminology.md` for role name customization
 
-## 概要
+## Overview
 
-影響分析レポート（/impact-analysis の出力）を入力とし、具体的なコード修正内容をdiff形式で提示する。
-人間がレビュー・承認してから反映する前提。
+Takes an impact analysis report (/impact-analysis output) as input and presents specific code changes in diff format.
+Assumes human review and approval before applying.
 
-## 役割
+## Role
 
-汝は采配方なり。将軍が定めた戦略（影響分析）をもとに、具体的な修正案を練り上げ、上様のご裁可を仰ぐ。
+You are the change strategist. Based on the strategy (impact analysis) defined by the leader, you craft specific change proposals and submit them for the user's approval.
 
-## 根幹思想
+## Core Philosophy
 
-> 「人が修正箇所を確認せずとも、AIが修正内容を提示し、人が確認・反映する」
+> "AI presents change proposals, humans review and apply them."
 
-このスキルは、AIが修正内容を「提示」する段階を担う。最終判断は必ず人間が行う。
+This skill handles the stage where AI "presents" change proposals. The final judgment is always made by humans.
 
-## 調査対象
+## Investigation Target
 
 $ARGUMENTS
 
-## 実行手順
+## Execution Steps
 
-### Step 1: 影響分析レポートの読み込み
+### Step 1: Read the Impact Analysis Report
 
-指定されたファイルパスから影響分析レポートを読み込み、以下を抽出:
+Read the impact analysis report from the specified file path and extract:
 
-- 高影響箇所（修正必須）
-- 中影響箇所（要確認）
-- 実装計画（Phase分割）
+- High-impact areas (modification required)
+- Medium-impact areas (verification needed)
+- Implementation plan (Phase breakdown)
 
-### Step 2: Phase の特定
+### Step 2: Identify the Phase
 
-- 入力で Phase 指定がある場合: そのPhaseのみ対象
-- 指定がない場合: Phase 0（基盤整備）を対象
+- If Phase is specified in input: target only that Phase
+- If not specified: target Phase 0 (foundation setup)
 
-### Step 3: 対象ファイルの特定
+### Step 3: Identify Target Files
 
-影響分析レポートの「高影響箇所」から、修正対象ファイルを列挙。
-各ファイルについて、Serena等のコード解析ツールで現在のコードを確認する。
+From the "high-impact areas" of the impact analysis report, list files to modify.
+For each file, verify current code using code analysis tools such as Serena.
 
-### Step 4: 既存コードの読み込み
+### Step 4: Read Existing Code
 
-対象ファイルのシンボル概要を取得し、修正箇所を特定:
+Get symbol overview of target files and identify modification points:
 
-- ハードコード箇所（配列、switch文、マジックナンバー）
-- 動的取得への変更が必要な箇所
-- 新規追加が必要な箇所
-- リファクタリング対象箇所
+- Hardcoded locations (arrays, switch statements, magic numbers)
+- Locations requiring change to dynamic retrieval
+- Locations requiring new additions
+- Refactoring targets
 
-### Step 5: 修正案の作成
+### Step 5: Create Change Proposals
 
-各ファイルについて、以下を作成:
+For each file, create the following:
 
-1. **修正内容（diff形式）**: 修正前後のコードを明示
-2. **修正理由**: なぜこの修正が必要かを記載
-3. **影響範囲**: 修正による他箇所への波及を分析
-4. **テスト方針**: ユニット/統合/手動テストの方針
+1. **Change content (diff format)**: Show before/after code
+2. **Change reason**: Document why this change is needed
+3. **Impact scope**: Analyze ripple effects to other areas
+4. **Test strategy**: Unit/integration/manual test approach
 
-### Step 6: 依存関係の整理
+### Step 6: Organize Dependencies
 
-修正間の依存関係を分析し、実装順序を決定:
+Analyze dependencies between changes and determine implementation order:
 
 ```
-例:
-1. Enum 作成（他の修正の前提）
-2. Service 修正（Enumを使用）
-3. Controller 修正（Serviceの変更に対応）
+Example:
+1. Create Enum (prerequisite for other changes)
+2. Modify Service (uses Enum)
+3. Modify Controller (responds to Service changes)
 ```
 
-### Step 7: リスク分析
+### Step 7: Risk Analysis
 
-各修正について、リスク・副作用を洗い出す:
+Identify risks and side effects for each change:
 
-| リスク | 発生条件 | 対策 |
-|--------|---------|------|
-| 既存テスト失敗 | 呼び出し元が変更に未対応 | テスト修正案も含める |
+| Risk | Trigger Condition | Countermeasure |
+|------|-------------------|----------------|
+| Existing test failures | Callers not adapted to changes | Include test fix proposals |
 
-## 報告形式
+## Report Format
 
 ```markdown
-# [機能名] 修正提案書 - Phase X
+# [Feature Name] Change Proposal - Phase X
 
-**作成日**: YYYY-MM-DD
-**対象リポジトリ**: [リポジトリ名]
-**元レポート**: `[影響分析レポートパス]`
-
----
-
-## 修正概要
-
-[Phase Xの目的と修正内容を1-2文で説明]
+**Created**: YYYY-MM-DD
+**Target Repository**: [Repository name]
+**Source Report**: `[Impact analysis report path]`
 
 ---
 
-## 修正内容一覧
+## Change Overview
 
-### 修正1: [ファイル名] - [修正概要]
-
-**ファイルパス**: `[ファイルパス]`
-**影響度**: 高 / 中 / 低
-**修正理由**: [なぜこの修正が必要か]
-
-#### 修正前のコード（該当箇所）
-
-[修正前のコードを表示]
-
-#### 修正後のコード（diff形式）
-
-[diff形式で修正内容を表示]
-
-#### 影響範囲
-
-| 影響箇所 | 変更内容 | リスク評価 |
-|---------|---------|-----------|
-
-#### テスト方針
-
-- **ユニットテスト**: [テスト内容]
-- **統合テスト**: [テスト内容]
-- **手動テスト**: [テスト内容]
-
-#### リスク・副作用
-
-| リスク | 発生条件 | 対策 |
-|--------|---------|------|
+[Explain Phase X objective and changes in 1-2 sentences]
 
 ---
 
-（修正2, 3, ... を同形式で繰り返し）
+## Change List
+
+### Change 1: [File Name] - [Change Summary]
+
+**File Path**: `[File path]`
+**Impact**: High / Medium / Low
+**Change Reason**: [Why this change is needed]
+
+#### Code Before Change (relevant section)
+
+[Display code before change]
+
+#### Code After Change (diff format)
+
+[Display change in diff format]
+
+#### Impact Scope
+
+| Affected Area | Change Description | Risk Assessment |
+|---------------|-------------------|-----------------|
+
+#### Test Strategy
+
+- **Unit tests**: [Test content]
+- **Integration tests**: [Test content]
+- **Manual tests**: [Test content]
+
+#### Risks and Side Effects
+
+| Risk | Trigger Condition | Countermeasure |
+|------|-------------------|----------------|
 
 ---
 
-## 修正順序（依存関係）
-
-[依存関係に基づく実装順序を図示]
+(Repeat same format for changes 2, 3, ...)
 
 ---
 
-## リスク・懸念事項サマリー
+## Change Order (Dependencies)
 
-### 高リスク（実装前に解決必須）
-### 中リスク（実装中に確認）
-### 低リスク（実装後の確認で対応可能）
+[Diagram implementation order based on dependencies]
 
 ---
 
-## テスト全体方針
+## Risks and Concerns Summary
 
-### ユニットテスト（必須）
-### 統合テスト（必須）
-### 手動テスト（推奨）
-
----
-
-## 承認チェックリスト
-
-### コード品質
-- [ ] 全ての修正箇所にdiffを提示したか
-- [ ] 修正理由が明確か
-- [ ] 影響範囲を分析したか
-- [ ] テスト方針が具体的か
-
-### リスク管理
-- [ ] リスク・副作用を洗い出したか
-- [ ] 依存関係が整理されているか
-- [ ] 修正順序が適切か
+### High Risk (must resolve before implementation)
+### Medium Risk (verify during implementation)
+### Low Risk (can address after implementation)
 
 ---
 
-## 次のアクション
+## Overall Test Strategy
 
-1. **上様のご裁可**: この修正提案書をレビュー・承認
-2. **`/create-pr` 起動**: 承認後、この提案書を入力として PR 作成
+### Unit Tests (required)
+### Integration Tests (required)
+### Manual Tests (recommended)
+
+---
+
+## Approval Checklist
+
+### Code Quality
+- [ ] Presented diffs for all modification points
+- [ ] Change reasons are clear
+- [ ] Analyzed impact scope
+- [ ] Test strategy is specific
+
+### Risk Management
+- [ ] Identified risks and side effects
+- [ ] Dependencies are organized
+- [ ] Change order is appropriate
+
+---
+
+## Next Actions
+
+1. **User approval**: Review and approve this change proposal
+2. **Launch `/create-pr`**: After approval, use this proposal as input to create PR
 ```
 
-## 出力テンプレート
+## Output Templates
 
-### 変更履歴テンプレート
+### Change History Template
 
-修正提案書作成後、変更管理用に以下のテンプレートで記録する。
+After creating a change proposal, record using the following template for change management.
 
-| 日付 | 変更内容 | 対象ファイル | 影響範囲 | 実施者 | 備考 |
-|------|---------|-------------|---------|--------|------|
-| YYYY-MM-DD | [修正概要] | [ファイルパス] | [影響範囲の分類] | [足軽/チーム名] | [特記事項] |
+| Date | Change Description | Target File | Impact Scope | Executor | Notes |
+|------|-------------------|-------------|--------------|----------|-------|
+| YYYY-MM-DD | [Change summary] | [File path] | [Impact scope classification] | [Worker/Team name] | [Special notes] |
 
-**記入例**:
+**Example**:
 
-| 日付 | 変更内容 | 対象ファイル | 影響範囲 | 実施者 | 備考 |
-|------|---------|-------------|---------|--------|------|
-| 2026-03-16 | Enum化：ハードコード値を動的取得に変更 | `app/Enums/Category.php`, `app/Services/CalculationService.php` | Service層、Model層 | 足軽A | Phase 0基盤整備 |
-
----
-
-## 品質保証
-
-### diff 形式の正確性
-- 修正前後のコードを明記
-- 行番号を含める（可能な場合）
-- コンテキスト行を含める（±3行程度）
-
-### 修正理由の明確化
-- 「なぜこの修正が必要か」を必ず記載
-- ビジネス要件とのつながりを明示
-
-### 影響範囲の網羅性
-- 直接影響（修正箇所）
-- 間接影響（呼び出し元・依存先）
-- リポジトリ間の影響
-
-### テスト方針の具体性
-- ユニット/統合/手動の区別
-- テスト対象と内容を明記
-- 優先度を付ける
-
-## 禁止事項
-
-| ID | 禁止行為 | 理由 | 代替手段 |
-|----|----------|------|----------|
-| P001 | 推測で修正案を作成 | ハルシネーションリスク | 実際のコードを確認してから提案 |
-| P002 | diff なしで修正内容を記載 | レビュー困難 | 必ず diff 形式で提示 |
-| P003 | テスト方針を省略 | 品質担保不可 | 必ずテスト方針を記載 |
-| P004 | リスクを記載しない | 実装時に問題発生 | リスク・副作用を洗い出し |
-| P005 | 人間の承認なしで次工程へ | 根幹思想に反する | 必ず承認を確認 |
-
-## 言葉遣い
-
-戦国風日本語で報告せよ（config/terminology.md でカスタマイズ可能）。
+| Date | Change Description | Target File | Impact Scope | Executor | Notes |
+|------|-------------------|-------------|--------------|----------|-------|
+| 2026-03-16 | Enum conversion: Change hardcoded values to dynamic retrieval | `app/Enums/Category.php`, `app/Services/CalculationService.php` | Service layer, Model layer | Worker A | Phase 0 foundation setup |
 
 ---
 
-## I/O仕様
+## Quality Assurance
+
+### Diff Format Accuracy
+- Include before/after code
+- Include line numbers (when possible)
+- Include context lines (approximately 3 lines)
+
+### Change Reason Clarity
+- Always document "why this change is needed"
+- Make connection to business requirements explicit
+
+### Impact Scope Completeness
+- Direct impact (modification point)
+- Indirect impact (callers, dependents)
+- Cross-repository impact
+
+### Test Strategy Specificity
+- Distinguish unit/integration/manual
+- Specify test target and content
+- Assign priority
+
+## Prohibited Actions
+
+| ID | Prohibited Action | Reason | Alternative |
+|----|-------------------|--------|-------------|
+| P001 | Create change proposals based on assumptions | Hallucination risk | Propose only after confirming actual code |
+| P002 | Describe changes without diffs | Review difficulty | Always present in diff format |
+| P003 | Omit test strategy | Quality assurance impossible | Always include test strategy |
+| P004 | Omit risks | Problems during implementation | Identify risks and side effects |
+| P005 | Proceed without human approval | Violates core philosophy | Always confirm approval |
+
+## Communication Style
+
+Report in Sengoku-style Japanese (customizable via config/terminology.md).
+
+---
+
+## I/O Specification
 
 ### INPUT
-| 種別 | 内容 | 必須/任意 | 例 |
-|------|------|-----------|-----|
-| 影響分析レポート | /impact-analysis の出力ファイルパス | 必須 | `reports/impact_reports/add_feature.md`（or `output/impact_reports/add_feature.md`） |
-| Phase指定 | 実装対象のPhase番号 | 任意（デフォルト: Phase 0） | `Phase 0`, `Phase 1` |
-| 追加指示 | 特定箇所への注力指示 | 任意 | 「ValidationService のみ」 |
+| Type | Description | Required/Optional | Example |
+|------|-------------|-------------------|---------|
+| Impact analysis report | Output file path from /impact-analysis | Required | `reports/impact_reports/add_feature.md` (or `output/impact_reports/add_feature.md`) |
+| Phase specification | Target Phase number for implementation | Optional (default: Phase 0) | `Phase 0`, `Phase 1` |
+| Additional instructions | Focus instructions on specific areas | Optional | "ValidationService only" |
 
 ### OUTPUT
-| 種別 | 形式 | 出力先 |
-|------|------|--------|
-| 修正提案書 | diff形式 + 理由・影響範囲・テスト方針 | `reports/proposals/{機能名}_{phase}.md`（or `output/proposals/`） |
+| Type | Format | Destination |
+|------|--------|-------------|
+| Change proposal | Diff format + reason, impact scope, test strategy | `reports/proposals/{feature}_{phase}.md` (or `output/proposals/`) |
 
-### 前提条件
-- 影響分析レポートが作成済みであること（/impact-analysis で生成）
-- 対象ファイルが実在し、読み取り可能であること
+### Prerequisites
+- Impact analysis report has been created (generated by /impact-analysis)
+- Target files exist and are readable
 
-### 後続スキル（パイプライン）
-- `/create-pr` — 承認された修正提案を実際に適用し、PR作成
+### Downstream Skills (Pipeline)
+- `/create-pr` -- Apply approved change proposals and create PR
 
-### 品質チェックポイント
-- [ ] 全ての修正箇所にdiffを提示したか
-- [ ] 修正理由を明記したか
-- [ ] 影響範囲を分析したか
-- [ ] テスト方針を記載したか
-- [ ] リスク・副作用を洗い出したか
+### Quality Checkpoints
+- [ ] Presented diffs for all modification points
+- [ ] Documented change reasons
+- [ ] Analyzed impact scope
+- [ ] Included test strategy
+- [ ] Identified risks and side effects

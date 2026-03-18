@@ -1,27 +1,27 @@
-# /create-pr 使用例
+# /create-pr Usage Example
 
-## シナリオ: Express Shipping 追加 - Phase 0 の PR 作成
+## Scenario: Express Shipping Addition - Phase 0 PR Creation
 
-### 前提
+### Prerequisites
 
-1. `/propose-changes` で修正提案書が作成済み
-   - ファイルパス: `output/proposals/add_express_shipping_phase0.md`
-2. 上様が修正提案書をレビュー・承認済み
+1. `/propose-changes` has created a change proposal
+   - File path: `output/proposals/add_express_shipping_phase0.md`
+2. User has reviewed and approved the change proposal
 
-### 実行
+### Execution
 
 ```
 /create-pr output/proposals/add_express_shipping_phase0.md my-ecommerce-app
 ```
 
-引数:
-- `output/proposals/add_express_shipping_phase0.md`: 修正提案書パス
-- `my-ecommerce-app`: 対象リポジトリ
-- ブランチ名省略 → 自動生成: `feature/add-express-shipping-phase0`
+Arguments:
+- `output/proposals/add_express_shipping_phase0.md`: Change proposal path
+- `my-ecommerce-app`: Target repository
+- Branch name omitted -> auto-generated: `feature/add-express-shipping-phase0`
 
-### 実行内容
+### Execution Details
 
-#### 1. ブランチ作成
+#### 1. Branch Creation
 
 ```bash
 git checkout develop
@@ -29,81 +29,81 @@ git pull origin develop
 git checkout -b feature/add-express-shipping-phase0
 ```
 
-#### 2. コード修正
+#### 2. Code Changes
 
-| ファイル | 操作 | 結果 |
-|---------|------|------|
-| `app/Enums/ShippingMethod.php` | Write（新規） | 成功 |
-| `app/Services/OrderService.php` | Edit | 成功 |
+| File | Operation | Result |
+|------|-----------|--------|
+| `app/Enums/ShippingMethod.php` | Write (new) | Success |
+| `app/Services/OrderService.php` | Edit | Success |
 
-#### 3. コミット
+#### 3. Commit
 
 ```
-Express Shipping: Phase 0（基盤整備）
+Express Shipping: Phase 0 (Foundation Setup)
 
-Why: 新配送方法「Express」を追加するため、ハードコードを排除し動的取得に変更
-What: ShippingMethod Enum 作成、OrderService を Enum から取得に変更
-How: ShippingMethod::getAll() メソッドで全配送方法を動的取得
+Why: To add new shipping method "Express," eliminate hardcoded values and switch to dynamic retrieval
+What: Created ShippingMethod Enum, changed OrderService to retrieve from Enum
+How: Dynamic retrieval of all shipping methods via ShippingMethod::getAll()
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 
-#### 4. PR作成
+#### 4. PR Creation
 
 ```bash
-gh pr create --title "Express Shipping - Phase 0（基盤整備）" \
+gh pr create --title "Express Shipping - Phase 0 (Foundation Setup)" \
   --body "..." --base develop
 ```
 
-### 出力例
+### Output Example
 
-#### 将軍への報告
+#### Report to Leader
 
 ```
-「上様、PR作成が完了いたしました。
+"PR creation complete.
 
-【PR URL】
+[PR URL]
 https://github.com/my-org/my-ecommerce-app/pull/456
 
-【修正内容】
-- app/Enums/ShippingMethod.php: ShippingMethod Enum 作成（新規）
-- app/Services/OrderService.php: 配送方法を動的取得に変更
+[Changes]
+- app/Enums/ShippingMethod.php: Created ShippingMethod Enum (new)
+- app/Services/OrderService.php: Changed shipping methods to dynamic retrieval
 
-【コミット数】1件
+[Commit Count] 1
 
-【テスト結果】
-- ユニットテスト: PASS
-- 統合テスト: PASS
+[Test Results]
+- Unit tests: PASS
+- Integration tests: PASS
 
-【次のアクション】
-PR のレビュー・承認をお願いいたします。
+[Next Actions]
+Please review and approve the PR.
 
-実行ログ: output/pr_logs/add_express_shipping_phase0.md
-」
+Execution log: output/pr_logs/add_express_shipping_phase0.md
+"
 ```
 
 ---
 
-### ポイント
+### Key Points
 
-- 修正提案書の承認後にのみ実行
-- コミットメッセージは5W1H形式
-- PR本文に修正概要・テスト結果・リスクを記載
-- 実行ログを記録し、トレーサビリティを確保
-- 人間がPRレビュー・承認してからマージ
+- Execute only after change proposal is approved
+- Commit messages follow 5W1H format
+- PR body includes change summary, test results, and risks
+- Execution log recorded for traceability
+- Humans review and approve PR before merge
 
-### パイプライン全体像
+### Full Pipeline View
 
 ```
-/investigate → /service-spec → /impact-analysis
-    ↓
+/investigate -> /service-spec -> /impact-analysis
+    |
 /propose-changes
-    ↓ 修正提案書
-  【人間の確認①】修正内容が妥当か
-    ↓
+    | Change proposal
+  [Human Review 1] Are the changes appropriate?
+    |
 /create-pr
-    ↓ PR URL
-  【人間の確認②】PRレビュー・承認
-    ↓
-マージ → 実装完了
+    | PR URL
+  [Human Review 2] PR review and approval
+    |
+Merge -> Implementation Complete
 ```

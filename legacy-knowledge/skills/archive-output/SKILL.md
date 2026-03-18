@@ -1,312 +1,312 @@
 ---
 name: archive-output
-description: output/の調査レポートを、ADR/spec/domain知識/俯瞰レポートに分類・変換し、input/に移動する。ドキュメント整備と知識アーカイブ化を自動化。
-argument-hint: [フィルタ条件（任意）] - 例: `--type adr` / `--since 2026-02-01` / デフォルト: output/全ファイル
+description: Classify and convert investigation reports in output/ into ADR/spec/domain knowledge/overview reports, and move them to input/. Automates document organization and knowledge archiving.
+argument-hint: [filter criteria (optional)] - e.g., `--type adr` / `--since 2026-02-01` / default: all files in output/
 ---
 
 > This is a generic skill from [decouple-legacy](https://github.com/t-hasuike/decouple-legacy-skills).
 > Terminology can be customized via `config/terminology.md`.
 
-# ドキュメントアーカイブスキル
+# Document Archive Skill
 
-## 役割
+## Role
 
-調査レポート庫（output/）を整理し、確定知識（input/）に昇華させる役目を担う。調査の成果を体系的に記録し、組織の知識資産として継承する。
+Responsible for organizing the investigation report repository (output/) and elevating it to confirmed knowledge (input/). Systematically records investigation results and inherits them as organizational knowledge assets.
 
-## 目的
+## Purpose
 
-output/ にたまった調査レポート・分析資料を適切な形式に変換・分類し、入出力ディレクトリ間を整序する。
+Convert and classify accumulated investigation reports and analysis materials in output/ into appropriate formats, ordering the input/output directories.
 
 ```
-output/（一時的な調査結果）
+output/ (temporary investigation results)
      |
-  棚卸し・分類
+  Inventory & classification
      |
-input/context/adr/（意思決定履歴）
-input/context/（俯瞰レポート・複合仕様）
-input/domain/（確定済み事実）
+input/context/adr/ (decision history)
+input/context/ (overview reports, compound specifications)
+input/domain/ (confirmed facts)
 ```
 
-## アーカイブの4つのカテゴリー
+## 4 Archive Categories
 
-| カテゴリ | 形式 | 置き場所 | 用途 | 例 |
-|---------|------|---------|------|-----|
-| **ADR** | 意思決定記録 | `input/context/adr/` | 「なぜこの決定？」という文脈を記録 | ADR-2026-03-16-feature-calc-method.md |
-| **SPEC** | 詳細仕様書 | `input/context/` | エンジニアが読んで実装できるレベルの詳細 | feature-calculation-spec.md |
-| **DOMAIN** | ドメイン知識 | `input/domain/` | ビジネスルール・用語定義（確定済み事実） | calculation-rules.md |
-| **俯瞰レポート** | 複合分析 | `input/context/` | 複数の関連システム・概念を概観 | payment-system-overview.md |
-| **削除対象** | -- | （削除） | 一時作業文書・重複・陳腐化済み | -- |
-| **保管** | -- | `input/context/archive/` | 参考資料として保存（将来の類似調査の手がかり） | -- |
+| Category | Format | Destination | Purpose | Example |
+|----------|--------|------------|---------|---------|
+| **ADR** | Decision record | `input/context/adr/` | Record context: "Why this decision?" | ADR-2026-03-16-feature-calc-method.md |
+| **SPEC** | Detailed specification | `input/context/` | Engineer-readable implementation-level detail | feature-calculation-spec.md |
+| **DOMAIN** | Domain knowledge | `input/domain/` | Business rules, term definitions (confirmed facts) | calculation-rules.md |
+| **Overview report** | Compound analysis | `input/context/` | Overview of multiple related systems/concepts | payment-system-overview.md |
+| **Delete target** | -- | (delete) | Temporary working documents, duplicates, obsolete | -- |
+| **Archive** | -- | `input/context/archive/` | Preserved as reference material (clue for future similar investigations) | -- |
 
-## 実行フロー
+## Execution Flow
 
 ```mermaid
 flowchart TD
-    A["1. 棚卸し（output/全ファイル一覧取得）"] --> B["2. 内容確認（タイトル・本文要約）"]
-    B --> C["3. 分類（ADR/SPEC/DOMAIN/俯瞰/削除/保管）"]
-    C --> D["4. ユーザーに確認（分類結果・変換方針）"]
-    D --> E{ユーザーの裁可}
-    E -->|却下| F["終了"]
-    E -->|承認| G{大規模？}
-    G -->|10ファイル以上| H["参謀に相談（タスク分解）"]
-    G -->|10以下| I["足軽に委任（変換実行）"]
+    A["1. Inventory (get full file list from output/)"] --> B["2. Content check (title, body summary)"]
+    B --> C["3. Classify (ADR/SPEC/DOMAIN/Overview/Delete/Archive)"]
+    C --> D["4. Confirm with user (classification results, conversion plan)"]
+    D --> E{User approval}
+    E -->|Rejected| F["End"]
+    E -->|Approved| G{Large scale?}
+    G -->|10+ files| H["Consult planner (task decomposition)"]
+    G -->|10 or fewer| I["Delegate to workers (execute conversion)"]
     H --> I
-    I --> J["変換実行"]
-    J --> K["ファイル削除"]
-    K --> L["報告"]
+    I --> J["Execute conversion"]
+    J --> K["Delete files"]
+    K --> L["Report"]
 ```
 
-## 分類基準
+## Classification Criteria
 
-### (1) ADR（意思決定記録）に分類する条件
+### (1) Criteria for ADR (Decision Record) Classification
 
-- 複数の選択肢から1つを選んだ経過が記載されている
-- 意思決定の背景（Context）が説明されている
-- 決定の根拠（Rationale）がある
-- 決定による影響（Consequences）が記載されている
+- Multiple options were evaluated and one was selected
+- Background of the decision (Context) is explained
+- Rationale for the decision exists
+- Consequences of the decision are documented
 
-**例**:
-- 計算ロジックの実装方式を選定した記録
-- 支払い方法の変更決定
-- リポジトリ間の責務分割を決定した時の議論
+**Examples**:
+- Record of selecting an implementation approach for calculation logic
+- Payment method change decision
+- Discussion when deciding repository responsibility boundaries
 
-### (2) SPEC（詳細仕様書）に分類する条件
+### (2) Criteria for SPEC (Detailed Specification) Classification
 
-- 処理フロー・アルゴリズム・実装方法が詳細に記載されている
-- エンジニアが読んで即座に実装・修正できるレベル
-- APIのリクエスト/レスポンス形式、DBスキーマの詳細、バリデーションルール等
-- 既知の歪みパターン・エラーハンドリングを含む
+- Processing flow, algorithm, implementation method documented in detail
+- Engineer-readable level for immediate implementation/modification
+- API request/response formats, DB schema details, validation rules, etc.
+- Includes known distortion patterns and error handling
 
-### (3) DOMAIN（ドメイン知識）に分類する条件
+### (3) Criteria for DOMAIN (Domain Knowledge) Classification
 
-- 確定済みの事実・ビジネスルール・用語定義である
-- 変更可能性が低い（DBマスタで管理されるものは除外）
-- 複数エンジニアが参照する基本用語・分類体系
-- 「なぜそうなっているか」の歴史的背景を含む
+- Confirmed facts, business rules, term definitions
+- Low probability of change (exclude items managed in DB master)
+- Basic terms and classification systems referenced by multiple engineers
+- Includes historical context of "why it's this way"
 
-**除外対象（DBが真実の源）**:
-- 現在の価格テーブル（価格は日々変動、DBを参照すべき）
-- 現在の集計データ（時刻・合計等）
+**Exclusion targets (DB is the source of truth)**:
+- Current price tables (prices fluctuate daily; should reference DB)
+- Current aggregate data (timestamps, totals, etc.)
 
-### (4) 俯瞰レポート（複合分析）に分類する条件
+### (4) Criteria for Overview Report (Compound Analysis) Classification
 
-- 複数のService/Model/リポジトリの関係を横断的に分析したもの
-- 複数概念の統合（例:「支払いシステム全体の構成」）
-- マネージャー向けサマリー + エンジニア向け詳細の両層構造
-- mermaid図で可視化されている
+- Cross-sectional analysis of relationships across multiple Services/Models/repositories
+- Integration of multiple concepts (e.g., "Overall payment system architecture")
+- Dual-layer structure: manager-facing summary + engineer-facing detail
+- Visualized with mermaid diagrams
 
-### (5) 削除対象に分類する条件
+### (5) Criteria for Delete Target Classification
 
-- 一時的な作業メモ（調査過程の草稿）
-- 他ファイルに統合済み
-- 陳腐化（既に状況が変わっている）
-- 重複（既存ドメイン知識と内容が同一）
+- Temporary working notes (investigation process drafts)
+- Already merged into other files
+- Obsolete (situation has already changed)
+- Duplicate (content identical to existing domain knowledge)
 
-**確認項目**:
-- 元の報告者に「削除する旨」を通知したか
-- 相互参照しているファイルはないか
+**Verification items**:
+- Has the original reporter been notified of the deletion intent?
+- Are there cross-referenced files?
 
-### (6) 保管対象に分類する条件
+### (6) Criteria for Archive Classification
 
-- 参考資料的価値がある（将来の類似調査の手がかり）
-- 決定には至らなかったが、有用な分析がある
-- レガシーコード読解の記録（将来の大規模改修時に有用）
+- Has reference value (clue for future similar investigations)
+- Useful analysis that did not lead to a decision
+- Records of legacy code reading (useful for future large-scale modifications)
 
-**保管先**: `input/context/archive/` にリダイレクト
+**Destination**: Redirect to `input/context/archive/`
 
-## 変換ルール
+## Conversion Rules
 
-### ADRテンプレート（input/context/adr/）
+### ADR Template (input/context/adr/)
 
 ```markdown
-# ADR: [タイトル]
+# ADR: [Title]
 
-**日付**: YYYY-MM-DD
-**対象リポジトリ**: [リポジトリ名]
-**提案者**: [調査実施者名]
-**ステータス**: 提案中 / 承認済み / 実装待ち / 完了
+**Date**: YYYY-MM-DD
+**Target Repository**: [Repository name]
+**Proposer**: [Investigator name]
+**Status**: Proposed / Approved / Awaiting Implementation / Completed
 
-## 背景（Context）
-[意思決定が必要になった背景。「なぜこの問題が発生したのか」を説明]
+## Context
+[Background necessitating the decision. Explain "why this problem occurred"]
 
-## 発見事項（Findings）
-[調査で判明した事実。複数の選択肢と各々のメリット・デメリット]
+## Findings
+[Facts discovered through investigation. Multiple options with pros/cons for each]
 
-**選択肢A**: ...（メリット: ..., デメリット: ...）
-**選択肢B**: ...（メリット: ..., デメリット: ...）
+**Option A**: ... (Pros: ..., Cons: ...)
+**Option B**: ... (Pros: ..., Cons: ...)
 
-## 決定事項（Decision）
-**採択**: 選択肢B
+## Decision
+**Adopted**: Option B
 
-**理由**: [なぜこれを選んだのか]
+**Reason**: [Why this was chosen]
 
-## 根拠（Rationale）
-[技術的・ビジネス的な根拠。実装の詳細は別途spec を参照]
+## Rationale
+[Technical and business rationale. Refer to separate spec for implementation details]
 
-## 影響（Consequences）
-[この決定による影響。修正が必要なファイル・スケジュール等]
+## Consequences
+[Impact of this decision. Files requiring modification, schedule, etc.]
 
-- 修正対象ファイル: [ファイル]
-- 影響を受けるService: [Service名]
-- 実装スケジュール: [予定日]
+- Files to modify: [files]
+- Affected Services: [Service names]
+- Implementation schedule: [Planned date]
 
-## 未解決事項
-[この決定では解決しなかった課題・将来の再検討が必要な点]
+## Unresolved Issues
+[Issues not resolved by this decision. Points requiring future reconsideration]
 
-## 関連ドメイン知識
-- [参照ファイル]: [簡潔な説明]
+## Related Domain Knowledge
+- [Reference file]: [Brief description]
 
-## バージョン履歴
-| 日付 | 版 | 内容 |
-|------|-----|------|
-| YYYY-MM-DD | 1.0 | 初版 |
+## Version History
+| Date | Version | Description |
+|------|---------|-------------|
+| YYYY-MM-DD | 1.0 | Initial version |
 ```
 
-### SPECテンプレート（input/context/）
+### SPEC Template (input/context/)
 
 ```markdown
-# [タイトル] 仕様書
+# [Title] Specification
 
-**最終更新**: YYYY-MM-DD
-**対象リポジトリ**: [リポジトリ名]
-**関連ADR**: ADR: [タイトル]（意思決定の背景）
+**Last Updated**: YYYY-MM-DD
+**Target Repository**: [Repository name]
+**Related ADR**: ADR: [Title] (decision background)
 
-## サマリー
-[1-2段落で仕様全体を概観。エンジニアが読んで即座に理解できるレベル]
+## Summary
+[1-2 paragraphs overviewing the full specification. Engineer-readable level for immediate understanding]
 
-## [主要セクション（内容に応じて自由に構成）]
+## [Main Sections (freely structured based on content)]
 
-### 処理フロー
-[mermaid sequenceDiagram推奨。複数Service間のやり取りが見える図]
+### Processing Flow
+[mermaid sequenceDiagram recommended. Diagram showing interactions between multiple Services]
 
-### データモデル
-[テーブル・API request/responseの詳細。エンジニアが実装に使える形式]
+### Data Model
+[Table, API request/response details. Format usable by engineers for implementation]
 
-### バリデーション・エラーハンドリング
-[入力値の制約、エラーケース、エラーメッセージ]
+### Validation and Error Handling
+[Input value constraints, error cases, error messages]
 
-### 既知の歪みパターン
-[実装上の制約・過去の判断・技術的負債。「なぜこんなことになってるの？」への回答]
+### Known Distortion Patterns
+[Implementation constraints, past decisions, technical debt. Answers "why is it like this?"]
 
-## 未解決事項
-[実装完了時点で残された課題。「今後改修する場合の要検討事項」]
+## Unresolved Issues
+[Issues remaining at implementation completion. "Items requiring consideration for future modifications"]
 
-## 関連ドメイン知識
-- input/domain/xxx.md: [簡潔な説明]
+## Related Domain Knowledge
+- input/domain/xxx.md: [Brief description]
 
-## バージョン履歴
-| 日付 | 版 | 内容 |
-|------|-----|------|
-| YYYY-MM-DD | 1.0 | 初版 |
+## Version History
+| Date | Version | Description |
+|------|---------|-------------|
+| YYYY-MM-DD | 1.0 | Initial version |
 ```
 
-### DOMAINテンプレート（input/domain/）
+### DOMAIN Template (input/domain/)
 
 ```markdown
-# [ドメイン概念名]
+# [Domain Concept Name]
 
-**最終更新**: YYYY-MM-DD
-**用語定義**: [1行で定義]
+**Last Updated**: YYYY-MM-DD
+**Term Definition**: [1-line definition]
 
-## 概要
-[ビジネスドメインにおける定義・背景。なぜこの概念が必要か]
+## Overview
+[Definition and background in the business domain. Why this concept is needed]
 
-## 主要な概念・分類
+## Key Concepts and Classifications
 
-[ビジネスルール、分類体系、制約条件等]
+[Business rules, classification systems, constraints, etc.]
 
-### [サブ概念1]
-[詳細]
+### [Sub-concept 1]
+[Details]
 
-### [サブ概念2]
-[詳細]
+### [Sub-concept 2]
+[Details]
 
-## 歴史的背景
-[「なぜこうなっているか」の経緯。過去の判断・制約の理由]
+## Historical Background
+[Context of "why it's this way." Reasons for past decisions and constraints]
 
-## エンジニアへの指示
-[実装時に気をつけるべき点。テーブル参照、検証ロジック等]
+## Instructions for Engineers
+[Points to be aware of during implementation. Table references, validation logic, etc.]
 
-## 関連するService / Model
-- [Service名]: [用途]
-- [Model名]: [用途]
+## Related Services / Models
+- [Service name]: [Purpose]
+- [Model name]: [Purpose]
 
-## バージョン履歴
-| 日付 | 版 | 内容 |
-|------|-----|------|
-| YYYY-MM-DD | 1.0 | 初版 |
+## Version History
+| Date | Version | Description |
+|------|---------|-------------|
+| YYYY-MM-DD | 1.0 | Initial version |
 ```
 
-## 共通ルール
+## Common Rules
 
-### 主語明示ルール（Subject-First Rule）
-- ドメイン用語・フラグ名の説明には必ず「誰の・何の」を明示
-- 例：NG 「flagが0の場合...」 → OK 「記事の削除フラグ(flag)が0の場合...」
+### Subject-First Rule
+- When describing domain terms and flag names, always explicitly state "whose/what"
+- Example: NG "flag is 0..." -> OK "Article's deletion flag (flag) is 0..."
 
-### 参照の明示
-- 引用元コードは `app/Services/xxx.php:45-67` の形式で記載
-- 前提知識は `input/domain/` のファイル名で参照
-- ADRは `[ADR: タイトル名](../../adr/ファイル名.md)` で相互参照
+### Explicit References
+- Source code citations in `app/Services/xxx.php:45-67` format
+- Background knowledge referenced by `input/domain/` file names
+- ADRs cross-referenced as `[ADR: Title](../../adr/filename.md)`
 
-### フォーマット規約
-- mermaid図は積極的に使用（可視化の効果が実証済み）
-- コード引用は最小限に（陳腐化防止）
+### Format Conventions
+- Use mermaid diagrams actively (visualization effectiveness proven)
+- Minimize code citations (prevent obsolescence)
 
-### 価格・変動値の扱い
-- 変動する値は書かない（DBが真実の源）
-- 計算式・ロジックはOK（例: 「合計 = 基本価格 x 数量」）
+### Handling Prices and Variable Values
+- Do not write variable values (DB is the source of truth)
+- Formulas and logic are OK (e.g., "total = base price x quantity")
 
-## I/O仕様
+## I/O Specification
 
 ### INPUT
-| 種別 | 内容 | 必須/任意 | 例 |
-|------|------|-----------|-----|
-| フィルタ | 対象ファイルの絞り込み | 任意 | `--type adr` / `--since 2026-02-01` / デフォルト: output/全ファイル |
+| Type | Description | Required/Optional | Example |
+|------|-------------|-------------------|---------|
+| Filter | Narrow target files | Optional | `--type adr` / `--since 2026-02-01` / default: all files in output/ |
 
 ### OUTPUT
-| 種別 | 形式 | 出力先 |
-|------|------|--------|
-| アーカイブ計画 | 分類リスト + Markdown形式 | stdout（リーダーへの報告） |
-| 変換済みファイル | input/配下の各ディレクトリ | input/context/adr/, input/context/, input/domain/ |
-| 削除ファイル一覧 | テキストリスト | stdout（確認用） |
+| Type | Format | Destination |
+|------|--------|-------------|
+| Archive plan | Classification list + Markdown format | stdout (report to leader) |
+| Converted files | Under respective input/ directories | input/context/adr/, input/context/, input/domain/ |
+| Delete file list | Text list | stdout (for confirmation) |
 
-### 前提条件
-- output/ にアーカイブ対象ファイルが存在すること
-- input/ 配下のディレクトリ構造が整っていること
+### Prerequisites
+- Archive target files exist in output/
+- Directory structure under input/ is set up
 
-### 品質チェックポイント
-- [ ] 全ファイルを棚卸しし、落ちがないか
-- [ ] 分類理由を明確に述べたか
-- [ ] 相互参照（ADR → SPEC → DOMAIN）が設定されているか
-- [ ] 主語明示ルールを守ったか
-- [ ] 削除対象の依存関係を確認したか
+### Quality Checkpoints
+- [ ] Inventoried all files with no omissions
+- [ ] Clearly stated classification reasons
+- [ ] Cross-references (ADR -> SPEC -> DOMAIN) are set
+- [ ] Subject-First Rule followed
+- [ ] Verified dependencies of delete targets
 
-## 参考: 既存スキルとの連携
+## Reference: Integration with Existing Skills
 
-- `/investigate` -- コード調査の出力をこのスキルでADR/SPECに変換
-- `/service-spec` -- Service仕様サマリーをこのスキルでSPEC/ADRに分類
-- `/impact-analysis` -- 影響分析レポートを俯瞰レポートに昇華
-- `/project-guide` -- プロジェクト全体の構成を把握した上で分類を判断
+- `/investigate` -- Convert investigation output to ADR/SPEC using this skill
+- `/service-spec` -- Classify Service specification summaries into SPEC/ADR using this skill
+- `/impact-analysis` -- Elevate impact analysis reports to overview reports
+- `/project-guide` -- Make classification decisions after understanding overall project structure
 
 ---
 
-## スキル実行例
+## Skill Execution Examples
 
-### 小規模（3ファイル）
+### Small Scale (3 files)
 ```
-リーダー: /archive-output --type adr --since 2026-03-01
-足軽: 分類報告（3ファイル）
-リーダー: 承認
-足軽: 変換実行 → 完了報告
+Leader: /archive-output --type adr --since 2026-03-01
+Worker: Classification report (3 files)
+Leader: Approved
+Worker: Execute conversion -> completion report
 ```
 
-### 大規模（15ファイル）
+### Large Scale (15 files)
 ```
-リーダー: /archive-output （全ファイル）
-足軽: 棚卸し・分類報告
-リーダー: 「参謀に相談が必要」と判断
-参謀: タスク分解（3-4フェーズに分割）
-リーダー: チーム編成・足軽に委任
-足軽(複数): 並列変換実行
-足軽: 完了報告
+Leader: /archive-output (all files)
+Worker: Inventory and classification report
+Leader: Determines "planner consultation needed"
+Planner: Task decomposition (3-4 phases)
+Leader: Team formation, delegate to workers
+Workers (multiple): Execute conversions in parallel
+Workers: Completion report
 ```

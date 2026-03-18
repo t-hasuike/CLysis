@@ -1,44 +1,44 @@
 ---
-description: バグの原因特定と修正方針の策定を支援する。project-guide → investigate → service-spec のスキルチェーンを実行する。
-argument-hint: "<バグの症状・エラー内容>"
+description: Support bug root cause identification and fix strategy formulation. Execute project-guide -> investigate -> service-spec skill chain.
+argument-hint: "<bug symptoms / error description>"
 ---
 
-# /bug-hunt — バグ調査フロー
+# /bug-hunt -- Bug Investigation Flow
 
-## 概要
+## Overview
 
-バグ修正タスク時に、原因の特定から修正方針の策定までを体系的に実行するワークフロー。
+A workflow for systematically executing from cause identification to fix strategy formulation for bug fix tasks.
 
-## ワークフロー
+## Workflow
 
-### Step 1: 参照ガイドの取得
+### Step 1: Get Reference Guide
 
-**project-guide** skill を適用:
+Apply **project-guide** skill:
 
-- バグ修正に必要なドキュメントの参照順序を特定する
+- Identify the document reference order needed for bug fixing
 
 $ARGUMENTS
 
-> **確認**: 「殿、参照ガイドを整えました。次の段（原因調査）に進んでよろしいか？」
+> **Checkpoint**: "Reference guide prepared. Ready to proceed to the next phase (cause investigation)?"
 
-### Step 2: 原因調査
+### Step 2: Cause Investigation
 
-**investigate** skill を適用:
+Apply **investigate** skill:
 
-- エラー内容・症状からコードフローをトレースする
-- 原因箇所をファイルパス:行番号で特定する
-- 発見したリスクを記録する
+- Trace the code flow from the error content/symptoms
+- Identify the cause location with file path:line number
+- Record discovered risks
 
-> **確認**: 「殿、原因の目星がつきました。次の段（仕様確認）に進んでよろしいか？」
+> **Checkpoint**: "Narrowed down the likely cause. Ready to proceed to the next phase (specification verification)?"
 
-### Step 3: 該当Service の仕様確認
+### Step 3: Verify Relevant Service Specification
 
-**service-spec** skill を適用:
+Apply **service-spec** skill:
 
-- 原因箇所のService仕様を整理し、正しい動作を確認する
-- 修正方針の判断材料を提供する
+- Organize the specification of the cause location's Service and verify correct behavior
+- Provide judgment material for the fix strategy
 
-### Step 4: 次の行動の提案
+### Step 4: Suggest Next Actions
 
-- 「殿、修正に着手されるなら `/implement` をお使いくだされ」
-- 「影響範囲が広い場合は `/investigate-flow` で影響分析までお進みくだされ」
+- "If you'd like to proceed with the fix, use `/implement`"
+- "If the impact scope is wide, proceed with impact analysis using `/investigate-flow`"

@@ -1,190 +1,190 @@
 ---
 name: code-review
-description: PRのコード品質とビジネス観点を体系的にレビューし、承認判断材料を提供する。
-argument-hint: <PR番号> [リポジトリ名] [レビュー観点]
+description: Systematically review PR code quality and business perspective, providing approval judgment material.
+argument-hint: <PR number> [repository name] [review focus]
 ---
 
 > This is a generic skill from [decouple-legacy](https://github.com/t-hasuike/decouple-legacy-skills).
 > Terminology can be customized via `config/terminology.md`.
 
-# PRレビュースキル
+# PR Review Skill
 
-## 概要
+## Overview
 
-プルリクエストのコード品質とビジネス観点を体系的にレビューし、承認判断材料を提供する。
+Systematically review pull request code quality and business perspective, providing approval judgment material.
 
-※ See config/terminology.md for term customization
+See config/terminology.md for term customization
 
-## レビュー対象
+## Review Target
 
 $ARGUMENTS
 
-## レビューフロー
+## Review Flow
 
 ```
-1. PR情報取得（変更ファイル・diff取得）
+1. Get PR information (changed files, diff retrieval)
    |
-2. ドメイン知識参照（input/domain/ + input/staging/in_progress/）
+2. Reference domain knowledge (input/domain/ + input/staging/in_progress/)
    |
-3. コード品質レビュー
+3. Code quality review
    |
-4. ビジネス観点レビュー
+4. Business perspective review
    |
-5. 総合評価・承認判断
+5. Overall evaluation and approval judgment
 ```
 
-## 調査手順
+## Investigation Procedure
 
-### Step 1: PR情報取得
-- GitHub MCP tool でPR概要・変更ファイル・diffを取得
-- 変更ファイル数でチーム編成を判断
+### Step 1: Get PR Information
+- Retrieve PR overview, changed files, and diffs using GitHub MCP tool
+- Determine team composition based on number of changed files
 
-### Step 2: ドメイン知識参照
-- `input/domain/` の関連ドメイン知識を確認
-- `input/staging/in_progress/` のタスク仕様・影響分析レポートを参照
-- 変更内容に関連するビジネスルールを把握
+### Step 2: Reference Domain Knowledge
+- Check related domain knowledge in `input/domain/`
+- Reference task specification and impact analysis reports in `input/staging/in_progress/`
+- Understand business rules related to the changes
 
-### Step 3: コード品質レビュー
-- 変更シンボルの実装品質（構造・パターン・エラーハンドリング）
-- 既存コードとの整合性
-- セキュリティ・パフォーマンス懸念
+### Step 3: Code Quality Review
+- Implementation quality of changed symbols (structure, patterns, error handling)
+- Consistency with existing code
+- Security and performance concerns
 
-### Step 4: ビジネス観点レビュー
-- 要件との整合性確認（影響分析レポートと照合）
-- ドメイン知識との整合性確認
-- 影響範囲の妥当性確認
-- テストケースの網羅性（ビジネスシナリオの観点）
+### Step 4: Business Perspective Review
+- Requirements alignment verification (cross-reference with impact analysis report)
+- Domain knowledge alignment verification
+- Impact scope appropriateness verification
+- Test case coverage (from business scenario perspective)
 
-### Step 5: 総合評価
-- 承認判断（承認 / 条件付き承認 / 修正必須）
-- 次アクションの提示
+### Step 5: Overall Evaluation
+- Approval judgment (Approved / Conditional Approval / Changes Required)
+- Present next actions
 
-## チーム編成パターン
+## Team Composition Patterns
 
-| PR規模 | 変更ファイル数 | チーム構成 | 備考 |
-|--------|--------------|-----------|------|
-| 小規模 | ~5ファイル | 足軽2名（コード品質+ビジネス観点） | Task tool 可 |
-| 中規模 | 6~20ファイル | 足軽3名（品質+ビジネス+テスト観点） | チームメンバー推奨 |
-| 大規模 | 20ファイル以上 | 家老相談→チーム編成 | 領域別分担 |
+| PR Scale | Changed Files | Team Composition | Notes |
+|----------|--------------|-----------------|-------|
+| Small | ~5 files | 2 workers (code quality + business perspective) | Task tool acceptable |
+| Medium | 6-20 files | 3 workers (quality + business + test perspective) | Team members recommended |
+| Large | 20+ files | Consult planner -> form team | Divide by domain area |
 
-**重要**: 将軍は自らレビューせず、必ず足軽に委任すること（F002）
+**Important**: Leader does not review directly; always delegate to workers (F002)
 
-## 出力形式
+## Output Format
 
 ```markdown
-# PR#[番号] レビューレポート
+# PR#[Number] Review Report
 
-**PR**: [タイトル]
-**リポジトリ**: [対象リポジトリ（複数の場合は各リポジトリ）]
-**レビュー日**: YYYY-MM-DD
-
----
-
-## 1. PR概要
-
-### 変更内容
-[PRの目的・概要を1-2文で記載]
-
-### 変更ファイル一覧
-| ファイルパス | 変更種別 | 行数 |
-|-------------|---------|------|
-| xxx.php | 追加 | +50 |
+**PR**: [Title]
+**Repository**: [Target repository (each repository if multiple)]
+**Review Date**: YYYY-MM-DD
 
 ---
 
-## 2. コード品質レビュー
+## 1. PR Overview
 
-### [Pass] 良い点
-- [具体的なファイル:行番号を明記]
+### Change Description
+[Describe PR purpose and overview in 1-2 sentences]
 
-### [注意] 改善提案
-| 箇所 | 内容 | 優先度 | 改善案 |
-|------|------|--------|--------|
-| xxx.php:45 | ... | 高 | ... |
+### Changed File List
+| File Path | Change Type | Lines |
+|-----------|-----------|-------|
+| xxx.php | Addition | +50 |
 
-### [NG] 必須修正
-| 箇所 | 内容 | 理由 |
-|------|------|------|
+---
+
+## 2. Code Quality Review
+
+### [Pass] Positive Points
+- [Include specific file:line numbers]
+
+### [Warning] Improvement Suggestions
+| Location | Description | Priority | Improvement Proposal |
+|----------|-------------|----------|---------------------|
+| xxx.php:45 | ... | High | ... |
+
+### [NG] Required Fixes
+| Location | Description | Reason |
+|----------|-------------|--------|
 | xxx.php:78 | ... | ... |
 
 ---
 
-## 3. ビジネス観点レビュー
+## 3. Business Perspective Review
 
-### 要件との整合性
-| 要件項目 | 実装状況 | 判定 | 備考 |
-|---------|---------|------|------|
-| xxx機能 | ○ | OK | ... |
+### Requirements Alignment
+| Requirement Item | Implementation Status | Judgment | Notes |
+|-----------------|---------------------|----------|-------|
+| xxx feature | OK | OK | ... |
 
-### ドメイン知識との整合性
-**参照ドメイン知識**:
+### Domain Knowledge Alignment
+**Referenced Domain Knowledge**:
 - `input/domain/xxx.md`
 - `input/staging/in_progress/yyy.md`
 
-| 項目 | ドメイン知識 | 実装 | 判定 |
-|------|------------|------|------|
+| Item | Domain Knowledge | Implementation | Judgment |
+|------|-----------------|---------------|----------|
 | xxx | ... | ... | OK |
 
 ---
 
-## 4. テスト観点
+## 4. Test Perspective
 
-### テストケース妥当性
-| テストケース | 判定 | 備考 |
-|------------|------|------|
+### Test Case Appropriateness
+| Test Case | Judgment | Notes |
+|-----------|----------|-------|
 | xxx | OK | ... |
 
 ---
 
-## 5. 総合評価
+## 5. Overall Evaluation
 
-### 承認判断
-- **承認** / **条件付き承認** / **修正必須**
+### Approval Judgment
+- **Approved** / **Conditional Approval** / **Changes Required**
 
-### 理由
-[判断理由を記載]
+### Reason
+[State judgment reason]
 
-### 次アクション
-- [ ] [担当者]: [タスク内容]
+### Next Actions
+- [ ] [Assignee]: [Task description]
 ```
 
-## 品質チェック
+## Quality Checks
 
-レビュー完了時、以下を確認:
+Upon review completion, verify the following:
 
-- [ ] PRの全変更ファイルを確認したか
-- [ ] ドメイン知識（input/domain/ + staging/in_progress/）を参照したか
-- [ ] コード品質とビジネス観点の両方をレビューしたか
-- [ ] ファイルパス:行番号を明記したか
-- [ ] 承認判断が明確か
+- [ ] Reviewed all changed files in the PR
+- [ ] Referenced domain knowledge (input/domain/ + staging/in_progress/)
+- [ ] Reviewed both code quality and business perspective
+- [ ] Included file path:line numbers
+- [ ] Approval judgment is clear
 
 ---
 
-## I/O仕様
+## I/O Specification
 
 ### INPUT
-| 種別 | 内容 | 必須/任意 | 例 |
-|------|------|-----------|-----|
-| PR番号 | レビュー対象のPR番号 | 必須 | `12345` |
-| リポジトリ | 対象リポジトリ | 任意 | `backend`, `frontend` |
-| レビュー観点 | 特定の観点を指定 | 任意 | `security`, `performance`, `business` |
+| Type | Description | Required/Optional | Example |
+|------|-------------|-------------------|---------|
+| PR number | PR number to review | Required | `12345` |
+| Repository | Target repository | Optional | `backend`, `frontend` |
+| Review focus | Specify particular focus | Optional | `security`, `performance`, `business` |
 
 ### OUTPUT
-| 種別 | 形式 | 出力先 |
-|------|------|--------|
-| PRレビューレポート | 詳細Markdown（コード品質+ビジネス観点+承認判断） | stdout（将軍への報告） |
+| Type | Format | Destination |
+|------|--------|-------------|
+| PR review report | Detailed Markdown (code quality + business perspective + approval judgment) | stdout (report to leader) |
 
-### 前提条件
-- GitHub MCP が利用可能であること
-- Serena MCP が起動していること（コード読み込み用）
-- input/domain/, input/staging/ にアクセス可能であること
+### Prerequisites
+- GitHub MCP is available
+- Serena MCP is running (for code reading)
+- input/domain/ and input/staging/ are accessible
 
-### 後続スキル（パイプライン）
-- なし（最終成果物。承認/修正依頼の判断材料）
+### Downstream Skills (Pipeline)
+- None (final deliverable; judgment material for approval/change request)
 
-### 品質チェックポイント
-- [ ] 全変更ファイルを確認したか
-- [ ] ドメイン知識との整合性を確認したか
-- [ ] コード品質・ビジネス観点・テスト観点を網羅したか
-- [ ] 承認判断が明確か（承認/条件付き承認/修正必須）
-- [ ] ファイルパス:行番号を明記したか
+### Quality Checkpoints
+- [ ] Reviewed all changed files
+- [ ] Verified alignment with domain knowledge
+- [ ] Covered code quality, business perspective, and test perspective
+- [ ] Approval judgment is clear (Approved/Conditional Approval/Changes Required)
+- [ ] Included file path:line numbers

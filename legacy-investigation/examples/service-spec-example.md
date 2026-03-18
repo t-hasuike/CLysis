@@ -11,114 +11,114 @@
 ### OUTPUT
 
 ```
-「上様、PaymentService の仕様書を作成いたしました。
+"PaymentService specification document created.
 
-# PaymentService 仕様サマリー
+# PaymentService Specification Summary
 
 > **Version**: 1.0
 > **Last Updated**: 2026-03-06
 > **File**: app/Services/Payment/PaymentService.php
 
-## 概要
-PaymentService は決済処理の責務を担うサービスクラスでござる。
-クレジットカード・銀行振込・電子マネーの3種類に対応。
+## Overview
+PaymentService is a service class responsible for payment processing.
+Supports 3 types: credit card, bank transfer, and e-money.
 
-## 公開メソッド
+## Public Methods
 
 ### 1. processPayment(Order $order, PaymentMethod $method): PaymentResult
 
-**責務**: 決済実行（外部ゲートウェイ連携）
+**Responsibility**: Execute payment (external gateway integration)
 
-**パラメータ**:
+**Parameters**:
 - `$order`: Order entity
 - `$method`: PaymentMethod value object (type: card/bank/emoney)
 
-**戻り値**: PaymentResult（成功/失敗 + transactionId）
+**Return value**: PaymentResult (success/failure + transactionId)
 
-**処理フロー**:
-1. 決済方法に応じてGateway選択（Strategy pattern）
-2. Gateway::charge() 実行
-3. 結果をpayments テーブルに記録
-4. PaymentResult 返却
+**Processing flow**:
+1. Select Gateway based on payment method (Strategy pattern)
+2. Execute Gateway::charge()
+3. Record result in payments table
+4. Return PaymentResult
 
-**例外**:
-- PaymentGatewayException: ゲートウェイエラー
-- InsufficientFundsException: 残高不足
-- InvalidPaymentMethodException: 未対応決済方法
+**Exceptions**:
+- PaymentGatewayException: Gateway error
+- InsufficientFundsException: Insufficient balance
+- InvalidPaymentMethodException: Unsupported payment method
 
 ---
 
 ### 2. refund(int $paymentId, ?float $amount = null): RefundResult
 
-**責務**: 返金処理
+**Responsibility**: Refund processing
 
-**パラメータ**:
-- `$paymentId`: 返金対象の決済ID
-- `$amount`: 返金額（nullの場合は全額）
+**Parameters**:
+- `$paymentId`: Payment ID to refund
+- `$amount`: Refund amount (full amount if null)
 
-**戻り値**: RefundResult（成功/失敗 + refundId）
+**Return value**: RefundResult (success/failure + refundId)
 
-**処理フロー**:
-1. 元決済情報を取得
-2. 返金可能期限チェック（決済後90日以内）
-3. Gateway::refund() 実行
-4. refunds テーブルに記録
+**Processing flow**:
+1. Retrieve original payment information
+2. Check refund eligibility period (within 90 days of payment)
+3. Execute Gateway::refund()
+4. Record in refunds table
 
-**例外**:
-- RefundExpiredException: 返金期限切れ
-- AlreadyRefundedException: 既に返金済み
+**Exceptions**:
+- RefundExpiredException: Refund period expired
+- AlreadyRefundedException: Already refunded
 
 ---
 
 ### 3. validateCard(string $cardNumber): ValidationResult
 
-**責務**: クレジットカード番号検証（Luhnアルゴリズム）
+**Responsibility**: Credit card number validation (Luhn algorithm)
 
-**パラメータ**:
-- `$cardNumber`: カード番号（ハイフンなし16桁）
+**Parameters**:
+- `$cardNumber`: Card number (16 digits without hyphens)
 
-**戻り値**: ValidationResult（valid/invalid + brand: Visa/MasterCard/JCB）
+**Return value**: ValidationResult (valid/invalid + brand: Visa/MasterCard/JCB)
 
-**処理フロー**:
-1. Luhnチェックサム検証
-2. カードブランド判定（先頭桁）
-3. ValidationResult 返却
+**Processing flow**:
+1. Luhn checksum verification
+2. Card brand determination (leading digits)
+3. Return ValidationResult
 
-**例外**: なし（バリデーション失敗時は result->isValid = false）
-
----
-
-## 依存関係
-
-### 外部サービス連携
-- `StripeGateway`: クレジットカード決済
-- `BankTransferGateway`: 銀行振込
-- `PayPayGateway`: 電子マネー（QRコード決済）
-
-### リポジトリ
-- `PaymentRepository`: payments テーブル操作
-- `RefundRepository`: refunds テーブル操作
-
-### 内部サービス
-- `LoggingService`: 決済ログ記録（監査証跡）
+**Exceptions**: None (on validation failure: result->isValid = false)
 
 ---
 
-## 特記事項
+## Dependencies
 
-1. **冪等性保証**: 同一orderId + requestId での重複決済を防止（DB UNIQUE制約）
-2. **リトライ機構**: ゲートウェイタイムアウト時は3回まで自動リトライ（指数バックオフ）
-3. **PCI DSS準拠**: カード番号は暗号化して保存（at rest encryption）
-4. **監査ログ**: すべての決済・返金操作を payment_logs テーブルに記録
+### External Service Integration
+- `StripeGateway`: Credit card payments
+- `BankTransferGateway`: Bank transfers
+- `PayPayGateway`: E-money (QR code payments)
+
+### Repositories
+- `PaymentRepository`: payments table operations
+- `RefundRepository`: refunds table operations
+
+### Internal Services
+- `LoggingService`: Payment log recording (audit trail)
 
 ---
 
-## テストカバレッジ
+## Notable Items
+
+1. **Idempotency guarantee**: Prevents duplicate payments for same orderId + requestId (DB UNIQUE constraint)
+2. **Retry mechanism**: Auto-retry up to 3 times on gateway timeout (exponential backoff)
+3. **PCI DSS compliance**: Card numbers stored with encryption (at rest encryption)
+4. **Audit log**: All payment/refund operations recorded in payment_logs table
+
+---
+
+## Test Coverage
 - Unit tests: 92%
 - Integration tests: 85%
-- Critical path: 100%（決済・返金フロー）
+- Critical path: 100% (payment/refund flows)
 
-以上、報告完了でござる。」
+Report complete."
 ```
 
 ### Notes

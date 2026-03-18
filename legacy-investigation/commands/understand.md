@@ -1,43 +1,43 @@
 ---
-description: レガシーコードの仕様理解を支援する。project-guide → investigate → service-spec のスキルチェーンを実行する。
-argument-hint: "<理解したい機能・処理名>"
+description: Support legacy code specification understanding. Execute the project-guide -> investigate -> service-spec skill chain.
+argument-hint: "<feature or process name to understand>"
 ---
 
-# /understand — コード理解フロー
+# /understand -- Code Comprehension Flow
 
-## 概要
+## Overview
 
-レガシーコードの仕様理解・コードリーディングを体系的に実行するワークフロー。
+A workflow for systematically executing specification understanding and code reading of legacy code.
 
-## ワークフロー
+## Workflow
 
-### Step 1: 参照ガイドの取得
+### Step 1: Get Reference Guide
 
-**project-guide** skill を適用:
+Apply **project-guide** skill:
 
-- 調査・分析に必要なドキュメントの参照順序を特定する
+- Identify the document reference order needed for investigation and analysis
 
 $ARGUMENTS
 
-> **確認**: 「殿、参照ガイドを整えました。次の段（コード調査）に進んでよろしいか？」
+> **Checkpoint**: "Reference guide prepared. Ready to proceed to the next phase (code investigation)?"
 
-### Step 2: コード調査
+### Step 2: Code Investigation
 
-**investigate** skill を適用:
+Apply **investigate** skill:
 
-- 対象機能のコードフロー・依存関係を探索する
-- 主要なクラス・メソッド・テーブルを特定する
+- Explore the code flow and dependency relationships of the target feature
+- Identify key classes, methods, and tables
 
-> **確認**: 「殿、調査結果が揃いました。次の段（仕様整理）に進んでよろしいか？」
+> **Checkpoint**: "Investigation results ready. Ready to proceed to the next phase (specification organization)?"
 
-### Step 3: 仕様の体系的整理
+### Step 3: Systematic Specification Organization
 
-**service-spec** skill を適用:
+Apply **service-spec** skill:
 
-- 発見した主要 Service の仕様を体系的に文書化する
-- メソッド一覧・依存関係・ビジネスルールを整理する
+- Systematically document the specification of discovered key Services
+- Organize method lists, dependencies, and business rules
 
-### Step 4: 次の行動の提案
+### Step 4: Suggest Next Actions
 
-- 「殿、ドメイン知識として蓄積するなら `/build-knowledge` をお使いくだされ」
-- 「変更を計画されるなら `/investigate-flow` で影響分析までお進みくだされ」
+- "To accumulate as domain knowledge, use `/build-knowledge`"
+- "If planning changes, proceed with impact analysis using `/investigate-flow`"

@@ -1,100 +1,100 @@
-# ドメイン知識整理テンプレート
+# Domain Knowledge Organization Template
 
-## 使い方
+## Usage
 
-調査レポート（output/）をドメイン知識（input/domain/）に整理する際に使用。
+Use when organizing investigation reports (output/) into domain knowledge (input/domain/).
 
 ```
-「output/〇〇.md を以下のテンプレートに沿って整理し、
-input/domain/〇〇.md として保存して」
+"Organize output/xxx.md according to the following template,
+and save as input/domain/xxx.md"
 ```
 
 ---
 
-## テンプレート
+## Template
 
 ```markdown
-# [ドメイン名]
+# [Domain Name]
 
-**最終更新**: YYYY-MM-DD
-**情報源**: [調査レポートのパス]
+**Last Updated**: YYYY-MM-DD
+**Source**: [Investigation report path]
 
-## 概要
-[1-2文で説明]
+## Overview
+[Explain in 1-2 sentences]
 
-## 定義
+## Definitions
 
-| 用語 | 定義 |
-|------|------|
+| Term | Definition |
+|------|-----------|
 | ... | ... |
 
-## 対応表
+## Mapping Table
 
-| 名称 | コード | 値 | 備考 |
-|------|--------|-----|------|
+| Name | Code | Value | Notes |
+|------|------|-------|-------|
 | ... | ... | ... | ... |
 
-## ビジネスルール
+## Business Rules
 
-1. [ルール1]
-2. [ルール2]
+1. [Rule 1]
+2. [Rule 2]
 
-## 制約・注意点
+## Constraints and Caveats
 
-- [制約1]
-- [制約2]
+- [Constraint 1]
+- [Constraint 2]
 
-## 関連ファイル
+## Related Files
 
-- `input/domain/関連ドメイン.md`
-- `input/project/関連プロジェクト情報.md`
+- `input/domain/related-domain.md`
+- `input/project/related-project-info.md`
 ```
 
 ---
 
-## 抽出の観点
+## Extraction Guidelines
 
-### 残すべき情報
-- 定義・用語
-- 対応表・マッピング
-- ビジネスルール
-- 制約・例外
-- 具体的な値・コード
+### Information to Keep
+- Definitions and terminology
+- Mapping tables
+- Business rules
+- Constraints and exceptions
+- Specific values and codes
 
-### 削除すべき情報
-- 調査の経緯・過程
-- 「〜を調査しました」等の説明
-- 一時的な考察
-- 重複した情報
+### Information to Remove
+- Investigation process and history
+- Explanations like "we investigated..."
+- Temporary analysis
+- Duplicate information
 
 ---
 
-## 例: 商品カテゴリのドメイン知識
+## Example: Product Category Domain Knowledge
 
 ```markdown
-# 商品カテゴリ
+# Product Categories
 
-**最終更新**: 2026-01-22
-**情報源**: output/sample_investigation.md
+**Last Updated**: 2026-01-22
+**Source**: output/sample_investigation.md
 
-## 概要
-対象システムで扱う商品カテゴリの定義と対応表。
+## Overview
+Definitions and mapping table of product categories handled in the target system.
 
-## 対応表
+## Mapping Table
 
-| 名称 | コード | 説明 | 備考 |
-|------|--------|------|------|
-| スタンダード | STD | 標準プラン | デフォルト |
-| プレミアム | PRM | 上位プラン | オプション付き |
-| エンタープライズ | ENT | 法人向けプラン | 個別見積もり |
+| Name | Code | Description | Notes |
+|------|------|-------------|-------|
+| Standard | STD | Standard plan | Default |
+| Premium | PRM | Premium plan | With options |
+| Enterprise | ENT | Corporate plan | Custom pricing |
 
-## ビジネスルール
+## Business Rules
 
-1. カテゴリ選択時はカテゴリマスタテーブルを参照
-2. 価格は `price` テーブルでカテゴリごとに定義
+1. When selecting a category, reference the category master table
+2. Prices are defined per category in the `price` table
 
-## 制約
+## Constraints
 
-- エンタープライズは一部の販売チャネルのみ対応
-- カテゴリ変更時は関連する価格テーブルも更新が必要
+- Enterprise is available only through specific sales channels
+- When changing categories, related price tables must also be updated
 ```

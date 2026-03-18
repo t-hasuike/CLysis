@@ -1,12 +1,12 @@
 # Legacy Execution
 
-レガシーシステムの修正提案・実装・レビューを支援するスキル群。
+Skills for proposing changes, implementing, and reviewing legacy systems.
 
 ## Skills
-- **propose-changes** — diff形式の修正提案
-- **create-pr** — PR作成自動化
-- **code-review** — PRレビュー
+- **propose-changes** -- Diff-format change proposals
+- **create-pr** -- Automated PR creation
+- **code-review** -- PR review
 
 ## Commands
-- `/implement` — 修正提案・実装フロー
-- `/review` — PRレビューフロー
+- `/implement` -- Change proposal and implementation flow
+- `/review` -- PR review flow
