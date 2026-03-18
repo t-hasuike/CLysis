@@ -44,7 +44,7 @@ legacy-execution/         # Phase 3: Execution & Review
 
 legacy-knowledge/         # Knowledge Management
 ├── .claude-plugin/
-├── skills/               # build-knowledge, archive-output, templates
+├── skills/               # build-knowledge, archive-output, templates, prd-generate, doc-update
 ├── prompts/              # Domain knowledge templates
 └── examples/
 ```

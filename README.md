@@ -3,7 +3,7 @@
 > AI-powered framework for understanding, analyzing, and modernizing legacy systems.
 
 Systematic support for investigation, analysis, and modernization of legacy systems using AI agent teams.
-12 domain-specific skills and 6 workflow commands across 4 plugins.
+14 domain-specific skills and 6 workflow commands across 4 plugins.
 
 ## Repository Structure
 
@@ -47,7 +47,7 @@ CLysis/
 | [legacy-investigation](./legacy-investigation/) | 3 | 3 | Investigation & understanding (project-guide, investigate, service-spec) |
 | [legacy-analysis](./legacy-analysis/) | 3 | 1 | Analysis & planning (impact-analysis, legacy-analyze, distortion-analysis) |
 | [legacy-execution](./legacy-execution/) | 3 | 2 | Execution & review (propose-changes, create-pr, code-review) |
-| [legacy-knowledge](./legacy-knowledge/) | 3 | 0 | Knowledge accumulation (build-knowledge, archive-output, templates) |
+| [legacy-knowledge](./legacy-knowledge/) | 5 | 0 | Knowledge accumulation (build-knowledge, archive-output, templates, prd-generate, doc-update) |
 
 ## Prerequisites
 
@@ -128,7 +128,7 @@ cp -r legacy-investigation/commands/* /path/to/your/project/.claude/commands/
 | **legacy-investigation** | project-guide, investigate, service-spec | Code exploration, service specification, documentation reference |
 | **legacy-analysis** | impact-analysis, legacy-analyze, distortion-analysis | Impact analysis, system overview, code quality patterns |
 | **legacy-execution** | propose-changes, create-pr, code-review | Change proposals, PR creation, automated code review |
-| **legacy-knowledge** | build-knowledge, archive-output, templates | Knowledge extraction, domain documentation, team templates |
+| **legacy-knowledge** | build-knowledge, archive-output, templates, prd-generate, doc-update | Knowledge extraction, domain documentation, team templates, PRD generation, document updates |
 
 ### Skill Chain Patterns
 
@@ -256,6 +256,8 @@ claude plugin install legacy-investigation@CLysis legacy-analysis@CLysis legacy-
 | `/build-knowledge` | legacy-knowledge | Extract and persist domain knowledge from investigation results |
 | `/archive-output` | legacy-knowledge | Archive investigation outputs for knowledge reuse |
 | `/templates` | legacy-knowledge | General team operation templates (for leaders) |
+| `/prd-generate` | legacy-knowledge | Reverse-engineer PRD from existing codebase (Phase 1-3 workflow) |
+| `/doc-update` | legacy-knowledge | Update knowledge documents for target audience (developer, PM, onboarding) |
 
 ## Initial Setup
 
