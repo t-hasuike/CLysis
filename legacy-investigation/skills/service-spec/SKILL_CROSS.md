@@ -4,7 +4,7 @@ description: Cross-repository service specification analysis. Documents features
 argument-hint: <Feature name> <Repository A> <Repository B>
 ---
 
-> This is a generic skill from [decouple-legacy](https://github.com/t-hasuike/decouple-legacy-skills).
+> This is a generic skill from [CLysis](https://github.com/t-hasuike/CLysis).
 > Terminology can be customized via `config/terminology.md`.
 
 # [Feature Name: e.g., Batch Processing] Cross-Repository Specification Summary

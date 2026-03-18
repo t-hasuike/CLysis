@@ -4,7 +4,7 @@ description: Systematically investigate the impact scope when adding new feature
 argument-hint: <description of the change>
 ---
 
-> This is a generic skill from [decouple-legacy](https://github.com/t-hasuike/decouple-legacy-skills).
+> This is a generic skill from [CLysis](https://github.com/t-hasuike/CLysis).
 > Terminology can be customized via `config/terminology.md`.
 
 # Impact Analysis Skill

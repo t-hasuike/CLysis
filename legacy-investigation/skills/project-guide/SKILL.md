@@ -4,7 +4,7 @@ description: Present a reference guide for project documentation tailored to the
 argument-hint: <task overview>
 ---
 
-> This is a generic skill from [decouple-legacy](https://github.com/t-hasuike/decouple-legacy-skills).
+> This is a generic skill from [CLysis](https://github.com/t-hasuike/CLysis).
 > Terminology can be customized via `config/terminology.md`.
 
 # /project-guide Skill

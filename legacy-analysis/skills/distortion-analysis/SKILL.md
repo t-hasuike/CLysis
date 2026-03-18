@@ -4,7 +4,7 @@ description: Distortion Analysis - Detect code distortion patterns and organize 
 argument-hint: "[repository-name] [target-area]"
 ---
 
-> This is a generic skill from [decouple-legacy](https://github.com/t-hasuike/decouple-legacy-skills).
+> This is a generic skill from [CLysis](https://github.com/t-hasuike/CLysis).
 > Terminology can be customized via `config/terminology.md`.
 
 # /distortion-analysis -- Distortion Analysis Skill

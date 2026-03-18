@@ -6,7 +6,7 @@ model: sonnet
 memory: project
 ---
 
-> This is a generic agent from [decouple-legacy](https://github.com/t-hasuike/decouple-legacy-skills).
+> This is a generic agent from [CLysis](https://github.com/t-hasuike/CLysis).
 > Terminology can be customized via `config/terminology.md`.
 
 # Worker (DevOps)

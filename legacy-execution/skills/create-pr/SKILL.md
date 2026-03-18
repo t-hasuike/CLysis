@@ -6,7 +6,7 @@ argument-hint: <change proposal path> <repository name> [branch name]
 
 # /create-pr Skill (Execution Officer)
 
-> Part of [decouple-legacy](https://github.com/t-hasuike/decouple-legacy-skills)
+> Part of [CLysis](https://github.com/t-hasuike/CLysis)
 > Terminology: See `config/terminology.md` for role name customization
 
 ## Overview
@@ -125,7 +125,7 @@ gh pr create --title "{feature} - Phase {X}" --body "$(cat <<'EOF'
 
 ---
 
-Generated with [Claude Code](https://claude.com/claude-code) + [decouple-legacy](https://github.com/t-hasuike/decouple-legacy-skills)
+Generated with [Claude Code](https://claude.com/claude-code) + [CLysis](https://github.com/t-hasuike/CLysis)
 EOF
 )" --base {base branch}
 ```

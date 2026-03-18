@@ -4,7 +4,7 @@ description: Investigate the codebase and report in Service specification summar
 argument-hint: <investigation target (class name, feature name, keyword, etc.)>
 ---
 
-> This is a generic skill from [decouple-legacy](https://github.com/t-hasuike/decouple-legacy-skills).
+> This is a generic skill from [CLysis](https://github.com/t-hasuike/CLysis).
 > Terminology can be customized via `config/terminology.md`.
 
 # Investigation Skill (Scout)

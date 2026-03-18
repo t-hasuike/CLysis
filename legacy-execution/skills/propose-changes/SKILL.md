@@ -6,7 +6,7 @@ argument-hint: <impact analysis report path> [Phase number]
 
 # /propose-changes Skill (Change Strategist)
 
-> Part of [decouple-legacy](https://github.com/t-hasuike/decouple-legacy-skills)
+> Part of [CLysis](https://github.com/t-hasuike/CLysis)
 > Terminology: See `config/terminology.md` for role name customization
 
 ## Overview

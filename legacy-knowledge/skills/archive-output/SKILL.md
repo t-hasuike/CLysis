@@ -4,7 +4,7 @@ description: Classify and convert investigation reports in output/ into ADR/spec
 argument-hint: [filter criteria (optional)] - e.g., `--type adr` / `--since 2026-02-01` / default: all files in output/
 ---
 
-> This is a generic skill from [decouple-legacy](https://github.com/t-hasuike/decouple-legacy-skills).
+> This is a generic skill from [CLysis](https://github.com/t-hasuike/CLysis).
 > Terminology can be customized via `config/terminology.md`.
 
 # Document Archive Skill

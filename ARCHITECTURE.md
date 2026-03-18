@@ -1,6 +1,6 @@
 # ARCHITECTURE
 
-**Project**: decouple-legacy
+**Project**: CLysis
 **Version**: 1.2
 **Last Updated**: 2026-03-18
 
@@ -10,7 +10,7 @@
 
 > **"Humans review and approve. AI investigates, analyzes, and proposes changes. Quality is maintained, users experience what they should expect."**
 
-This is the core principle of decouple-legacy:
+This is the core principle of CLysis:
 
 1. **AI does the heavy lifting** — Investigation, analysis, dependency tracking, report generation
 2. **Humans retain control** — Review AI outputs, approve changes, verify quality
@@ -21,7 +21,7 @@ This is the core principle of decouple-legacy:
 
 ## Plugin Architecture
 
-decouple-legacy is organized into **4 modular plugins**, each with specialized skills and commands:
+CLysis is organized into **4 modular plugins**, each with specialized skills and commands:
 
 ```
 legacy-investigation/      # Phase 1: Investigation & Understanding
@@ -84,7 +84,7 @@ legacy-execution
 
 ## Workflow Phases
 
-decouple-legacy follows a three-phase workflow with **human checkpoints** at each transition:
+CLysis follows a three-phase workflow with **human checkpoints** at each transition:
 
 ```
 Phase 0: Information Preparation (Human)
@@ -329,7 +329,7 @@ The leader follows a structured workflow for every mission:
 
 ## Terminology Customization
 
-decouple-legacy uses **Sengoku (feudal Japanese)** terminology by default, but supports full customization.
+CLysis uses **Sengoku (feudal Japanese)** terminology by default, but supports full customization.
 
 ### How to Customize
 
@@ -489,7 +489,7 @@ Phase 2: Part A/B/C Creation
 4. Keep generic:
    - Use placeholders like "Backend framework" instead of "Laravel"
    - Reference "input/domain/" without assuming project structure
-   - Add note: `> This is a generic skill from decouple-legacy.`
+   - Add note: `> This is a generic skill from CLysis.`
 
 5. Document I/O spec:
    - **INPUT**: What arguments does it take?
@@ -552,7 +552,7 @@ Phase 2: Part A/B/C Creation
 3. Keep generic:
    - Reference "Backend framework" instead of specific tech
    - Reference "input/domain/" and "input/project/" generically
-   - Add note: `> This is a generic agent from decouple-legacy.`
+   - Add note: `> This is a generic agent from CLysis.`
 
 4. Document communication:
    - **Workflow steps**
@@ -578,7 +578,7 @@ Phase 2: Part A/B/C Creation
 
 ## Agent Pattern Mapping
 
-decouple-legacy implements common AI agent patterns:
+CLysis implements common AI agent patterns:
 
 | Pattern | Implementation | Phase |
 |---------|---------------|-------|
@@ -769,7 +769,7 @@ MIT
 
 See [README.md](README.md) for contribution guidelines.
 
-When extending decouple-legacy:
+When extending CLysis:
 - Keep skills and agents generic
 - Document customization points
 - Add examples for new workflows

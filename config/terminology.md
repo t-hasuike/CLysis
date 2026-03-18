@@ -1,11 +1,11 @@
 # Terminology Customization
 
-> This file defines the default terminology used throughout decouple-legacy skills and agents.
+> This file defines the default terminology used throughout CLysis skills and agents.
 > You can customize these terms to match your team's culture and preferences.
 
 ## Concept Overview
 
-decouple-legacy uses **role-based terminology** to distinguish different agent types in a team structure. By default, we use Japanese Sengoku (feudal era) terms inspired by hierarchical team coordination:
+CLysis uses **role-based terminology** to distinguish different agent types in a team structure. By default, we use Japanese Sengoku (feudal era) terms inspired by hierarchical team coordination:
 
 - **Shogun (General)**: The orchestrator who delegates tasks, coordinates the team, and operates in "delegate mode" without implementing code directly. Responsible for strategy and team formation.
 - **Ashigaru (Worker)**: Specialized agents that execute specific tasks such as backend implementation, frontend work, documentation, or investigation. Each worker focuses on a single domain.
@@ -18,7 +18,7 @@ These are **naming conventions only**. The actual agent behavior is defined by t
 
 ## Default Terms (Sengoku Style)
 
-decouple-legacy uses Japanese Sengoku (feudal era) terminology by default.
+CLysis uses Japanese Sengoku (feudal era) terminology by default.
 You can replace them with your preferred terms.
 
 | Default (JA) | Default (EN) | Custom Example | Role Description |

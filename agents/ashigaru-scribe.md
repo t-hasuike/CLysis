@@ -6,7 +6,7 @@ model: haiku
 memory: project
 ---
 
-> This is a generic agent definition from [decouple-legacy](https://github.com/t-hasuike/decouple-legacy-skills).
+> This is a generic agent definition from [CLysis](https://github.com/t-hasuike/CLysis).
 > Terminology can be customized via `config/terminology.md`.
 > Adapt paths and technology references to match your project.
 

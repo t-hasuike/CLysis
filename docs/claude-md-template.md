@@ -1,6 +1,6 @@
-# CLAUDE.md Template for decouple-legacy
+# CLAUDE.md Template for CLysis
 
-This is a minimal template for integrating decouple-legacy skills into your project.
+This is a minimal template for integrating CLysis skills into your project.
 
 ---
 
@@ -52,4 +52,4 @@ Each transition includes a Human Checkpoint for review.
 1. Copy this template to your project root as `CLAUDE.md`
 2. Fill in the placeholders with your project-specific information
 3. Add your domain knowledge files to `input/domain/`
-4. Start using decouple-legacy skills
+4. Start using CLysis skills

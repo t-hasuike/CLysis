@@ -1,11 +1,11 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "decouple-legacy",
+  "name": "CLysis",
   "version": "1.0.0",
   "description": "AI-powered framework for understanding, analyzing, and modernizing legacy systems. 12 domain-specific skills and 6 chained workflows across 4 plugins — from investigation to analysis, execution, and knowledge management.",
   "owner": {
     "name": "t-hasuike",
-    "url": "https://github.com/t-hasuike/decouple-legacy-skills"
+    "url": "https://github.com/t-hasuike/CLysis"
   },
   "plugins": [
     {

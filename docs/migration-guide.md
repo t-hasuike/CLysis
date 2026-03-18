@@ -5,7 +5,7 @@
 
 ## Overview
 
-decouple-legacy v1.0 migrated to a plugin architecture.
+CLysis v1.0 migrated to a plugin architecture.
 The previous single `skills/` directory has been split into 4 specialized plugins.
 
 ## What's New in v1.0
@@ -78,29 +78,29 @@ rm -rf .claude/skills/templates
 
 ```bash
 # Add marketplace
-claude plugin marketplace add decouple-legacy /path/to/decouple-legacy
+claude plugin marketplace add CLysis /path/to/CLysis
 
 # Install plugins
-claude plugin install legacy-investigation@decouple-legacy
-claude plugin install legacy-analysis@decouple-legacy
-claude plugin install legacy-execution@decouple-legacy
-claude plugin install legacy-knowledge@decouple-legacy
+claude plugin install legacy-investigation@CLysis
+claude plugin install legacy-analysis@CLysis
+claude plugin install legacy-execution@CLysis
+claude plugin install legacy-knowledge@CLysis
 ```
 
 #### Option B: Manual Installation
 
 ```bash
 # Copy skills from each plugin
-cp -r /path/to/decouple-legacy/legacy-investigation/skills/* .claude/skills/
-cp -r /path/to/decouple-legacy/legacy-analysis/skills/* .claude/skills/
-cp -r /path/to/decouple-legacy/legacy-execution/skills/* .claude/skills/
-cp -r /path/to/decouple-legacy/legacy-knowledge/skills/* .claude/skills/
+cp -r /path/to/CLysis/legacy-investigation/skills/* .claude/skills/
+cp -r /path/to/CLysis/legacy-analysis/skills/* .claude/skills/
+cp -r /path/to/CLysis/legacy-execution/skills/* .claude/skills/
+cp -r /path/to/CLysis/legacy-knowledge/skills/* .claude/skills/
 
 # Copy commands (if supported by your setup)
 mkdir -p .claude/commands/
-cp -r /path/to/decouple-legacy/legacy-investigation/commands/* .claude/commands/
-cp -r /path/to/decouple-legacy/legacy-analysis/commands/* .claude/commands/
-cp -r /path/to/decouple-legacy/legacy-execution/commands/* .claude/commands/
+cp -r /path/to/CLysis/legacy-investigation/commands/* .claude/commands/
+cp -r /path/to/CLysis/legacy-analysis/commands/* .claude/commands/
+cp -r /path/to/CLysis/legacy-execution/commands/* .claude/commands/
 ```
 
 ### Step 4: Update CLAUDE.md
@@ -135,14 +135,14 @@ Skill paths are unchanged. Skills are automatically placed in `.claude/skills/` 
 **Before (v0.x)**:
 ```markdown
 ## Skills
-This project uses skills from decouple-legacy:
+This project uses skills from CLysis:
 - /investigate -- Code investigation
 ```
 
 **After (v1.0)**: Same! No changes needed.
 ```markdown
 ## Skills
-This project uses skills from decouple-legacy:
+This project uses skills from CLysis:
 - /investigate -- Code investigation
 ```
 
@@ -181,13 +181,13 @@ Runs the following sequence:
 
 ```bash
 # Add marketplace
-claude plugin marketplace add decouple-legacy /path/to/decouple-legacy
+claude plugin marketplace add CLysis /path/to/CLysis
 
 # List available plugins
 claude plugin marketplace list
 
 # Install a specific plugin
-claude plugin install legacy-investigation@decouple-legacy
+claude plugin install legacy-investigation@CLysis
 ```
 
 ### Validation: Quality Checks

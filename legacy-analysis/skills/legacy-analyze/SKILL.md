@@ -6,7 +6,7 @@ argument-hint: "Phase 0 | Phase 1 [change theme] | Phase 2 | Phase 3"
 
 # /legacy-analyze -- Legacy Code Mastery Skill
 
-> This is a generic skill from [decouple-legacy](https://github.com/t-hasuike/decouple-legacy-skills).
+> This is a generic skill from [CLysis](https://github.com/t-hasuike/CLysis).
 > Terminology can be customized via `config/terminology.md`.
 
 ## Overview

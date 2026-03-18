@@ -1,4 +1,4 @@
-# decouple-legacy
+# CLysis
 
 > AI-powered framework for understanding, analyzing, and modernizing legacy systems.
 
@@ -8,7 +8,7 @@ Systematic support for investigation, analysis, and modernization of legacy syst
 ## Repository Structure
 
 ```
-decouple-legacy-skills/
+CLysis/
 ├── .claude-plugin/            # Marketplace manifest
 ├── agents/                    # Agent definitions (karo, metsuke, ashigaru-*)
 ├── assessment/                # Quality evaluation criteria & maturity model
@@ -71,20 +71,20 @@ Register the marketplace and install plugins:
 
 ```bash
 # Register the marketplace
-claude plugin marketplace add t-hasuike/decouple-legacy-skills
+claude plugin marketplace add t-hasuike/CLysis
 
 # Install individual plugins
-claude plugin install legacy-investigation@decouple-legacy
-claude plugin install legacy-analysis@decouple-legacy
-claude plugin install legacy-execution@decouple-legacy
-claude plugin install legacy-knowledge@decouple-legacy
+claude plugin install legacy-investigation@CLysis
+claude plugin install legacy-analysis@CLysis
+claude plugin install legacy-execution@CLysis
+claude plugin install legacy-knowledge@CLysis
 ```
 
 Or install all plugins at once:
 
 ```bash
 # Install all 4 plugins in one command
-claude plugin install legacy-investigation@decouple-legacy legacy-analysis@decouple-legacy legacy-execution@decouple-legacy legacy-knowledge@decouple-legacy
+claude plugin install legacy-investigation@CLysis legacy-analysis@CLysis legacy-execution@CLysis legacy-knowledge@CLysis
 
 # Verify installation
 claude plugin list
@@ -96,10 +96,10 @@ If running locally or adding to an existing marketplace:
 
 ```bash
 # Add this repository to the marketplace
-claude plugin marketplace add decouple-legacy /path/to/decouple-legacy
+claude plugin marketplace add CLysis /path/to/CLysis
 
 # Then install plugins as above
-claude plugin install legacy-investigation@decouple-legacy legacy-analysis@decouple-legacy legacy-execution@decouple-legacy legacy-knowledge@decouple-legacy
+claude plugin install legacy-investigation@CLysis legacy-analysis@CLysis legacy-execution@CLysis legacy-knowledge@CLysis
 
 # Verify installation
 claude plugin list
@@ -111,8 +111,8 @@ Clone the repository and copy individual skills to your project:
 
 ```bash
 # Clone the repository
-git clone https://github.com/t-hasuike/decouple-legacy-skills.git
-cd decouple-legacy-skills
+git clone https://github.com/t-hasuike/CLysis.git
+cd CLysis
 
 # Copy skills from a specific plugin
 cp -r legacy-investigation/skills/* /path/to/your/project/.claude/skills/
@@ -216,18 +216,18 @@ Some commands reference skills from other plugins. Ensure required plugins are i
 **For all users**: Install all 4 plugins to unlock full functionality and workflow chains:
 
 ```bash
-claude plugin install legacy-investigation@decouple-legacy legacy-analysis@decouple-legacy legacy-execution@decouple-legacy legacy-knowledge@decouple-legacy
+claude plugin install legacy-investigation@CLysis legacy-analysis@CLysis legacy-execution@CLysis legacy-knowledge@CLysis
 ```
 
 **By team role**:
 
 | Team Role | Required Plugins | Install Command |
 |-----------|-----------------|-----------------|
-| **Investigators** (understand legacy code) | legacy-investigation + legacy-analysis | `legacy-investigation@decouple-legacy legacy-analysis@decouple-legacy` |
-| **Implementers** (make changes) | legacy-execution + legacy-investigation | `legacy-execution@decouple-legacy legacy-investigation@decouple-legacy` |
-| **Reviewers** (validate changes) | legacy-execution + legacy-analysis | `legacy-execution@decouple-legacy legacy-analysis@decouple-legacy` |
-| **Knowledge Architects** (document systems) | legacy-knowledge + legacy-investigation | `legacy-knowledge@decouple-legacy legacy-investigation@decouple-legacy` |
-| **Full Teams** | All 4 plugins | `legacy-investigation@decouple-legacy legacy-analysis@decouple-legacy legacy-execution@decouple-legacy legacy-knowledge@decouple-legacy` |
+| **Investigators** (understand legacy code) | legacy-investigation + legacy-analysis | `legacy-investigation@CLysis legacy-analysis@CLysis` |
+| **Implementers** (make changes) | legacy-execution + legacy-investigation | `legacy-execution@CLysis legacy-investigation@CLysis` |
+| **Reviewers** (validate changes) | legacy-execution + legacy-analysis | `legacy-execution@CLysis legacy-analysis@CLysis` |
+| **Knowledge Architects** (document systems) | legacy-knowledge + legacy-investigation | `legacy-knowledge@CLysis legacy-investigation@CLysis` |
+| **Full Teams** | All 4 plugins | `legacy-investigation@CLysis legacy-analysis@CLysis legacy-execution@CLysis legacy-knowledge@CLysis` |
 
 ## Workflow Commands
 
@@ -280,7 +280,7 @@ touch output/.gitkeep
 ### 2. Configure .gitignore
 
 ```bash
-cp decouple-legacy/.gitignore.template .gitignore
+cp CLysis/.gitignore.template .gitignore
 ```
 
 Review and customize the `.gitignore` based on your project's needs.
@@ -482,6 +482,6 @@ When contributing:
 
 ## Links
 
-- [GitHub Repository](https://github.com/t-hasuike/decouple-legacy-skills)
+- [GitHub Repository](https://github.com/t-hasuike/CLysis)
 - [Architecture Documentation](ARCHITECTURE.md)
 - [Migration Guide](docs/migration-guide.md)
