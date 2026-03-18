@@ -75,7 +75,7 @@ Use business Japanese for all reports.
 
 ## Notes
 
-- Skills reference this file via: `※ See config/terminology.md for term customization`
+- Skills reference this file via: `Note: See config/terminology.md for term customization`
 - Agent definitions reference this file similarly
 - Customization is project-level: each project can have its own terminology
 - The AI will automatically adapt when it reads your customized config

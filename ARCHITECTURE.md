@@ -44,7 +44,7 @@ legacy-execution/         # Phase 3: Execution & Review
 
 legacy-knowledge/         # Knowledge Management
 ├── .claude-plugin/
-├── skills/               # build-knowledge, templates
+├── skills/               # build-knowledge, archive-output, templates
 ├── prompts/              # Domain knowledge templates
 └── examples/
 ```
@@ -339,7 +339,7 @@ Edit `config/terminology.md`:
 | Default (JA) | Default (EN) | Your Custom | Role Description |
 |-------------|-------------|-------------|-----------------|
 | Shogun | General | **Tech Lead** | Team leader who coordinates agents |
-| 足軽 (Ashigaru) | Foot Soldier | **Engineer** | Task execution specialist |
+| Ashigaru | Foot Soldier | **Engineer** | Task execution specialist |
 ```
 
 All skills and agents reference this file for term adaptation.

@@ -446,4 +446,4 @@ Report complete."
 - This workflow is sequential, but phases can be parallelized if multiple features are worked on simultaneously
 - Each skill output is self-contained and can be reviewed independently
 - The `/code-review` skill fits naturally after implementation (not shown in this example)
-- Terminology can be customized by editing `prompts/terminology.md`
+- Terminology can be customized by editing `config/terminology.md`

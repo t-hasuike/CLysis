@@ -128,7 +128,7 @@ cp -r legacy-investigation/commands/* /path/to/your/project/.claude/commands/
 | **legacy-investigation** | project-guide, investigate, service-spec | Code exploration, service specification, documentation reference |
 | **legacy-analysis** | impact-analysis, legacy-analyze, distortion-analysis | Impact analysis, system overview, code quality patterns |
 | **legacy-execution** | propose-changes, create-pr, code-review | Change proposals, PR creation, automated code review |
-| **legacy-knowledge** | build-knowledge, templates | Knowledge extraction, domain documentation, team templates |
+| **legacy-knowledge** | build-knowledge, archive-output, templates | Knowledge extraction, domain documentation, team templates |
 
 ### Skill Chain Patterns
 
@@ -254,6 +254,7 @@ claude plugin install legacy-investigation@decouple-legacy legacy-analysis@decou
 | `/create-pr` | legacy-execution | Create PR with ADR summary and checklist |
 | `/code-review` | legacy-execution | PR review with code quality and domain knowledge validation |
 | `/build-knowledge` | legacy-knowledge | Extract and persist domain knowledge from investigation results |
+| `/archive-output` | legacy-knowledge | Archive investigation outputs for knowledge reuse |
 | `/templates` | legacy-knowledge | General team operation templates (for leaders) |
 
 ## Initial Setup
