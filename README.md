@@ -3,7 +3,7 @@
 > AI-powered framework for understanding, analyzing, and modernizing legacy systems.
 
 Systematic support for investigation, analysis, and modernization of legacy systems using AI agent teams.
-14 domain-specific skills and 6 workflow commands across 4 plugins.
+14 domain-specific skills and 7 workflow commands across 4 plugins.
 
 ## Repository Structure
 
@@ -44,7 +44,7 @@ CLysis/
 
 | Plugin | Skills | Commands | Description |
 |--------|--------|----------|-------------|
-| [legacy-investigation](./legacy-investigation/) | 3 | 3 | Investigation & understanding (project-guide, investigate, service-spec) |
+| [legacy-investigation](./legacy-investigation/) | 3 | 4 | Investigation & understanding (project-guide, investigate, service-spec) |
 | [legacy-analysis](./legacy-analysis/) | 3 | 1 | Analysis & planning (impact-analysis, legacy-analyze, distortion-analysis) |
 | [legacy-execution](./legacy-execution/) | 3 | 2 | Execution & review (propose-changes, create-pr, code-review) |
 | [legacy-knowledge](./legacy-knowledge/) | 5 | 0 | Knowledge accumulation (build-knowledge, archive-output, templates, prd-generate, doc-update) |
@@ -233,6 +233,7 @@ claude plugin install legacy-investigation@CLysis legacy-analysis@CLysis legacy-
 
 | Command | Plugin | Description |
 |---------|--------|-------------|
+| `/start` | legacy-investigation | Interactive getting started guide. Entry point for all CLysis workflows |
 | `/investigate-flow` | legacy-investigation | Impact investigation flow (4-skill chain) |
 | `/bug-hunt` | legacy-investigation | Bug investigation flow |
 | `/understand` | legacy-investigation | Code comprehension flow |

@@ -82,6 +82,51 @@ legacy-execution
 
 ---
 
+## Onboarding Flow
+
+The `/start` command serves as the **unified entry point** for all CLysis users. It routes users to appropriate skill chains based on their current situation:
+
+### Two Paths
+
+**Path A: Goal-Oriented**
+- User has a clear objective
+- `/start` presents a lineup of commands mapped to common goals
+- Guides user to `/deep-dive`, `/understand`, `/bug-hunt`, `/investigate-flow`, or `/review`
+
+**Path B: Exploratory**
+- User is new to CLysis and exploring capabilities
+- `/start` presents the 4-phase framework overview
+- Guides user through the system's capabilities and recommends entry points
+
+### Recommended Journeys
+
+1. **System Onboarding** (new to codebase)
+   ```
+   /deep-dive [repo] → /understand [key-feature] → /prd-generate [repo]
+   ```
+
+2. **Bug Investigation**
+   ```
+   /bug-hunt [symptom] → /distortion-analysis [area] → /implement
+   ```
+
+3. **Feature Development**
+   ```
+   /investigate-flow [change] → /implement
+   ```
+
+4. **Knowledge Building**
+   ```
+   /prd-generate [repo] → /doc-update [audience] → /build-knowledge
+   ```
+
+5. **Code Review**
+   ```
+   /review [PR-URL]
+   ```
+
+---
+
 ## Workflow Phases
 
 CLysis follows a three-phase workflow with **human checkpoints** at each transition:
