@@ -392,6 +392,19 @@ See [ARCHITECTURE.md](ARCHITECTURE.md#distortion-analysis-framework) for detaile
    → References input/domain/ for domain knowledge validation
 ```
 
+## Templates
+
+CLysis provides templates for consistent documentation across projects:
+
+| Template | Location | Purpose |
+|----------|----------|---------|
+| Domain Knowledge | `legacy-knowledge/prompts/domain-knowledge-template.md` | 8-section unified structure for organizing domain knowledge |
+| Non-Functional Analysis | `legacy-knowledge/prompts/non-functional-analysis-template.md` | Non-functional requirements analysis template |
+| CLAUDE.md | `docs/claude-md-template.md` | Minimal project configuration template |
+| Workflow Example | `docs/full-workflow-example.md` | End-to-end workflow demonstration |
+
+The domain knowledge template uses a structured 8-section format (Overview, Data Model, Business Rules, Process Flow, External Integrations, Constraints, Usage Context, Related Domains) to ensure consistent and complete documentation. See [ARCHITECTURE.md](ARCHITECTURE.md#template-system) for design philosophy.
+
 ## Domain Knowledge
 
 **Domain knowledge is project-specific and NOT included in the public repository.**

@@ -759,6 +759,109 @@ When directory structure or knowledge management configuration changes, the lead
 
 ---
 
+## README Management Policy
+
+CLysis follows a **top-level README only** approach (Plan B):
+
+- **Keep**: Top-level `README.md` as the single entry point for all documentation
+- **Keep**: Sub-directory READMEs only for `assessment/` and plugin directories (`legacy-*/`) where they serve as plugin-specific documentation
+- **Eliminate**: Redundant READMEs that duplicate information already in the top-level README or ARCHITECTURE.md
+
+**Rationale**: Maintaining 25+ READMEs across subdirectories creates a documentation synchronization burden. Changes to skills or commands require updates in multiple places. By consolidating into a single top-level README with deep links, maintenance cost drops significantly while discoverability improves.
+
+**Rule**: When adding new skills, commands, or plugins, update the top-level README.md and ARCHITECTURE.md. Do NOT create new sub-directory READMEs unless the directory represents a standalone plugin.
+
+---
+
+## Template System
+
+CLysis provides a structured template system for consistent documentation across projects.
+
+### Template Categories
+
+| Category | Location | Purpose |
+|----------|----------|---------|
+| **Domain Knowledge** | `legacy-knowledge/prompts/domain-knowledge-template.md` | 8-section structure for organizing domain knowledge from investigations |
+| **Non-Functional Analysis** | `legacy-knowledge/prompts/non-functional-analysis-template.md` | Template for non-functional requirements analysis |
+| **CLAUDE.md** | `docs/claude-md-template.md` | Minimal project configuration template |
+| **Workflow Example** | `docs/full-workflow-example.md` | End-to-end workflow demonstration |
+
+### Design Philosophy
+
+Templates follow these principles:
+
+1. **Section-based structure**: Each template uses numbered sections with clear purposes, making it easy to fill incrementally
+2. **Subject-first rule**: All flag/variable descriptions must include "whose/what" context to prevent ambiguity
+3. **Progressive filling**: Not all sections are required -- fill what is known, mark unknowns explicitly
+4. **Code-grounded**: Business rules must be confirmed from actual code, never speculated
+5. **Cross-referencing**: Related domains link to each other, building a knowledge graph over time
+
+### Domain Knowledge Template (8 Sections)
+
+The domain knowledge template provides a unified structure for all domain files:
+
+| Section | Purpose |
+|---------|---------|
+| Overview | Quick orientation -- what, for whom, why |
+| 1. Data Model | Tables, flags, enums with "whose/what" annotations |
+| 2. Business Rules | Confirmed rules from code (no speculation) |
+| 3. Process Flow | State diagrams, sequence diagrams (mermaid) |
+| 4. External Integrations | Batch jobs, APIs, third-party systems |
+| 5. Constraints | Technical limitations, coding rules |
+| 6. Usage Context | Where this knowledge is consumed |
+| 7. Related Domains | Upstream/downstream dependencies |
+| 8. Related Files | Quick reference to source code locations |
+
+---
+
+## Operational Improvements
+
+### Path Reference Checks
+
+When files are moved or directories restructured, all reference paths must be verified. The following files contain path references that may break:
+
+| File Type | Location Pattern | What to Check |
+|-----------|-----------------|---------------|
+| Agent definitions | `agents/*.md` | "References" sections with `input/` or `output/` paths |
+| Skill definitions | `legacy-*/skills/*/SKILL.md` | I/O specification paths |
+| CLAUDE.md | Project root | Directory references, skill paths |
+| ARCHITECTURE.md | Project root | Path examples, directory structure diagrams |
+| README.md | Project root | Links to internal files |
+
+**Automation**: Run `python3 validate_plugins.py` after any structural change. Consider extending the validator to check markdown link targets.
+
+### Knowledge Graduation Rules
+
+Domain knowledge follows a lifecycle with clear graduation criteria:
+
+```
+output/ (raw investigation results)
+  |
+  | Graduation criteria:
+  | - Verified against code (not speculation)
+  | - Follows domain-knowledge-template.md structure
+  | - Subject-first rule applied to all flags/variables
+  | - Related domains cross-referenced
+  |
+  v
+input/domain/ (confirmed domain knowledge)
+```
+
+**Rules**:
+1. Investigation results in `output/` are temporary -- they must be graduated to `input/domain/` or discarded
+2. Only code-confirmed facts graduate; hypotheses and speculation stay in `output/` or are discarded
+3. Variable values that change frequently (prices, thresholds) should reference the database as source of truth, not be hardcoded in domain files
+4. Each domain file must specify its accuracy level (code reading / planned specification / design proposal)
+
+### Stale Knowledge Detection
+
+To prevent knowledge decay:
+- Each domain file includes a `Last Updated` date and `Version` field
+- Files not updated for 6+ months should be flagged for re-verification
+- The `Change History` section at the bottom of each domain file tracks all modifications
+
+---
+
 ## License
 
 MIT
