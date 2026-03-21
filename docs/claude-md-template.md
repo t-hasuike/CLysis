@@ -27,9 +27,9 @@ This is a minimal template for integrating CLysis skills into your project.
 ## Domain Knowledge
 | File | Content |
 |------|---------|
-| `input/domain/business_rules.md` | Core business rules |
-| `input/domain/data_models.md` | Data model specifications |
-| `input/domain/integrations.md` | External system integrations |
+| `knowledge/domain/business_rules.md` | Core business rules |
+| `knowledge/domain/data_models.md` | Data model specifications |
+| `knowledge/domain/integrations.md` | External system integrations |
 
 ## Repositories
 | Repository | Path |
@@ -51,5 +51,6 @@ Each transition includes a Human Checkpoint for review.
 
 1. Copy this template to your project root as `CLAUDE.md`
 2. Fill in the placeholders with your project-specific information
-3. Add your domain knowledge files to `input/domain/`
+3. Add your domain knowledge files to `knowledge/domain/`
 4. Start using CLysis skills
+5. After completing Phase 0, refer to `docs/knowledge-system-guide.md` for the target file checklist.
