@@ -18,7 +18,7 @@ See config/terminology.md for term customization
 ## Investigation Procedure
 
 1. **Context confirmation**: Reference CLAUDE.md to understand the project overview
-2. **Domain knowledge check**: Check files under the domain knowledge directory (`input/domain/` or `knowledge/domain/`) to understand knowledge related to the investigation target
+2. **Domain knowledge check**: Check files under the domain knowledge directory (`knowledge/domain/`) to understand knowledge related to the investigation target
    - Check the file list under the domain knowledge directory
    - Read files related to the task keywords
    - Start investigation with understanding of known business rules and constraints

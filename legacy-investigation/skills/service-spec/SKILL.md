@@ -19,8 +19,8 @@ $ARGUMENTS
 
 ## Investigation Procedure
 
-1. **Domain knowledge check**: Check domain knowledge files under input/domain/ to understand knowledge related to the investigation target
-   - Check the file list under input/domain/
+1. **Domain knowledge check**: Check domain knowledge files under knowledge/domain/ to understand knowledge related to the investigation target
+   - Check the file list under knowledge/domain/
    - Read files related to the task keywords
    - Start investigation with understanding of known business rules and constraints
 2. **Target file identification**: Identify file paths using Serena's find_symbol

@@ -231,7 +231,7 @@ Example: Impact investigation for adding a product category
 
 ### Prerequisites
 - Change target specification has been understood (prior investigation with /service-spec recommended)
-- Service responsibility definitions are accessible (`input/project/service_responsibilities.md` or `knowledge/system/04_change_impact/service_responsibilities.md`)
+- Service responsibility definitions are accessible (`knowledge/system/service_responsibilities.md`)
 
 ### Downstream Skills (Pipeline)
 - None (final deliverable; handoff material for implementation phase)

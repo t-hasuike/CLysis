@@ -249,6 +249,89 @@ claude /investigate [some target]
 
 If it works, migration succeeded.
 
+---
+
+## v1.0 to v1.1: Directory Structure Migration
+
+### What Changed
+
+CLysis v1.1 renames the working directories to better reflect their purpose:
+
+| Before (v1.0) | After (v1.1) | Reason |
+|---------------|-------------|--------|
+| `output/` | `reports/` | Clarifies that generated content are investigation/analysis reports |
+| `input/project/` | `knowledge/system/` | Unified under `knowledge/` as system-level context |
+| `input/domain/` | `knowledge/domain/` | Unified under `knowledge/` as domain knowledge |
+| `input/` (top-level) | `knowledge/` | All project-specific context lives under one root |
+| (none) | `workspace/` | New directory for in-progress, pending merge, and planned work items |
+| `archive-output` skill | `archive-reports` skill | Matches renamed `reports/` directory |
+
+### Migration Steps
+
+#### Step 1: Rename directories
+
+```bash
+# Rename output to reports
+mv output/ reports/
+
+# Rename input to knowledge (if using old structure)
+mv input/domain/ knowledge/domain/
+mv input/project/ knowledge/system/
+rmdir input/  # only if empty
+```
+
+#### Step 2: Create workspace directory
+
+```bash
+mkdir -p workspace/{in_progress,pending_merge,planned}
+```
+
+#### Step 3: Update .gitignore
+
+Replace the old entries:
+
+```
+# Before
+output/
+input/
+
+# After
+reports/
+workspace/
+```
+
+#### Step 4: Update CLAUDE.md references
+
+If your project's CLAUDE.md references `input/domain/` or `input/project/`, update them:
+
+```markdown
+# Before
+- Domain Knowledge: `input/domain/`
+- Project Config: `input/project/`
+
+# After
+- Domain Knowledge: `knowledge/domain/`
+- Project Config: `knowledge/system/`
+```
+
+#### Step 5: Update skill invocations
+
+If you have saved commands or scripts referencing `output/` paths, update them to `reports/`:
+
+```bash
+# Before
+/build-knowledge output/investigation-results.md
+
+# After
+/build-knowledge reports/investigation-results.md
+```
+
+### No Breaking Changes to Skills
+
+All skills continue to work without modification. The path conventions are recommendations in skill documentation, not hardcoded logic.
+
+---
+
 ## Support
 
 If you encounter issues:

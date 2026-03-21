@@ -11,7 +11,7 @@ argument-hint: <task overview>
 
 ## Overview
 
-A guide skill that analyzes the nature of the task and presents the optimal reference order from input/project/ and input/domain/.
+A guide skill that analyzes the nature of the task and presents the optimal reference order from knowledge/system/ and knowledge/domain/.
 Helps the leader's team reach "the knowledge needed for the current mission" as quickly as possible.
 
 See config/terminology.md for term customization
@@ -66,8 +66,8 @@ Output in the following format:
 
 ### Phase 1: System Understanding (required reading)
 [Always presented regardless of task type]
-1. input/project/overview.md - Project overview
-2. input/project/repositories.md - Repository responsibility boundaries
+1. knowledge/system/overview.md - Project overview
+2. knowledge/system/repositories.md - Repository responsibility boundaries
 
 ### Phase 2: Task-Specific Knowledge
 [Dynamically selected based on task type]
@@ -79,7 +79,7 @@ Output in the following format:
 [Presented only when changes are involved]
 
 ## Related Domain Knowledge
-[Present applicable files from input/domain/]
+[Present applicable files from knowledge/domain/]
 
 ## Notes
 [Extract relevant notes from environment.md "common pitfalls"]
@@ -111,7 +111,7 @@ Output in the following format:
 - **Phase 2**: local_dev.md -> tech_stack.md
 - **Phase 3**: None
 - **Phase 4**: None
-- **Note**: Reference detailed knowledge under input/local_dev/
+- **Note**: Reference detailed knowledge under knowledge/local_dev/
 
 #### Refactoring
 - **Phase 2**: service_responsibilities.md (verify responsibilities) -> non_functional_requirements.md (constraints) -> todo_list.md (known issues)
@@ -120,7 +120,7 @@ Output in the following format:
 
 ### Step 4: Domain Knowledge Mapping
 
-Present relevant files from input/domain/ based on keywords in the task overview.
+Present relevant files from knowledge/domain/ based on keywords in the task overview.
 
 **Project-specific mappings**: Define keyword-to-file mappings in `PROJECT_EXAMPLES.md`.
 
@@ -137,7 +137,7 @@ Extract task-related notes from the "common pitfalls" section of environment.md.
 
 ## Document Quality Evaluation Integration
 
-After task completion, it is recommended to evaluate documents output to output/ against the criteria in input/assessment/legacy_document_quality.md.
+After task completion, it is recommended to evaluate documents output to reports/ against the criteria in assessment/legacy_document_quality.md.
 
 **"Ready for next action" 5W Check**:
 - **What**: Change target has been identified
@@ -159,28 +159,28 @@ After task completion, it is recommended to evaluate documents output to output/
 ## Recommended Reference Order
 
 ### Phase 1: System Understanding (required reading)
-1. `input/project/overview.md` - Project overview
-2. `input/project/repositories.md` - Repository responsibility boundaries
+1. `knowledge/system/overview.md` - Project overview
+2. `knowledge/system/repositories.md` - Repository responsibility boundaries
 
 ### Phase 2: Task-Specific Knowledge
-1. `input/project/environment.md` - [Reference reason]
-2. `input/project/service_responsibilities.md` - [Reference reason]
+1. `knowledge/system/environment.md` - [Reference reason]
+2. `knowledge/system/service_responsibilities.md` - [Reference reason]
 ...
 
 ### Phase 3: Implementation Preparation
-1. `input/project/typical_change_patterns.md` - [Reference reason]
-2. `input/project/schema_database.md` - [Reference reason]
+1. `knowledge/system/typical_change_patterns.md` - [Reference reason]
+2. `knowledge/system/schema_database.md` - [Reference reason]
 ...
 
 ### Phase 4: Impact Analysis
-1. `input/project/impact_analysis_template.md` - [Reference reason]
-2. `input/project/impact_analysis_example.md` - [Reference reason]
+1. `knowledge/system/impact_analysis_template.md` - [Reference reason]
+2. `knowledge/system/impact_analysis_example.md` - [Reference reason]
 
 ---
 
 ## Related Domain Knowledge
 
-- `input/domain/xxx.md` - [Relevance reason]
+- `knowledge/domain/xxx.md` - [Relevance reason]
 
 ---
 
@@ -197,7 +197,7 @@ After task completion, it is recommended to evaluate documents output to output/
 
 ## Prohibited Actions
 
-- Do not specify documents by assumption (present only after confirming input/ contents)
+- Do not specify documents by assumption (present only after confirming knowledge/ contents)
 - Do not modify files (guide presentation is the primary mission)
 
 ---
@@ -215,8 +215,8 @@ After task completion, it is recommended to evaluate documents output to output/
 | Reference guide | Document reference order and related file list | stdout (report to leader) |
 
 ### Prerequisites
-- Documents in input/project/ exist
-- Domain knowledge in input/domain/ exists
+- Documents in knowledge/system/ exist
+- Domain knowledge in knowledge/domain/ exists
 
 ### Downstream Skills (Pipeline)
 - `/investigate` -- Detailed investigation of targets identified by the guide

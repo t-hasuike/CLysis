@@ -1,7 +1,8 @@
-# Project-specific domain knowledge (private)
-input/domain/
-input/project/
-input/staging/
+# CLysis working directories (contain project-specific information)
+# Remove lines below if you want to version-control these directories
+knowledge/
+reports/
+workspace/
 
 # OS
 .DS_Store

@@ -132,7 +132,7 @@ EOF
 
 ### Step 8: Record Execution Log
 
-Record execution details to `output/pr_logs/{feature}_{phase}.md`.
+Record execution details to `reports/pr_logs/{feature}_{phase}.md`.
 
 ## Report Format
 
@@ -155,7 +155,7 @@ Record execution details to `output/pr_logs/{feature}_{phase}.md`.
 [Next Actions]
 Please review and approve the PR.
 
-Execution log: `output/pr_logs/{feature}_{phase}.md`
+Execution log: `reports/pr_logs/{feature}_{phase}.md`
 "
 ```
 
@@ -194,7 +194,7 @@ Report in Sengoku-style Japanese (customizable via config/terminology.md).
 ### INPUT
 | Type | Description | Required/Optional | Example |
 |------|-------------|-------------------|---------|
-| Change proposal | Output file path from /propose-changes | Required | `output/proposals/add_feature_phase0.md` |
+| Change proposal | Output file path from /propose-changes | Required | `reports/proposals/add_feature_phase0.md` |
 | Repository | Target repository name or path | Required | `my-app`, `/path/to/repo` |
 | Branch name | Branch name to create | Optional (auto-generated) | `feature/add-feature-phase0` |
 | Base branch | Source branch name | Optional (default: develop) | `develop`, `main` |
@@ -203,7 +203,7 @@ Report in Sengoku-style Japanese (customizable via config/terminology.md).
 | Type | Format | Destination |
 |------|--------|-------------|
 | PR URL | GitHub PR URL | stdout (report to leader) |
-| Execution log | Record of execution details | `output/pr_logs/{feature}_{phase}.md` |
+| Execution log | Record of execution details | `reports/pr_logs/{feature}_{phase}.md` |
 
 ### Prerequisites
 - Change proposal has been created and approved by user

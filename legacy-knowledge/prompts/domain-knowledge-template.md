@@ -2,11 +2,11 @@
 
 ## Usage
 
-Use when organizing investigation reports (output/) into domain knowledge (input/domain/).
+Use when organizing investigation reports (reports/) into domain knowledge (knowledge/domain/).
 
 ```
-"Organize output/xxx.md according to the following template,
-and save as input/domain/xxx.md"
+"Organize reports/xxx.md according to the following template,
+and save as knowledge/domain/xxx.md"
 ```
 
 ---
@@ -19,7 +19,7 @@ and save as input/domain/xxx.md"
 **Version**: x.x
 **Last Updated**: YYYY-MM-DD
 **Accuracy**: [Phase N investigation (code reading) / planned specification / design proposal]
-**Source**: [Investigation report path or reference]
+**Source**: [Investigation report path or reference (e.g., reports/xxx.md)]
 
 ---
 
@@ -175,7 +175,7 @@ Directly connected domains in the value chain:
 **Version**: 1.0
 **Last Updated**: 2026-01-22
 **Accuracy**: Phase 1 investigation (code reading)
-**Source**: output/product-category-investigation.md
+**Source**: reports/product-category-investigation.md
 
 ---
 

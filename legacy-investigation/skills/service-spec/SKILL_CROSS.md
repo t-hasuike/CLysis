@@ -12,7 +12,7 @@ argument-hint: <Feature name> <Repository A> <Repository B>
 ## 1. Business Domain Overview
 [Describe the business problem this feature solves and its overall picture in 3 lines]
 - **Key Actors**: System administrators, end users, external systems
-- **Related Domain**: Domain knowledge under input/domain/
+- **Related Domain**: Domain knowledge under knowledge/domain/
 
 ## 2. System Architecture / Component Diagram
 

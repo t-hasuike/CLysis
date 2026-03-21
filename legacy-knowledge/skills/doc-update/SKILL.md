@@ -72,7 +72,7 @@ Based on target audience, adjust:
 |---------------|-------------|
 | /prd-generate | Provides bulk findings that doc-update integrates |
 | /build-knowledge | Point knowledge. doc-update handles systematic updates |
-| /archive-output | Handles reports/ → knowledge/ promotion. doc-update handles knowledge/ maintenance |
+| /archive-reports | Handles reports/ → knowledge/ promotion. doc-update handles knowledge/ maintenance |
 | /legacy-analyze | Phase 3 updates maps. doc-update extends to all knowledge/ |
 
 ## I/O Specification

@@ -5,17 +5,17 @@
 ### Prerequisites
 
 1. `/propose-changes` has created a change proposal
-   - File path: `output/proposals/add_express_shipping_phase0.md`
+   - File path: `reports/proposals/add_express_shipping_phase0.md`
 2. User has reviewed and approved the change proposal
 
 ### Execution
 
 ```
-/create-pr output/proposals/add_express_shipping_phase0.md my-ecommerce-app
+/create-pr reports/proposals/add_express_shipping_phase0.md my-ecommerce-app
 ```
 
 Arguments:
-- `output/proposals/add_express_shipping_phase0.md`: Change proposal path
+- `reports/proposals/add_express_shipping_phase0.md`: Change proposal path
 - `my-ecommerce-app`: Target repository
 - Branch name omitted -> auto-generated: `feature/add-express-shipping-phase0`
 
@@ -78,7 +78,7 @@ https://github.com/my-org/my-ecommerce-app/pull/456
 [Next Actions]
 Please review and approve the PR.
 
-Execution log: output/pr_logs/add_express_shipping_phase0.md
+Execution log: reports/pr_logs/add_express_shipping_phase0.md
 "
 ```
 

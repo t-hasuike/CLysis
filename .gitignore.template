@@ -4,12 +4,11 @@
 # Copy this file to your project root as .gitignore
 # Customize based on your project's needs
 
-# Project-specific domain knowledge (PRIVATE)
-input/domain/
-input/project/
-input/local_dev/
-input/staging/
-input/prompts/
+# CLysis working directories (contain project-specific information)
+# Remove lines below if you want to version-control these directories
+knowledge/
+reports/
+workspace/
 
 # Agent memory snapshots (PRIVATE)
 .claude/agent-memory/
@@ -17,11 +16,8 @@ input/prompts/
 # Project-specific skill customizations (PRIVATE)
 .claude/skills/project-guide/PROJECT_EXAMPLES.md
 
-# Work in progress reports
-output/
-
 # Personal content
-# output/blog/  # Uncomment if you have personal content in output
+# reports/blog/  # Uncomment if you want to exclude specific subdirectories
 
 # User-specific local settings
 CLAUDE.local.md

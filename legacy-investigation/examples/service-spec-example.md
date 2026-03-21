@@ -126,4 +126,4 @@ Report complete."
 - Use `/service-spec [ServiceName]` for detailed documentation
 - Output includes all public methods with parameters, return values, exceptions
 - Useful for API documentation or architectural reviews
-- Can be saved to `output/` directory for team reference
+- Can be saved to `reports/` directory for team reference

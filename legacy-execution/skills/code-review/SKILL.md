@@ -24,7 +24,7 @@ $ARGUMENTS
 ```
 1. Get PR information (changed files, diff retrieval)
    |
-2. Reference domain knowledge (input/domain/ + input/staging/in_progress/)
+2. Reference domain knowledge (knowledge/domain/ + reports/)
    |
 3. Code quality review
    |
@@ -40,8 +40,8 @@ $ARGUMENTS
 - Determine team composition based on number of changed files
 
 ### Step 2: Reference Domain Knowledge
-- Check related domain knowledge in `input/domain/`
-- Reference task specification and impact analysis reports in `input/staging/in_progress/`
+- Check related domain knowledge in `knowledge/domain/` (if the directory exists; skip if not present)
+- Reference impact analysis reports and investigation results in `reports/` (if the directory exists; skip if not present)
 - Understand business rules related to the changes
 
 ### Step 3: Code Quality Review
@@ -118,8 +118,8 @@ $ARGUMENTS
 
 ### Domain Knowledge Alignment
 **Referenced Domain Knowledge**:
-- `input/domain/xxx.md`
-- `input/staging/in_progress/yyy.md`
+- `knowledge/domain/xxx.md`
+- `reports/yyy.md`
 
 | Item | Domain Knowledge | Implementation | Judgment |
 |------|-----------------|---------------|----------|
@@ -153,7 +153,7 @@ $ARGUMENTS
 Upon review completion, verify the following:
 
 - [ ] Reviewed all changed files in the PR
-- [ ] Referenced domain knowledge (input/domain/ + staging/in_progress/)
+- [ ] Referenced domain knowledge (knowledge/domain/ and reports/ where available)
 - [ ] Reviewed both code quality and business perspective
 - [ ] Included file path:line numbers
 - [ ] Approval judgment is clear
@@ -177,7 +177,7 @@ Upon review completion, verify the following:
 ### Prerequisites
 - GitHub MCP is available
 - Serena MCP is running (for code reading)
-- input/domain/ and input/staging/ are accessible
+- `knowledge/domain/` and `reports/` are used when available; if either directory does not exist, skip the corresponding step and proceed without it
 
 ### Downstream Skills (Pipeline)
 - None (final deliverable; judgment material for approval/change request)

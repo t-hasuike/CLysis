@@ -16,7 +16,7 @@ A workflow for reviewing PR code quality and business logic alignment.
 Apply **project-guide** skill:
 
 - Identify domain knowledge and project information needed for PR review
-- Pre-read related domain knowledge from input/domain/
+- Pre-read related domain knowledge from knowledge/domain/
 
 $ARGUMENTS
 

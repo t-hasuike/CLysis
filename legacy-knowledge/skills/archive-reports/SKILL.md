@@ -1,7 +1,7 @@
 ---
-name: archive-output
-description: Classify and convert investigation reports in output/ into ADR/spec/domain knowledge/overview reports, and move them to input/. Automates document organization and knowledge archiving.
-argument-hint: [filter criteria (optional)] - e.g., `--type adr` / `--since 2026-02-01` / default: all files in output/
+name: archive-reports
+description: Classify and convert investigation reports in reports/ into ADR/spec/domain knowledge/overview reports, and move them to knowledge/. Automates document organization and knowledge archiving.
+argument-hint: [filter criteria (optional)] - e.g., `--type adr` / `--since 2026-02-01` / default: all files in reports/
 ---
 
 > This is a generic skill from [CLysis](https://github.com/t-hasuike/CLysis).
@@ -11,38 +11,38 @@ argument-hint: [filter criteria (optional)] - e.g., `--type adr` / `--since 2026
 
 ## Role
 
-Responsible for organizing the investigation report repository (output/) and elevating it to confirmed knowledge (input/). Systematically records investigation results and inherits them as organizational knowledge assets.
+Responsible for organizing the investigation report repository (reports/) and elevating it to confirmed knowledge (knowledge/). Systematically records investigation results and inherits them as organizational knowledge assets.
 
 ## Purpose
 
-Convert and classify accumulated investigation reports and analysis materials in output/ into appropriate formats, ordering the input/output directories.
+Convert and classify accumulated investigation reports and analysis materials in reports/ into appropriate formats, ordering the reports/knowledge directories.
 
 ```
-output/ (temporary investigation results)
+reports/ (temporary investigation results)
      |
   Inventory & classification
      |
-input/context/adr/ (decision history)
-input/context/ (overview reports, compound specifications)
-input/domain/ (confirmed facts)
+knowledge/adr/ (decision history)
+knowledge/system/ or knowledge/domain/ (overview reports, compound specifications)
+knowledge/domain/ (confirmed facts)
 ```
 
 ## 4 Archive Categories
 
 | Category | Format | Destination | Purpose | Example |
 |----------|--------|------------|---------|---------|
-| **ADR** | Decision record | `input/context/adr/` | Record context: "Why this decision?" | ADR-2026-03-16-feature-calc-method.md |
-| **SPEC** | Detailed specification | `input/context/` | Engineer-readable implementation-level detail | feature-calculation-spec.md |
-| **DOMAIN** | Domain knowledge | `input/domain/` | Business rules, term definitions (confirmed facts) | calculation-rules.md |
-| **Overview report** | Compound analysis | `input/context/` | Overview of multiple related systems/concepts | payment-system-overview.md |
+| **ADR** | Decision record | `knowledge/adr/` | Record context: "Why this decision?" | ADR-2026-03-16-feature-calc-method.md |
+| **SPEC** | Detailed specification | `knowledge/system/` | Engineer-readable implementation-level detail | feature-calculation-spec.md |
+| **DOMAIN** | Domain knowledge | `knowledge/domain/` | Business rules, term definitions (confirmed facts) | calculation-rules.md |
+| **Overview report** | Compound analysis | `knowledge/system/` | Overview of multiple related systems/concepts | payment-system-overview.md |
 | **Delete target** | -- | (delete) | Temporary working documents, duplicates, obsolete | -- |
-| **Archive** | -- | `input/context/archive/` | Preserved as reference material (clue for future similar investigations) | -- |
+| **Archive** | -- | `knowledge/archive/` | Preserved as reference material (clue for future similar investigations) | -- |
 
 ## Execution Flow
 
 ```mermaid
 flowchart TD
-    A["1. Inventory (get full file list from output/)"] --> B["2. Content check (title, body summary)"]
+    A["1. Inventory (get full file list from reports/)"] --> B["2. Content check (title, body summary)"]
     B --> C["3. Classify (ADR/SPEC/DOMAIN/Overview/Delete/Archive)"]
     C --> D["4. Confirm with user (classification results, conversion plan)"]
     D --> E{User approval}
@@ -112,11 +112,11 @@ flowchart TD
 - Useful analysis that did not lead to a decision
 - Records of legacy code reading (useful for future large-scale modifications)
 
-**Destination**: Redirect to `input/context/archive/`
+**Destination**: Redirect to `knowledge/archive/`
 
 ## Conversion Rules
 
-### ADR Template (input/context/adr/)
+### ADR Template (knowledge/adr/)
 
 ```markdown
 # ADR: [Title]
@@ -162,7 +162,7 @@ flowchart TD
 | YYYY-MM-DD | 1.0 | Initial version |
 ```
 
-### SPEC Template (input/context/)
+### SPEC Template (knowledge/system/)
 
 ```markdown
 # [Title] Specification
@@ -192,7 +192,7 @@ flowchart TD
 [Issues remaining at implementation completion. "Items requiring consideration for future modifications"]
 
 ## Related Domain Knowledge
-- input/domain/xxx.md: [Brief description]
+- knowledge/domain/xxx.md: [Brief description]
 
 ## Version History
 | Date | Version | Description |
@@ -200,7 +200,7 @@ flowchart TD
 | YYYY-MM-DD | 1.0 | Initial version |
 ```
 
-### DOMAIN Template (input/domain/)
+### DOMAIN Template (knowledge/domain/)
 
 ```markdown
 # [Domain Concept Name]
@@ -245,8 +245,8 @@ flowchart TD
 
 ### Explicit References
 - Source code citations in `app/Services/xxx.php:45-67` format
-- Background knowledge referenced by `input/domain/` file names
-- ADRs cross-referenced as `[ADR: Title](../../adr/filename.md)`
+- Background knowledge referenced by `knowledge/domain/` file names
+- ADRs cross-referenced as `[ADR: Title](../../knowledge/adr/filename.md)`
 
 ### Format Conventions
 - Use mermaid diagrams actively (visualization effectiveness proven)
@@ -261,18 +261,18 @@ flowchart TD
 ### INPUT
 | Type | Description | Required/Optional | Example |
 |------|-------------|-------------------|---------|
-| Filter | Narrow target files | Optional | `--type adr` / `--since 2026-02-01` / default: all files in output/ |
+| Filter | Narrow target files | Optional | `--type adr` / `--since 2026-02-01` / default: all files in reports/ |
 
 ### OUTPUT
 | Type | Format | Destination |
 |------|--------|-------------|
 | Archive plan | Classification list + Markdown format | stdout (report to leader) |
-| Converted files | Under respective input/ directories | input/context/adr/, input/context/, input/domain/ |
+| Converted files | Under respective knowledge/ directories | knowledge/adr/, knowledge/system/, knowledge/domain/ |
 | Delete file list | Text list | stdout (for confirmation) |
 
 ### Prerequisites
-- Archive target files exist in output/
-- Directory structure under input/ is set up
+- Archive target files exist in reports/
+- Directory structure under knowledge/ is set up
 
 ### Quality Checkpoints
 - [ ] Inventoried all files with no omissions
@@ -294,7 +294,7 @@ flowchart TD
 
 ### Small Scale (3 files)
 ```
-Leader: /archive-output --type adr --since 2026-03-01
+Leader: /archive-reports --type adr --since 2026-03-01
 Worker: Classification report (3 files)
 Leader: Approved
 Worker: Execute conversion -> completion report
@@ -302,7 +302,7 @@ Worker: Execute conversion -> completion report
 
 ### Large Scale (15 files)
 ```
-Leader: /archive-output (all files)
+Leader: /archive-reports (all files)
 Worker: Inventory and classification report
 Leader: Determines "planner consultation needed"
 Planner: Task decomposition (3-4 phases)

@@ -115,7 +115,7 @@ Launch 5 workers in parallel.
 
 | Worker | Agent Type | Assignment | Investigation Content |
 |--------|-----------|------------|----------------------|
-| Worker A | investigator | Integrate existing investigation results | Extract and integrate known risks from past reports in output/ |
+| Worker A | investigator | Integrate existing investigation results | Extract and integrate known risks from past reports in reports/ |
 | Worker B | investigator | Flag consistency check gaps | Implicit dependencies on shared flags, missing delflag/JOIN conditions |
 | Worker C | investigator | Cross-table consistency | Missing foreign key constraints, data inconsistency between tables |
 | Worker D | investigator | Constant definition vs DB value drift | Mismatch between Enum/constant definitions and DB stored values, hardcoding |
@@ -174,7 +174,7 @@ Launch 3 workers in parallel.
 
 | Worker | Agent Type | Assignment | Output File |
 |--------|-----------|------------|-------------|
-| Worker F | general-purpose | Part A: Business Process-driven | Part A section of `output/distortion-report-[repo]-[area]-[date].md` |
+| Worker F | general-purpose | Part A: Business Process-driven | Part A section of `reports/distortion-report-[repo]-[area]-[date].md` |
 | Worker G | general-purpose | Part B: Root Cause-driven | Part B section of same file |
 | Worker H | general-purpose | Part C: Mermaid Overview | Part C section of same file |
 
@@ -212,13 +212,13 @@ Visualize relationships, causality, and remediation impact of all risks using me
 ### File Name
 
 ```
-output/distortion-report-[repository]-[area]-[date].md
+reports/distortion-report-[repository]-[area]-[date].md
 ```
 
 **Examples**:
 ```
-output/distortion-report-ec-checkout-flow-2026-03-13.md
-output/distortion-report-backend-order-delivery-2026-03-13.md
+reports/distortion-report-ec-checkout-flow-2026-03-13.md
+reports/distortion-report-backend-order-delivery-2026-03-13.md
 ```
 
 ### Integrated Report Template
@@ -441,10 +441,10 @@ When distortion analysis covers multiple repositories, risks that span repositor
 
 | File | Purpose |
 |------|---------|
-| `input/domain/business_processes.md` | Business process definitions. Mapping target for Part A |
-| `input/project/overview.md` | Project structure. Understanding cross-repository relationships |
-| `input/project/repositories.md` | Repository responsibilities. Judgment for investigation scope |
-| `output/` | Past investigation reports. Source for Phase 1 Worker A to extract existing risks |
+| `knowledge/domain/business_processes.md` | Business process definitions. Mapping target for Part A |
+| `knowledge/system/overview.md` | Project structure. Understanding cross-repository relationships |
+| `knowledge/system/repositories.md` | Repository responsibilities. Judgment for investigation scope |
+| `reports/` | Past investigation reports. Source for Phase 1 Worker A to extract existing risks |
 
 ---
 
@@ -463,14 +463,14 @@ When distortion analysis covers multiple repositories, risks that span repositor
 
 | Type | Format | Destination |
 |------|--------|-------------|
-| Integrated Report | Markdown (distortion results + Part A/B/C) | `output/distortion-report-[repo]-[area]-[date].md` |
+| Integrated Report | Markdown (distortion results + Part A/B/C) | `reports/distortion-report-[repo]-[area]-[date].md` |
 
 ### Prerequisites
 
 - Serena MCP is running
 - Target repository is accessible
 - For Phase 2 only: Leader holds Phase 1 integration results
-- Business process definitions exist in input/domain/ (required for Part A mapping)
+- Business process definitions exist in knowledge/domain/ (required for Part A mapping)
 
 ### Downstream Skills (Pipeline)
 

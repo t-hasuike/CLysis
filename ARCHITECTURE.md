@@ -44,7 +44,7 @@ legacy-execution/         # Phase 3: Execution & Review
 
 legacy-knowledge/         # Knowledge Management
 ├── .claude-plugin/
-├── skills/               # build-knowledge, archive-output, templates, prd-generate, doc-update
+├── skills/               # build-knowledge, archive-reports, templates (reference only, not executable), prd-generate, doc-update
 ├── prompts/              # Domain knowledge templates
 └── examples/
 ```
@@ -277,7 +277,7 @@ Human reviews synthesis & selects approach
 | **Shogun** | General / Leader | Team coordination, task delegation | Yes |
 | **Karo** | Chief Retainer / Planner | Task decomposition, dependency management | Yes |
 | **Ashigaru** | Foot Soldier / Worker | Task execution (backend, frontend, docs, investigation, devops) | Yes |
-| **Metsuke** | Inspector / QA | Quality assurance, compliance verification | Yes |
+| **Metsuke** | Inspector / QA | Quality assurance, compliance verification (Phase 2 audit only — activated after deliverables are produced, not before) | Yes |
 
 ### Hierarchy & Communication
 
@@ -305,8 +305,8 @@ Shogun (Leader)
 ┌────────────────────────────────────────┐
 │  • Shared task list (TaskCreate/Update)│
 │  • Natural language messaging          │
-│  • Domain knowledge (input/domain/)    │
-│  • Reports (output/ or reports/)       │
+│  • Domain knowledge (knowledge/domain/)│
+│  • Reports (reports/)                  │
 └────────────────────────────────────────┘
 ```
 
@@ -360,9 +360,10 @@ The leader follows a structured workflow for every mission:
 | `legacy-*/commands/` | **Public** | Generic workflow pipelines |
 | `agents/` | **Public** | Generic agent definitions (customize via CLAUDE.md) |
 | `config/` | **Public** | Terminology customization |
-| `input/domain/` | **Private** | Project-specific domain knowledge (NOT in repo) |
-| `input/project/` | **Private** | Project-specific configuration (NOT in repo) |
-| `output/` | **Private** | Generated reports (NOT in repo) |
+| `knowledge/domain/` | **Private** | Project-specific domain knowledge (NOT in repo) |
+| `knowledge/system/` | **Private** | Project-specific configuration (NOT in repo) |
+| `reports/` | **Private** | Generated reports (NOT in repo) |
+| `workspace/` | **Private** | In-progress, pending merge, and planned work items (NOT in repo) |
 
 **Why this separation?**
 
@@ -533,7 +534,7 @@ Phase 2: Part A/B/C Creation
 
 4. Keep generic:
    - Use placeholders like "Backend framework" instead of "Laravel"
-   - Reference "input/domain/" without assuming project structure
+   - Reference "knowledge/domain/" without assuming project structure
    - Add note: `> This is a generic skill from CLysis.`
 
 5. Document I/O spec:
@@ -566,7 +567,7 @@ Phase 2: Part A/B/C Creation
    1. /skill-1 [args]
    2. 【Human Checkpoint】Review results
    3. /skill-2 [args]
-   4. Output to output/your-command-report.md
+   4. Output to reports/your-command-report.md
    ```
 
 4. Keep generic:
@@ -596,7 +597,7 @@ Phase 2: Part A/B/C Creation
 
 3. Keep generic:
    - Reference "Backend framework" instead of specific tech
-   - Reference "input/domain/" and "input/project/" generically
+   - Reference "knowledge/domain/" and "knowledge/system/" generically
    - Add note: `> This is a generic agent from CLysis.`
 
 4. Document communication:
@@ -610,8 +611,8 @@ Phase 2: Part A/B/C Creation
    ```
    examples/your-example/
    ├── README.md       # Scenario description
-   ├── input/          # Sample inputs
-   └── output/         # Expected outputs
+   ├── knowledge/      # Sample inputs
+   └── reports/        # Expected outputs
    ```
 
 2. Anonymize project-specific details:
@@ -867,7 +868,7 @@ When files are moved or directories restructured, all reference paths must be ve
 
 | File Type | Location Pattern | What to Check |
 |-----------|-----------------|---------------|
-| Agent definitions | `agents/*.md` | "References" sections with `input/` or `output/` paths |
+| Agent definitions | `agents/*.md` | "References" sections with `knowledge/` or `reports/` paths |
 | Skill definitions | `legacy-*/skills/*/SKILL.md` | I/O specification paths |
 | CLAUDE.md | Project root | Directory references, skill paths |
 | ARCHITECTURE.md | Project root | Path examples, directory structure diagrams |
@@ -880,7 +881,7 @@ When files are moved or directories restructured, all reference paths must be ve
 Domain knowledge follows a lifecycle with clear graduation criteria:
 
 ```
-output/ (raw investigation results)
+reports/ (raw investigation results)
   |
   | Graduation criteria:
   | - Verified against code (not speculation)
@@ -889,12 +890,12 @@ output/ (raw investigation results)
   | - Related domains cross-referenced
   |
   v
-input/domain/ (confirmed domain knowledge)
+knowledge/domain/ (confirmed domain knowledge)
 ```
 
 **Rules**:
-1. Investigation results in `output/` are temporary -- they must be graduated to `input/domain/` or discarded
-2. Only code-confirmed facts graduate; hypotheses and speculation stay in `output/` or are discarded
+1. Investigation results in `reports/` are temporary -- they must be graduated to `knowledge/domain/` or discarded
+2. Only code-confirmed facts graduate; hypotheses and speculation stay in `reports/` or are discarded
 3. Variable values that change frequently (prices, thresholds) should reference the database as source of truth, not be hardcoded in domain files
 4. Each domain file must specify its accuracy level (code reading / planned specification / design proposal)
 

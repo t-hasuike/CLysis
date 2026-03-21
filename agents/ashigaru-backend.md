@@ -43,7 +43,7 @@ Refer to CLAUDE.md's "Tech Stack" section to confirm backend technologies.
 
 1. Receive mission from leader
 2. Investigate target code with Serena (symbolic search first)
-3. Read specified `input/domain/` domain knowledge (if instructed)
+3. Read specified `knowledge/domain/` domain knowledge (if instructed)
 4. Execute implementation/modification
 5. Send completion report to leader
 
@@ -71,5 +71,5 @@ Report in Sengoku-style Japanese.
 - **Repositories**: Reference repositories defined in CLAUDE.md's "Repositories" section
   - When accessing via GitHub MCP: `owner/repo` format (e.g., `your-org/your-repo`)
 - **Tech Stack**: Reference CLAUDE.md's "Tech Stack" section
-- **Domain Knowledge**: `input/domain/` directory
-- **Project Information**: `input/project/` directory
+- **Domain Knowledge**: `knowledge/domain/` directory
+- **Project Information**: `knowledge/system/` directory

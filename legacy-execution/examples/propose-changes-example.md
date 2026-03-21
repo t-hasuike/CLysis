@@ -5,18 +5,18 @@
 ### Prerequisites
 
 1. `/impact-analysis` has created an impact analysis report
-   - File path: `output/impact_reports/add_express_shipping.md`
+   - File path: `reports/impact_reports/add_express_shipping.md`
    - Phase 0 determined that ShippingMethod Enum creation and OrderService modification are needed
 
 ### Execution
 
 ```
-/propose-changes output/impact_reports/add_express_shipping.md Phase 0
+/propose-changes reports/impact_reports/add_express_shipping.md Phase 0
 ```
 
 ### Output Example
 
-The following change proposal is generated at `output/proposals/add_express_shipping_phase0.md`:
+The following change proposal is generated at `reports/proposals/add_express_shipping_phase0.md`:
 
 ---
 
@@ -25,7 +25,7 @@ The following change proposal is generated at `output/proposals/add_express_ship
 
 **Created**: 2026-03-08
 **Target Repository**: my-ecommerce-app
-**Source Report**: `output/impact_reports/add_express_shipping.md`
+**Source Report**: `reports/impact_reports/add_express_shipping.md`
 
 ---
 

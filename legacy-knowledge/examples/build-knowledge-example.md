@@ -19,7 +19,7 @@ Context:
 "Domain knowledge has been accumulated.
 
 [Action] New creation
-[Target File] input/domain/discount_rules.md
+[Target File] knowledge/domain/discount_rules.md
 
 [Content]
 - Organized 3 discount calculation business rules
@@ -173,7 +173,7 @@ Report complete."
 ### Notes
 
 - Use `/build-knowledge [Topic/Context]` to create or update domain knowledge
-- Output is saved to `input/domain/` directory
+- Output is saved to `knowledge/domain/` directory
 - Includes business rules, implementation status, and recommendations
 - Useful for onboarding, knowledge sharing, and preventing knowledge loss
 - Knowledge base grows iteratively with each code review/investigation

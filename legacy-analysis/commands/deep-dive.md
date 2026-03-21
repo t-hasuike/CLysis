@@ -57,7 +57,7 @@ Apply **legacy-analyze** skill (Phase 3):
 - Update system overview diagram with new connections
 - Add data flows to DFD
 - Document I/O interfaces and external connections
-- Persist domain knowledge to input/domain/
+- Persist domain knowledge to knowledge/domain/
 - Update "Known/Unknown" list
 
 ### Step 5: Suggest Next Actions

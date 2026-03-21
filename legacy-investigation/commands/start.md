@@ -10,6 +10,18 @@ allowed-tools: Read, Grep, Glob, Bash, Agent
 
 This command is the single entry point for CLysis. It guides users to the right skill chain based on their current situation.
 
+## Step 0: Project Initialization (auto, idempotent)
+
+Run the following to set up the CLysis directory structure. Safe to run multiple times — existing directories are preserved.
+
+```bash
+mkdir -p knowledge/{domain,system,adr,archive}
+mkdir -p workspace/{in_progress,pending_merge,planned}
+mkdir -p reports
+```
+
+If all directories already exist, skip to the next step.
+
 ## Step 1: Determine the User's Intent
 
 Ask the user:

@@ -17,7 +17,7 @@ Sequentially execute 4 skills and output the final ADR-format impact analysis re
 Apply **project-guide** skill:
 
 - Analyze the task overview and identify the order of documents to reference
-- Present the optimal reference order from input/project/ and input/domain/
+- Present the optimal reference order from knowledge/system/ and knowledge/domain/
 
 $ARGUMENTS
 

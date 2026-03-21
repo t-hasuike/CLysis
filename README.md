@@ -29,7 +29,7 @@ CLysis/
 │   ├── commands/
 │   ├── examples/
 │   └── skills/
-├── legacy-knowledge/          # Plugin: build-knowledge, archive-output, templates
+├── legacy-knowledge/          # Plugin: build-knowledge, archive-reports, templates
 │   ├── .claude-plugin/
 │   ├── examples/
 │   ├── prompts/
@@ -47,7 +47,7 @@ CLysis/
 | [legacy-investigation](./legacy-investigation/) | 3 | 4 | Investigation & understanding (project-guide, investigate, service-spec) |
 | [legacy-analysis](./legacy-analysis/) | 3 | 1 | Analysis & planning (impact-analysis, legacy-analyze, distortion-analysis) |
 | [legacy-execution](./legacy-execution/) | 3 | 2 | Execution & review (propose-changes, create-pr, code-review) |
-| [legacy-knowledge](./legacy-knowledge/) | 5 | 0 | Knowledge accumulation (build-knowledge, archive-output, templates, prd-generate, doc-update) |
+| [legacy-knowledge](./legacy-knowledge/) | 5 | 0 | Knowledge accumulation (build-knowledge, archive-reports, templates, prd-generate, doc-update) |
 
 ## Prerequisites
 
@@ -128,7 +128,7 @@ cp -r legacy-investigation/commands/* /path/to/your/project/.claude/commands/
 | **legacy-investigation** | project-guide, investigate, service-spec | Code exploration, service specification, documentation reference |
 | **legacy-analysis** | impact-analysis, legacy-analyze, distortion-analysis | Impact analysis, system overview, code quality patterns |
 | **legacy-execution** | propose-changes, create-pr, code-review | Change proposals, PR creation, automated code review |
-| **legacy-knowledge** | build-knowledge, archive-output, templates, prd-generate, doc-update | Knowledge extraction, domain documentation, team templates, PRD generation, document updates |
+| **legacy-knowledge** | build-knowledge, archive-reports, templates, prd-generate, doc-update | Knowledge extraction, domain documentation, team templates, PRD generation, document updates |
 
 ### Skill Chain Patterns
 
@@ -186,7 +186,7 @@ Build comprehensive domain knowledge:
 2. Build domain knowledge from your investigations:
 
 ```bash
-/build-knowledge output/investigation-results.md
+/build-knowledge reports/investigation-results.md
 ```
 
 3. Use the execution skills to propose and review changes:
@@ -255,7 +255,7 @@ claude plugin install legacy-investigation@CLysis legacy-analysis@CLysis legacy-
 | `/create-pr` | legacy-execution | Create PR with ADR summary and checklist |
 | `/code-review` | legacy-execution | PR review with code quality and domain knowledge validation |
 | `/build-knowledge` | legacy-knowledge | Extract and persist domain knowledge from investigation results |
-| `/archive-output` | legacy-knowledge | Archive investigation outputs for knowledge reuse |
+| `/archive-reports` | legacy-knowledge | Archive investigation outputs for knowledge reuse |
 | `/templates` | legacy-knowledge | General team operation templates (for leaders) |
 | `/prd-generate` | legacy-knowledge | Reverse-engineer PRD from existing codebase (Phase 1-3 workflow) |
 | `/doc-update` | legacy-knowledge | Update knowledge documents for target audience (developer, PM, onboarding) |
@@ -267,17 +267,10 @@ After installing the plugins, set up your project structure:
 ### 1. Create directory structure
 
 ```bash
-# Private directories (not tracked by git)
-mkdir -p input/{domain,project,local_dev,staging,prompts}
-mkdir -p output
-
-# Preserve directory structure in git
-touch input/domain/.gitkeep
-touch input/project/.gitkeep
-touch input/local_dev/.gitkeep
-touch input/staging/.gitkeep
-touch input/prompts/.gitkeep
-touch output/.gitkeep
+# Knowledge, reports, and workspace directories (not tracked by git)
+mkdir -p knowledge/{domain,system,adr,archive}
+mkdir -p workspace/{in_progress,pending_merge,planned}
+mkdir -p reports
 ```
 
 ### 2. Configure .gitignore
@@ -295,8 +288,7 @@ See `docs/claude-md-template.md` for a minimal template. Key sections:
 - **Repositories**: Define your repository paths (referenced by agents)
 - **Tech Stack**: Define your technology stack (referenced by agents)
 - **Required Rules**: Project-specific coding rules
-- **Domain Knowledge**: Map your `input/domain/` files
-
+- **Domain Knowledge**: Map your `knowledge/domain/` files
 ### 4. Start accumulating knowledge
 
 ```
@@ -305,7 +297,7 @@ See `docs/claude-md-template.md` for a minimal template. Key sections:
 /build-knowledge [investigation output path]
 ```
 
-Each investigation builds your domain knowledge in `input/domain/`.
+Each investigation builds your domain knowledge in `knowledge/domain/` and saves reports to `reports/`.
 
 ## Workflow Diagram
 
@@ -342,8 +334,8 @@ Each investigation builds your domain knowledge in `input/domain/`.
     │              Task System & Outputs                  │
     │  • Shared task list for coordination               │
     │  • Natural language messaging between agents       │
-    │  • Reports generated to output/                    │
-    │  • Domain knowledge persisted to input/domain/     │
+    │  • Reports generated to reports/                   │
+    │  • Domain knowledge persisted to knowledge/domain/ │
     └────────────────────────────────────────────────────┘
 ```
 
@@ -356,8 +348,8 @@ Commands provide pre-configured pipelines for common workflows:
    → /project-guide + /investigate + /service-spec + /impact-analysis
    → All-in-one investigation pipeline
    ↓
-/build-knowledge [output path]
-   → Persists domain knowledge to input/domain/
+/build-knowledge [report path]
+   → Persists domain knowledge to knowledge/domain/
 ```
 
 ## Distortion Analysis Flow
@@ -390,7 +382,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md#distortion-analysis-framework) for detaile
 /review [PR number]
    → /project-guide + /code-review
    → Reviews code quality + business logic alignment
-   → References input/domain/ for domain knowledge validation
+   → References knowledge/domain/ for domain knowledge validation
 ```
 
 ## Templates
@@ -410,14 +402,14 @@ The domain knowledge template uses a structured 8-section format (Overview, Data
 
 **Domain knowledge is project-specific and NOT included in the public repository.**
 
-Each project maintains its own `input/domain/` directory with:
+Each project maintains its own `knowledge/domain/` directory with:
 - Business rules and logic
 - Data structures and enum definitions
 - External API specifications
 - System architecture and service responsibilities
 - Technical constraints and known limitations
 
-The `/build-knowledge` skill bridges the gap by extracting domain knowledge from investigation results and persisting it to `input/domain/`.
+The `/build-knowledge` skill bridges the gap by extracting domain knowledge from investigation results and persisting it to `knowledge/domain/`.
 
 ## Terminology
 

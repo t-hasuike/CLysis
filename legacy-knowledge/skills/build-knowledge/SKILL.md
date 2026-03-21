@@ -1,6 +1,6 @@
 ---
 name: build-knowledge
-description: Extract domain knowledge from investigation results and systematically accumulate it in input/domain/. Used for knowledge retention after code reviews and investigations.
+description: Extract domain knowledge from investigation results and systematically accumulate it in knowledge/domain/. Used for knowledge retention after code reviews and investigations.
 argument-hint: <investigation result summary or file path> [category]
 ---
 
@@ -11,9 +11,9 @@ argument-hint: <investigation result summary or file path> [category]
 
 ## Overview
 
-Extract domain knowledge from investigation results (/investigate, /service-spec, /impact-analysis, /code-review outputs) and accumulate it as files under `input/domain/`.
+Extract domain knowledge from investigation results (/investigate, /service-spec, /impact-analysis, /code-review outputs) and accumulate it as files under `knowledge/domain/`.
 
-**Important**: Domain knowledge is project-specific information and is NOT included in the public repository. Each project independently manages its own `input/domain/`.
+**Important**: Domain knowledge is project-specific information and is NOT included in the public repository. Each project independently manages its own `knowledge/domain/`.
 
 ## Why This Skill Is Needed
 
@@ -47,10 +47,10 @@ Extract the following from input investigation results:
 
 ### Step 2: Check Existing Domain Knowledge
 
-Search existing files under `input/domain/` to avoid duplication:
+Search existing files under `knowledge/domain/` to avoid duplication:
 
 ```
-input/domain/
+knowledge/domain/
 |- [check existing file list]
 |- decide: new creation or update existing
 ```
@@ -64,7 +64,7 @@ input/domain/
 
 #### New Creation
 
-Create file under `input/domain/` in the following format:
+Create file under `knowledge/domain/` in the following format:
 
 ```markdown
 # [Domain Knowledge Title]
@@ -119,8 +119,8 @@ Create file under `input/domain/` in the following format:
 
 | Operation | File | Category | Content |
 |-----------|------|----------|---------|
-| New creation | input/domain/xxx.md | business-rules | Business rules for XX |
-| Append | input/domain/yyy.md | data-structure | Data structure addition for YY |
+| New creation | knowledge/domain/xxx.md | business-rules | Business rules for XX |
+| Append | knowledge/domain/yyy.md | data-structure | Data structure addition for YY |
 
 ## Source
 - [Investigation report name or PR number]
@@ -139,7 +139,7 @@ Create file under `input/domain/` in the following format:
   -> Established as domain knowledge
   |
 Next /investigate or /code-review
-  -> Referenced as prior knowledge from input/domain/
+  -> Referenced as prior knowledge from knowledge/domain/
 ```
 
 **Recommended timing**:
@@ -166,11 +166,11 @@ Next /investigate or /code-review
 ### OUTPUT
 | Type | Format | Destination |
 |------|--------|-------------|
-| Domain knowledge file | Markdown | New creation or update under `input/domain/` |
+| Domain knowledge file | Markdown | New creation or update under `knowledge/domain/` |
 | Accumulation report | Markdown | stdout (report to leader) |
 
 ### Prerequisites
-- `input/domain/` directory exists
+- `knowledge/domain/` directory exists
 - Investigation results are based on confirmed facts
 
 ### Downstream Skills (Pipeline)

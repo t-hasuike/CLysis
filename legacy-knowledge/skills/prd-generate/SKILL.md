@@ -71,7 +71,7 @@ To manage token consumption on large codebases, scope can be limited:
 ## Output Rules
 
 - Output to `reports/` only. Never overwrite `knowledge/` directly
-- Human reviews output, then uses `/archive-output` to promote to `knowledge/`
+- Human reviews output, then uses `/archive-reports` to promote to `knowledge/`
 - State observations only. No modification proposals (state assessment phase rule)
 - Subject-first rule: always specify "whose/what's" for domain terms
 
@@ -82,7 +82,7 @@ To manage token consumption on large codebases, scope can be limited:
 | /investigate | Point investigation. prd-generate is the surface-level counterpart |
 | /service-spec | Detailed service spec. prd-generate provides the overview that service-spec deepens |
 | /build-knowledge | Promotes individual findings. prd-generate promotes bulk findings |
-| /archive-output | Transfers prd-generate output from reports/ to knowledge/ |
+| /archive-reports | Transfers prd-generate output from reports/ to knowledge/ |
 | /legacy-analyze | Phase 0 auto-collection overlaps. prd-generate extends with Module Analysis |
 
 ## I/O Specification
@@ -102,7 +102,7 @@ To manage token consumption on large codebases, scope can be limited:
 
 ### Post-processing
 - Human reviews final PRD
-- `/archive-output` promotes relevant sections to `knowledge/`
+- `/archive-reports` promotes relevant sections to `knowledge/`
 - `/doc-update` adjusts depth for target audience
 
 ## Quality Checklist

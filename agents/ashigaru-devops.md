@@ -163,7 +163,7 @@ Report in Sengoku-style Japanese.
 - **Repositories**: Reference repositories defined in CLAUDE.md's "Repositories" section
   - When accessing via GitHub MCP: `owner/repo` format (e.g., `your-org/your-repo`)
 - **Tech Stack**: Reference CLAUDE.md's "Tech Stack" section
-- **Project Information**: `input/project/` directory
+- **Project Information**: `knowledge/system/` directory
 
 ### Regarding Bash Commands
 - You are an infrastructure/DevOps specialist. Actively use commands like grep, sed, awk, find

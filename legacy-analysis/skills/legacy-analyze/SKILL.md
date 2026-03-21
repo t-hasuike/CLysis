@@ -17,12 +17,10 @@ See config/terminology.md for term customization
 
 ## Prerequisites
 - Project basic information (overview.md, repositories.md, tech_stack.md) must exist
-  - Default: under `input/project/`
-  - Extended: under `knowledge/system/` (5-phase structure)
+  - Under `knowledge/system/`
 - Diagram storage location must exist
-  - Default: `input/project/diagrams/`
-  - Extended: `knowledge/system/02_structure/` and `knowledge/system/03_behavior/`
-- schema.duckdb (DB schema) must be available
+  - Under `knowledge/system/02_structure/` and `knowledge/system/03_behavior/`
+- schema.duckdb (DB schema) — recommended; fallback methods available if absent
 
 ## Phase 0: Foundation Building (first time only)
 
@@ -39,23 +37,48 @@ Auto-collect the following from each repository:
 - Dependency management files (composer.json / package.json / go.mod / build.gradle, etc.)
 - Root directory file structure
 - routes/ (API endpoint structure)
+- Console/Commands or equivalent CLI commands directory
+- Jobs/ or equivalent async job directory
+- app/Services/ or equivalent service layer directory structure (directory listing only, not file contents)
+- config/ files (connection settings, third-party integrations)
 
 If DB schema (schema.duckdb) is available, extract table list and foreign key relationships.
+If schema.duckdb is not available:
+1. Estimate table names and relationships from Eloquent Models / ORM entity classes
+2. Estimate table structure from migration files
+3. If neither is available, note as "DB structure unknown" in the unknowns list
+
+**Quantitative scan (counting only — do not read file contents):**
+- Route count
+- Model/Entity count
+- Table count (from schema or migrations)
+- Total file count per major language
+- Service/UseCase count
+
+> Phase 0 quantitative scanning is limited to **counting** (how many routes, models, tables exist). **Reading** the contents or analyzing complexity belongs to Phase 1.
 
 **Step 2: Organize "what we know"**
-Organize information determined from auto-collection:
-- Technology stack per repository (framework, language version)
-- Role per repository (from README)
-- Inter-repository connection clues (.env.example API_URL, etc.)
-- Batch/infrastructure configuration
+Organize information identified from auto-collection using the following four categories:
 
-Validation results: approximately 65-73% of information is automatically determined from README/composer.json/package.json, etc.
+**1. Technology Stack**
+- Framework, language version, major dependencies per repository
+
+**2. Repository Roles**
+- What each repository does (from README)
+
+**3. Inter-Repository Connections**
+- Clues about how repositories connect (API URLs in .env.example, shared DB, etc.)
+
+**4. Batch & Infrastructure**
+- Scheduled tasks, queue workers, infrastructure components
+
+Validation results: approximately 65-73% (based on verification against 8122 photo sales system with 15 repositories) of information is automatically determined from README/composer.json/package.json, etc.
 
 **Step 3: Present "what we don't know" as questions**
-Present business context not determinable by auto-collection as 9 questions to the human:
+Generate questions dynamically based on what Step 1-2 revealed and what remains unknown. The following are reference examples of common question categories:
 
 ```
-Please provide the following 9 items. The rest has been auto-collected:
+Please provide the following items. The rest has been auto-collected:
 
 1. Business domain of the service (1-2 sentences)
    -> What does the service provide and to whom?
@@ -92,6 +115,13 @@ Integrate Step 2 (auto-collection results) + Step 3 (human answers) to:
 - "Known" list
 - "Still unknown" list (this is most important -- targets for Phase 1 investigation)
 
+### When working with multiple repositories (5+)
+1. Start with the most critical/central repository (usually the main backend API)
+2. Proceed to repositories that directly depend on or are depended upon by the first
+3. Complete Phase 0 for all repositories before moving to Phase 1
+4. The system overview diagram should include ALL repositories, not just individually scanned ones
+5. Inter-repository connections discovered in Step 2 should be cross-referenced across repositories
+
 ### Key Principles
 - Steps 1-2 can execute without human input
 - Step 3 questions are dynamically generated based on auto-collection results (not fixed questions)
@@ -113,7 +143,7 @@ Select one specific change theme and trace it through the system. Map fragments 
 4. Organize related Services with /service-spec
 5. For cross-repository cases, use /service-spec (CROSS) for diff analysis
 6. Output:
-   - Impact analysis report (reports/ or output/)
+   - Impact analysis report (reports/)
    - Overview diagram update diff
    - DFD fragments
    - "Unknown" list update (resolved items/newly discovered items)
@@ -129,7 +159,7 @@ Select one specific change theme and trace it through the system. Map fragments 
 Verify the accuracy of Phase 1 deliverables. AI can hallucinate.
 
 ### Procedure
-1. metsuke (inspector) audits deliverables
+1. inspector (metsuke) audits deliverables
 2. Verification items:
    - Do all method names and class names actually exist?
    - Are all file paths correct?
@@ -148,8 +178,7 @@ Integrate fragments obtained in Phase 1-2 and update the three maps. Persist kno
 2. Add data flows to the DFD
 3. Add entry/exit points of each system to the I/O interface diagram
 4. Persist domain knowledge to the domain knowledge directory (scribe handles this)
-   - Default: `input/domain/`
-   - Extended: `knowledge/domain/`
+   - Under `knowledge/domain/`
 5. Update the "known/unknown" list
 6. Output:
    - Update the 3 diagrams in the diagram storage location
@@ -184,7 +213,7 @@ Repeat Phase 1-3 with different change themes. With each iteration:
 | Worker A | Repository A investigation (investigator) | Sonnet |
 | Worker B | Repository B investigation (investigator) | Sonnet |
 | Worker C | Knowledge integration and diagram updates (scribe) | Sonnet |
-| metsuke | Quality audit (deployed in Phase 2) | Sonnet |
+| inspector (metsuke) | Quality audit (deployed in Phase 2) | Sonnet |
 
 ## Agent Pattern Mapping
 | Pattern | Implementation | Phase |
@@ -211,8 +240,8 @@ Repeat Phase 1-3 with different change themes. With each iteration:
 ### OUTPUT
 | Type | Format | Destination |
 |------|--------|-------------|
-| Phase 0 deliverables | overview.md + system overview diagram + known/unknown list | Project information directory (`input/project/` or `knowledge/system/`) |
-| Phase 1 deliverables | Impact analysis report + Service specs + DFD fragments + unknown list update | `reports/` (or `output/`), diagram storage location |
+| Phase 0 deliverables | overview.md + system overview diagram + known/unknown list | Project information directory (`knowledge/system/`) |
+| Phase 1 deliverables | Impact analysis report + Service specs + DFD fragments + unknown list update | `reports/`, diagram storage location |
 | Phase 2 deliverables | Audited deliverables (with corrections applied) | `reports/` (updated) |
 | Phase 3 deliverables | Updated 3 maps + domain knowledge | Diagram storage location, domain knowledge directory |
 

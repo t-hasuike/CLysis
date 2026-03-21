@@ -254,7 +254,7 @@ Re-assess (repeat until Level 4 reached)
 
 ## Assessment Example
 
-### Target Document: `output/investigation/sample_investigation.md`
+### Target Document: `reports/investigation/sample_investigation.md`
 
 #### Tier 1 Check Results
 

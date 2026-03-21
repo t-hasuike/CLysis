@@ -22,8 +22,8 @@ This example demonstrates an end-to-end workflow using all skills sequentially.
 [Mission] Adding QR code payment
 
 [Files to Reference]
-1. input/project/repositories.md -> Verify payment feature responsibility boundaries
-2. input/domain/payment_methods.md -> Existing payment method specifications
+1. knowledge/system/repositories.md -> Verify payment feature responsibility boundaries
+2. knowledge/domain/payment_methods.md -> Existing payment method specifications
 3. app/Services/Payment/PaymentService.php -> Payment processing core implementation
 
 [Investigation Order]
@@ -175,7 +175,7 @@ Report complete."
 
 **[Human Checkpoint]**
 
-Submit impact analysis report (output/impact_analysis_paypay.md) to user for approval.
+Submit impact analysis report (reports/impact_analysis_paypay.md) to user for approval.
 
 ---
 
@@ -184,7 +184,7 @@ Submit impact analysis report (output/impact_analysis_paypay.md) to user for app
 ### INPUT
 
 ```
-/propose-changes output/impact_analysis_paypay.md
+/propose-changes reports/impact_analysis_paypay.md
 ```
 
 ### OUTPUT (Abbreviated)
@@ -194,7 +194,7 @@ Submit impact analysis report (output/impact_analysis_paypay.md) to user for app
 
 # PayPay Payment Addition Change Proposal
 
-**Source Report**: output/impact_analysis_paypay.md
+**Source Report**: reports/impact_analysis_paypay.md
 **Proposal Date**: 2026-03-08
 
 ## Change Summary
@@ -317,7 +317,7 @@ Submit change proposal to user for review and approval.
 ### INPUT
 
 ```
-/create-pr output/propose_changes_paypay.md backend
+/create-pr reports/propose_changes_paypay.md backend
 ```
 
 ### OUTPUT (Abbreviated)
@@ -349,8 +349,8 @@ https://github.com/your-org/backend/pull/456
 - [ ] Manual QA (QR code payment in sandbox environment)
 
 ## Related
-- Impact Analysis: output/impact_analysis_paypay.md
-- Change Proposal: output/propose_changes_paypay.md
+- Impact Analysis: reports/impact_analysis_paypay.md
+- Change Proposal: reports/propose_changes_paypay.md
 
 Report complete."
 ```
@@ -379,7 +379,7 @@ Context:
 "Domain knowledge accumulated.
 
 [Action] New creation
-[Target File] input/domain/qr_code_payment_rules.md
+[Target File] knowledge/domain/qr_code_payment_rules.md
 
 [Content]
 - QR code payment common patterns
@@ -425,12 +425,12 @@ Report complete."
 | 4 | `/impact-analysis` | Impact scope analysis | ADR-format report |
 | 5 | `/propose-changes` | Create change proposal | Diff-format change proposal |
 | 6 | `/create-pr` | Create PR | Branch, commit, PR |
-| 7 | `/build-knowledge` | Accumulate domain knowledge | Addition to input/domain/ |
+| 7 | `/build-knowledge` | Accumulate domain knowledge | Addition to knowledge/domain/ |
 
 ### Key Benefits
 
 - **Progressive understanding**: Overview -> detail -> impact -> knowledge capture
-- **Reusable**: Reference input/domain/ for similar future tasks
+- **Reusable**: Reference knowledge/domain/ for similar future tasks
 - **Team sharing**: Documents serve as onboarding materials
 
 ### Typical Timeline
