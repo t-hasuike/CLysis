@@ -1,5 +1,5 @@
 ---
-description: Support legacy code specification understanding. Execute the project-guide -> investigate -> service-spec skill chain.
+description: Map unfamiliar code — understand how a feature works, its dependencies, and data flow before making changes. Execute the project-guide -> investigate -> service-spec skill chain.
 argument-hint: "<feature or process name to understand>"
 ---
 
@@ -28,7 +28,7 @@ Apply **investigate** skill:
 - Explore the code flow and dependency relationships of the target feature
 - Identify key classes, methods, and tables
 
-> **Checkpoint**: "Investigation results ready. Ready to proceed to the next phase (specification organization)?"
+> **Checkpoint**: "Do you have a clear picture of the overall structure, key dependencies, and data flow? Ready to proceed to the next phase (specification organization)?"
 
 ### Step 3: Systematic Specification Organization
 

@@ -1,5 +1,5 @@
 ---
-description: Support bug root cause identification and fix strategy formulation. Execute project-guide -> investigate -> service-spec skill chain.
+description: Track down bugs — trace symptoms to root cause, identify the exact file and line, and plan the fix. Execute project-guide -> investigate -> service-spec skill chain.
 argument-hint: "<bug symptoms / error description>"
 ---
 
@@ -25,11 +25,11 @@ $ARGUMENTS
 
 Apply **investigate** skill:
 
-- Trace the code flow from the error content/symptoms
+- Trace error symptoms through the code flow (trace error → identify cause location (file:line))
 - Identify the cause location with file path:line number
 - Record discovered risks
 
-> **Checkpoint**: "Narrowed down the likely cause. Ready to proceed to the next phase (specification verification)?"
+> **Checkpoint**: "Have you pinpointed the root cause with a specific file path and line number? Ready to proceed to the next phase (specification verification)?"
 
 ### Step 3: Verify Relevant Service Specification
 

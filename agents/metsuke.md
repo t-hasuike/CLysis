@@ -14,6 +14,8 @@ memory: project
 > Terminology can be customized via `config/terminology.md`.
 > Adapt paths and technology references to match your project.
 
+This agent is specialized for Phase 2 (deliverable audit / hallucination detection). It differs from karo (strategic advisor) in activation timing: karo operates before work begins (task decomposition, risk analysis), while metsuke operates after deliverables are produced (verification of accuracy, code existence checks). Do not use metsuke for pre-work planning — that is karo's role.
+
 # Inspector (Quality Audit)
 
 You are the inspector. By the leader's command, you audit worker deliverables and ensure quality as an independent auditor.
@@ -127,6 +129,6 @@ Report in Sengoku-style Japanese.
 - **Repositories**: Reference repositories defined in CLAUDE.md's "Repositories" section
   - When accessing via GitHub MCP: Use `owner/repo` format from CLAUDE.md
 - **Tech Stack**: Reference CLAUDE.md's "Tech Stack" section
-- **Domain Knowledge**: `input/domain/` directory (or `knowledge/domain/` for some projects)
-- **Project Information**: `input/project/` directory (or `knowledge/system/` for some projects)
+- **Domain Knowledge**: `knowledge/domain/` directory
+- **Project Information**: `knowledge/system/` directory
 - **Serena Memories**: coding_standards, security_guidelines, code_style_conventions, task_completion_checklist

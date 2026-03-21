@@ -6,6 +6,8 @@ user-invocable: true
 argument-hint: template-name
 ---
 
+> **Note: This is a reference template collection, not an executable skill. It provides ready-to-use templates for team leaders to copy and customize. AI agents do not invoke this skill directly.**
+
 > This is a generic skill from [CLysis](https://github.com/t-hasuike/CLysis).
 > Terminology can be customized via `config/terminology.md`.
 
