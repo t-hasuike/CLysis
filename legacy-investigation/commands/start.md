@@ -54,20 +54,19 @@ If the user is exploring, present the full capability overview:
 Phase 1: INVESTIGATE — Understand what exists
   /deep-dive    → System-wide overview (architecture, DFD, I/O maps)
   /understand   → Feature-level specification
-  /investigate  → Code-level investigation
+  /current-spec → Code-level investigation
 
 Phase 2: ANALYZE — Assess risks and impact
-  /distortion-analysis → Detect structural code problems
-  /impact-analysis     → Trace change impact across repos
+  /current-distortion → Detect structural code problems
+  /change-impact      → Trace change impact across repos
 
 Phase 3: EXECUTE — Make changes safely
   /bug-hunt    → Find and fix bugs
   /implement   → Propose changes → Create PR
 
 Phase 4: CAPTURE — Preserve knowledge
-  /prd-generate → Reverse-engineer specs from code
-  /doc-update   → Update docs for target audience
-  /build-knowledge → Extract and persist domain knowledge
+  /current-prd → Reverse-engineer specs from code
+  /doc-update  → Update docs for target audience
 ```
 
 Ask: "Which phase interests you? Or describe your situation and I'll recommend where to start."
@@ -91,7 +90,7 @@ Based on the user's selection, provide:
 
 **Journey 2: Bug Investigation**
 ```
-/bug-hunt [symptom] → /distortion-analysis [area] → /implement
+/bug-hunt [symptom] → /current-distortion [area] → /implement
 ```
 "Find the bug, check for structural problems nearby, then fix."
 
@@ -103,9 +102,9 @@ Based on the user's selection, provide:
 
 **Journey 4: Knowledge Building**
 ```
-/prd-generate [repo] → /doc-update [audience] → /build-knowledge
+/current-prd [repo] → /doc-update [audience]
 ```
-"Extract specs from code, adapt for your audience, persist as domain knowledge."
+"Extract specs from code, adapt for your audience."
 
 **Journey 5: Code Review**
 ```

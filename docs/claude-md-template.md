@@ -38,7 +38,7 @@ This is a minimal template for integrating CLysis skills into your project.
 
 ## Pipeline
 ```
-/project-guide [task] → /investigate → /service-spec → /impact-analysis
+/project-guide [task] → /current-spec → /change-impact
 → /propose-changes → /create-pr → Merge
 ```
 

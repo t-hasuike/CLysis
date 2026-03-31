@@ -44,7 +44,7 @@
 | File | Line | Issue | Action Required |
 |------|------|-------|-----------------|
 | `Product.php` | 89 | `$fillable` contains sensitive info | Move `is_internal_use` to `$guarded` |
-| `CategoryService.php` | 234 | Missing soft-delete check | Must add `where('delflag', '0')` |
+| `CategoryService.php` | 234 | Missing soft-delete check | Must add soft-delete flag condition to WHERE clause |
 
 ---
 

@@ -14,6 +14,8 @@ This example demonstrates an end-to-end workflow using all skills sequentially.
 /project-guide Adding QR code payment
 ```
 
+Note: This workflow example uses skills `/project-guide`, `/current-spec`, `/change-impact`, `/propose-changes`, `/create-pr`, and `/review-code` (formerly `/investigate`, `/service-spec`, `/impact-analysis`, `/code-review`).
+
 ### OUTPUT
 
 ```
@@ -27,9 +29,8 @@ This example demonstrates an end-to-end workflow using all skills sequentially.
 3. app/Services/Payment/PaymentService.php -> Payment processing core implementation
 
 [Investigation Order]
-1. /investigate PaymentService -> Understand current state
-2. /service-spec PaymentService -> Detailed specification verification
-3. /impact-analysis Adding QR code payment -> Impact scope analysis
+1. /current-spec PaymentService -> Understand current state and specification
+2. /change-impact Adding QR code payment -> Impact scope analysis
 
 Report complete."
 ```
@@ -41,7 +42,7 @@ Report complete."
 ### INPUT
 
 ```
-/investigate PaymentService
+/current-spec PaymentService
 ```
 
 ### OUTPUT (Abbreviated)
@@ -76,9 +77,7 @@ Report complete."
 
 ### INPUT
 
-```
-/service-spec PaymentService
-```
+(Specification is now included in /current-spec output)
 
 ### OUTPUT (Abbreviated)
 
@@ -116,7 +115,7 @@ Report complete."
 ### INPUT
 
 ```
-/impact-analysis Adding QR code payment (PayPay)
+/change-impact Adding QR code payment (PayPay)
 ```
 
 ### OUTPUT (Abbreviated)
@@ -365,13 +364,7 @@ User reviews, approves, and instructs merge of the PR.
 
 ### INPUT
 
-```
-/build-knowledge PayPay payment business rules and implementation patterns
-
-Context:
-- Accumulate implementation patterns discovered during impact analysis as domain knowledge
-- Reference material for future QR code payment additions (LINE Pay, d-pay, etc.)
-```
+(Domain knowledge is now accumulated during the investigation and analysis phases)
 
 ### OUTPUT (Abbreviated)
 
@@ -420,12 +413,11 @@ Report complete."
 | Phase | Skill | Purpose | Output |
 |-------|-------|---------|--------|
 | 1 | `/project-guide` | Identify references | Investigation order guidance |
-| 2 | `/investigate` | Understand current state | Service overview, extension points |
-| 3 | `/service-spec` | Detailed specification verification | Method specifications, dependencies |
-| 4 | `/impact-analysis` | Impact scope analysis | ADR-format report |
-| 5 | `/propose-changes` | Create change proposal | Diff-format change proposal |
-| 6 | `/create-pr` | Create PR | Branch, commit, PR |
-| 7 | `/build-knowledge` | Accumulate domain knowledge | Addition to knowledge/domain/ |
+| 2 | `/current-spec` | Code investigation + detailed specification | Service overview, extension points, method specs |
+| 3 | `/change-impact` | Impact scope analysis | ADR-format report |
+| 4 | `/propose-changes` | Create change proposal | Diff-format change proposal |
+| 5 | `/create-pr` | Create PR | Branch, commit, PR |
+| 6 | `/review-code` | PR review | Code quality validation |
 
 ### Key Benefits
 
@@ -445,5 +437,5 @@ Report complete."
 
 - This workflow is sequential, but phases can be parallelized if multiple features are worked on simultaneously
 - Each skill output is self-contained and can be reviewed independently
-- The `/code-review` skill fits naturally after implementation (not shown in this example)
+- The `/review-code` skill fits naturally after implementation (see Phase 6 above)
 - Terminology can be customized by editing `config/terminology.md`

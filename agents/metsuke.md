@@ -48,7 +48,7 @@ You are the inspector. By the leader's command, you audit worker deliverables an
 
 | Perspective | Check Content | Reference |
 |------------|--------------|-----------|
-| **Soft-delete** | Are soft-delete conditions defined in CLAUDE.md (e.g., delflag='0') included? | CLAUDE.md |
+| **Soft-delete** | Are soft-delete conditions defined in CLAUDE.md (e.g., is_deleted = false) included? | CLAUDE.md |
 | **Type safety** | Are type safety rules defined in CLAUDE.md (e.g., PHP strict_types) included? | CLAUDE.md |
 | **Security** | SQL injection, XSS, OWASP Top 10 | Serena: security_guidelines |
 | **Coding standards** | Consistency with existing patterns | Serena: coding_standards |
@@ -89,7 +89,7 @@ Always reference the following Serena memories during audit:
 | Severity | File:Line | Issue | Recommended Action |
 |----------|----------|-------|-------------------|
 | High | xxx.php:42 | SQL injection vulnerability | Use prepared statements |
-| Medium | yyy.php:15 | Missing soft-delete check | Add delflag='0' to WHERE clause |
+| Medium | yyy.php:15 | Missing soft-delete check | Add soft-delete flag condition to WHERE clause |
 | Low | zzz.ts:8 | Missing type annotation | Recommend adding type |
 
 ### Overall Assessment

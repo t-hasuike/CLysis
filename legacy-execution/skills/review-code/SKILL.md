@@ -1,5 +1,5 @@
 ---
-name: code-review
+name: review-code
 description: Systematically review PR code quality and business perspective, providing approval judgment material.
 argument-hint: <PR number> [repository name] [review focus]
 ---

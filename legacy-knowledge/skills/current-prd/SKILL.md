@@ -1,10 +1,10 @@
 ---
-name: prd-generate
+name: current-prd
 description: Reverse-engineer PRD (Product Requirements Document) from existing codebase. Scans code structure, APIs, services, and DB schema to generate structured specification documents.
 argument-hint: "[repository-name] [scope: full | module-name]"
 ---
 
-# /prd-generate -- Code-to-PRD Generation Skill
+# /current-prd -- Code-to-PRD Generation Skill
 
 > This is a generic skill from [CLysis](https://github.com/t-hasuike/CLysis).
 > Terminology can be customized via `config/terminology.md`.
@@ -79,9 +79,8 @@ To manage token consumption on large codebases, scope can be limited:
 
 | Existing Skill | Relationship |
 |---------------|-------------|
-| /investigate | Point investigation. prd-generate is the surface-level counterpart |
-| /service-spec | Detailed service spec. prd-generate provides the overview that service-spec deepens |
-| /build-knowledge | Promotes individual findings. prd-generate promotes bulk findings |
+| /current-spec | Point investigation and detailed specification. current-prd is the surface-level counterpart |
+| /current-prd | Promotes bulk findings. current-spec promotes individual findings |
 | /archive-reports | Transfers prd-generate output from reports/ to knowledge/ |
 | /legacy-analyze | Phase 0 auto-collection overlaps. prd-generate extends with Module Analysis |
 

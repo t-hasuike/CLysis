@@ -1,5 +1,5 @@
 ---
-name: distortion-analysis
+name: current-distortion
 description: Distortion Analysis - Detect code distortion patterns and organize findings in Part A/B/C framework
 argument-hint: "[repository-name] [target-area]"
 ---
@@ -7,7 +7,7 @@ argument-hint: "[repository-name] [target-area]"
 > This is a generic skill from [CLysis](https://github.com/t-hasuike/CLysis).
 > Terminology can be customized via `config/terminology.md`.
 
-# /distortion-analysis -- Distortion Analysis Skill
+# /current-distortion -- Distortion Analysis Skill
 
 ## Overview
 
@@ -116,7 +116,7 @@ Launch 5 workers in parallel.
 | Worker | Agent Type | Assignment | Investigation Content |
 |--------|-----------|------------|----------------------|
 | Worker A | investigator | Integrate existing investigation results | Extract and integrate known risks from past reports in reports/ |
-| Worker B | investigator | Flag consistency check gaps | Implicit dependencies on shared flags, missing delflag/JOIN conditions |
+| Worker B | investigator | Flag consistency check gaps | Implicit dependencies on shared flags, missing soft-delete flag / JOIN conditions |
 | Worker C | investigator | Cross-table consistency | Missing foreign key constraints, data inconsistency between tables |
 | Worker D | investigator | Constant definition vs DB value drift | Mismatch between Enum/constant definitions and DB stored values, hardcoding |
 | Worker E | investigator | Incomplete conditional branching | Language-specific type comparison traps, insufficient branching, validation gaps |
@@ -130,7 +130,7 @@ Each worker uses these as detection criteria:
 | P1 | Implicit shared flag dependency | Multiple processes reference the same flag with different assumptions | Cross-search references to columns/variables containing `flag`. Record "whose/what" flag using Subject-First Rule |
 | P2 | Constant/Enum mismatch | Mismatch between code constant definitions and DB stored values, or between multiple repositories | Compare Enum definitions, `const` declarations, and DB initial data |
 | P3 | Type comparison traps | Language-specific loose comparison pitfalls (e.g., PHP `==` vs `===`, missing strict mode in array search) | Loose comparisons, missing strict parameters, switch statement type matching |
-| P4 | Soft-delete/JOIN condition gaps | Missing logical deletion conditions (e.g., `delflag='0'`) or JOIN conditions | Search SQL queries, ORM scopes, raw queries |
+| P4 | Soft-delete/JOIN condition gaps | Missing logical deletion conditions (e.g., soft-delete flags) or JOIN conditions | Search SQL queries, ORM scopes, raw queries |
 | P5 | Implicit value conversion | Unintended type/value conversions affecting processing results | Track casts, type conversion functions, date/time parsing |
 | P6 | Insufficient branching | Unhandled cases, if-else without else, switch without default | Branch coverage verification, missing error handling |
 
@@ -147,8 +147,8 @@ Each worker uses these as detection criteria:
 When documenting risks, always explicitly state "whose/what" as the subject for flags, variables, and columns.
 
 ```
-Bad: "When delflag is 0..."
-Good: "When event table's delflag (event logical deletion flag) is 0..."
+Bad: "When soft-delete flag is 0..."
+Good: "When event table's soft-delete flag (event logical deletion flag) is 0..."
 
 Bad: "publication_end_date is not checked"
 Good: "Event's publication end date (event.publication_end_date) is not checked in PaymentProcessor.php's payment processing"

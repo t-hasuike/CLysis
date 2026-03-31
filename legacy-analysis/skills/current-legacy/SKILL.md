@@ -1,10 +1,10 @@
 ---
-name: legacy-analyze
+name: current-legacy
 description: A skill for progressively understanding legacy code through iterative concrete-to-abstract cycles. Three maps (system overview, DFD, I/O interface) are "grown" rather than "built."
 argument-hint: "Phase 0 | Phase 1 [change theme] | Phase 2 | Phase 3"
 ---
 
-# /legacy-analyze -- Legacy Code Mastery Skill
+# /current-legacy -- Legacy Code Mastery Skill
 
 > This is a generic skill from [CLysis](https://github.com/t-hasuike/CLysis).
 > Terminology can be customized via `config/terminology.md`.
@@ -72,7 +72,7 @@ Organize information identified from auto-collection using the following four ca
 **4. Batch & Infrastructure**
 - Scheduled tasks, queue workers, infrastructure components
 
-Validation results: approximately 65-73% (based on verification against 8122 photo sales system with 15 repositories) of information is automatically determined from README/composer.json/package.json, etc.
+Validation results: approximately 65-73% (based on verification against a large-scale legacy system with multiple repositories) of information is automatically determined from README/composer.json/package.json, etc.
 
 **Step 3: Present "what we don't know" as questions**
 Generate questions dynamically based on what Step 1-2 revealed and what remains unknown. The following are reference examples of common question categories:
@@ -140,8 +140,8 @@ Select one specific change theme and trace it through the system. Map fragments 
    - Hidden outputs (email, CSV, batch processing, external API integrations)
    - Hardcoded locations
    - Technical debt
-4. Organize related Services with /service-spec
-5. For cross-repository cases, use /service-spec (CROSS) for diff analysis
+4. Organize related Services with /current-spec
+5. For cross-repository cases, use /current-spec (CROSS) for diff analysis
 6. Output:
    - Impact analysis report (reports/)
    - Overview diagram update diff
@@ -151,7 +151,7 @@ Select one specific change theme and trace it through the system. Map fragments 
 ### Key Principles
 - Do not write code using "likely names." Always verify existence with Serena
 - Write fix examples only after confirming actual code structure
-- For unfamiliar repositories, use /service-spec to understand the full picture before incorporating
+- For unfamiliar repositories, use /current-spec to understand the full picture before incorporating
 
 ## Phase 2: Audit to Eliminate Falsehoods
 
@@ -219,7 +219,7 @@ Repeat Phase 1-3 with different change themes. With each iteration:
 | Pattern | Implementation | Phase |
 |---------|---------------|-------|
 | Advanced RAG | schema.duckdb + Serena | All Phases |
-| ReAct | /investigate, /service-spec | Phase 1 |
+| ReAct | /investigate, /current-spec | Phase 1 |
 | Self-Reflection | metsuke audit | Phase 2 |
 | Multi-Agent | Leader + Worker team | Phase 1-3 |
 | Plan-and-Execute | /impact-analysis + Phase decomposition | Phase 1 |
