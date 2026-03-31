@@ -16,11 +16,25 @@ Three maps (system overview, DFD, I/O interface) are "grown" rather than "built.
 See config/terminology.md for term customization
 
 ## Prerequisites
-- Project basic information (overview.md, repositories.md, tech_stack.md) must exist
-  - Under `knowledge/system/`
-- Diagram storage location must exist
-  - Under `knowledge/system/02_structure/` and `knowledge/system/03_behavior/`
-- schema.duckdb (DB schema) — recommended; fallback methods available if absent
+
+**First Run**:
+- Local repository clones must exist (see CLAUDE.local.md)
+- Other files (overview.md, etc.) are generated in Phase 0; not required for startup
+
+**Second Run and After**:
+- Phase 0 deliverables (overview.md, diagrams) must exist
+- `knowledge/README.md` must be current
+
+### Prerequisites Checklist
+
+| Prerequisite | Check Method | First Run | Subsequent Runs |
+|-------------|-----------|-----------|-----------------|
+| Local repository clones | `ls` to verify paths | Required | Required |
+| `knowledge/system/01_overview/birdseye_project_overview.md` | File exists? | Not needed (Phase 0 generates) | Required |
+| `knowledge/README.md` | File exists? | Not needed (use `/project-guide` for guidance) | Required |
+| `knowledge/system/02_structure/` directory | Directory exists? | Not needed (Phase 0 creates) | Required |
+
+**Note**: During first run, Phase 0 automatically creates `knowledge/system/` subdirectories with `mkdir -p` if they don't exist.
 
 ## Phase 0: Foundation Building (first time only)
 
@@ -48,14 +62,41 @@ If schema.duckdb is not available:
 2. Estimate table structure from migration files
 3. If neither is available, note as "DB structure unknown" in the unknowns list
 
-**Quantitative scan (counting only — do not read file contents):**
+### Additional Collection Items (Dynamic / Hidden Assets)
+
+| Collection Target | Method | Output |
+|------------------|--------|--------|
+| **Orphan Endpoints** | Glob `public/` and root directories for executable files (.php, .asp, .cgi, .pl, etc.) | Endpoint list |
+| **OS Scheduled Jobs** | Search crontab, `infra/` shell scripts, Docker cron definitions | Scheduled job list |
+| **Database Logic** | Extract Triggers, Stored Procedures, Views definitions (skip if unavailable) | DB-layer logic list |
+| **External Service Integrations** | Full-codebase grep for `http://`, `https://`, `curl`, `guzzle`, `axios`, `fetch` keywords | External service endpoints |
+
+**Base Quantitative Scan** (counting only — do not read file contents):
 - Route count
 - Model/Entity count
 - Table count (from schema or migrations)
 - Total file count per major language
 - Service/UseCase count
 
+**Risk Quantitative Scan** (code metrics for risk assessment):
+
+| Metric | Method | Purpose |
+|--------|--------|---------|
+| **File LOC Top 10** | `wc -l` on all files; rank by line count | Identify bloated "God Classes" and baseline investigation difficulty |
+| **Incoming Coupling** | Serena `find_referencing_symbols` or grep for references | Determine maximum impact radius |
+| **Dynamic Table Reference** | Regex search for patterns like `table_{year}` or string-based table names | Discover hidden table dependencies |
+| **Raw SQL Queries** | grep for `DB::raw`, `query(`, direct SQL literals (patterns vary by language) | Identify complex hidden joins and business logic in SQL |
+
+### Code Freshness & EOL Risk
+
+| Category | Method | Purpose |
+|----------|--------|---------|
+| **Code Liveness** | Git Blame for last update date; flag files not updated in 1+ year as "dormant" | Prioritize investigation targets; identify dead code areas |
+| **Runtime/Library EOL Risk** | Extract dependency versions from composer.json, package.json, go.mod, build.gradle; check for deprecated APIs and EOL runtimes | Early security and maintainability risk detection |
+
 > Phase 0 quantitative scanning is limited to **counting** (how many routes, models, tables exist). **Reading** the contents or analyzing complexity belongs to Phase 1.
+
+**Validation**: ~65-73% of project information is automatically determined from README, composer.json, package.json, etc.
 
 **Step 2: Organize "what we know"**
 Organize information identified from auto-collection using the following four categories:
@@ -72,7 +113,6 @@ Organize information identified from auto-collection using the following four ca
 **4. Batch & Infrastructure**
 - Scheduled tasks, queue workers, infrastructure components
 
-Validation results: approximately 65-73% (based on verification against a large-scale legacy system with multiple repositories) of information is automatically determined from README/composer.json/package.json, etc.
 
 **Step 3: Present "what we don't know" as questions**
 Generate questions dynamically based on what Step 1-2 revealed and what remains unknown. The following are reference examples of common question categories:
@@ -159,12 +199,12 @@ Select one specific change theme and trace it through the system. Map fragments 
 Verify the accuracy of Phase 1 deliverables. AI can hallucinate.
 
 ### Procedure
-1. inspector (metsuke) audits deliverables
+1. **Metsuke** (inspector) audits deliverables
 2. Verification items:
    - Do all method names and class names actually exist?
    - Are all file paths correct?
    - Do code snippets match actual code?
-   - Are project-specific mandatory rules (e.g., soft-delete conditions) properly considered?
+   - Are project-specific mandatory rules properly considered?
 3. Correct findings and re-audit
 4. Output: Audited deliverables (with corrections applied)
 
@@ -177,7 +217,8 @@ Integrate fragments obtained in Phase 1-2 and update the three maps. Persist kno
 1. Add connections/flows discovered in impact analysis to the overview diagram
 2. Add data flows to the DFD
 3. Add entry/exit points of each system to the I/O interface diagram
-4. Persist domain knowledge to the domain knowledge directory (scribe handles this)
+4. Persist domain knowledge to the domain knowledge directory
+   - **Ashigaru (scribe)** handles this task
    - Under `knowledge/domain/`
 5. Update the "known/unknown" list
 6. Output:
@@ -202,29 +243,29 @@ Repeat Phase 1-3 with different change themes. With each iteration:
 ## Team Composition Templates
 
 ### Medium Scale (Standard)
-| Role | Assignment | Model |
+| Role | Assignment | Notes |
 |------|-----------|-------|
-| Worker A | Code tracing and impact analysis (investigator) | Sonnet |
-| Worker B | Knowledge organization and diagram updates (scribe) | Sonnet |
+| **Ashigaru A** | Code tracing and impact analysis (investigator role) | - |
+| **Ashigaru B** | Knowledge organization and diagram updates (scribe role) | - |
 
 ### Large Scale (Cross-Repository)
-| Role | Assignment | Model |
+| Role | Assignment | Notes |
 |------|-----------|-------|
-| Worker A | Repository A investigation (investigator) | Sonnet |
-| Worker B | Repository B investigation (investigator) | Sonnet |
-| Worker C | Knowledge integration and diagram updates (scribe) | Sonnet |
-| inspector (metsuke) | Quality audit (deployed in Phase 2) | Sonnet |
+| **Ashigaru A** | Repository A investigation (investigator) | - |
+| **Ashigaru B** | Repository B investigation (investigator) | - |
+| **Ashigaru C** | Knowledge integration and diagram updates (scribe) | - |
+| **Metsuke** | Quality audit (deployed Phase 2) | Independent verification |
 
 ## Agent Pattern Mapping
 | Pattern | Implementation | Phase |
 |---------|---------------|-------|
 | Advanced RAG | schema.duckdb + Serena | All Phases |
-| ReAct | /investigate, /current-spec | Phase 1 |
-| Self-Reflection | metsuke audit | Phase 2 |
-| Multi-Agent | Leader + Worker team | Phase 1-3 |
-| Plan-and-Execute | /impact-analysis + Phase decomposition | Phase 1 |
-| Knowledge Graph Memory | domain knowledge dir + diagrams/ | Phase 3 |
-| Sequential Chain | Phase 0->1->2->3 iteration | Overall |
+| ReAct | /change-impact, /current-spec | Phase 1 |
+| Self-Reflection | Metsuke audit | Phase 2 |
+| Multi-Agent | Shogun + Ashigaru team + Metsuke | Phase 1-3 |
+| Plan-and-Execute | /change-impact + Phase decomposition | Phase 1 |
+| Knowledge Graph Memory | domain knowledge directory + diagrams | Phase 3 |
+| Sequential Chain | Phase 0→1→2→3 iteration | Overall |
 
 ---
 
