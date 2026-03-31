@@ -39,7 +39,7 @@ This is a minimal template for integrating CLysis skills into your project.
 ## Pipeline
 ```
 /project-guide [task] → /current-spec → /change-impact
-→ /propose-changes → /create-pr → Merge
+→ /create-pr --plan → /create-pr --exec → Merge
 ```
 
 Each transition includes a Human Checkpoint for review.

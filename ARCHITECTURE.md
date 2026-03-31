@@ -38,7 +38,7 @@ legacy-analysis/          # Phase 2: Analysis & Planning
 
 legacy-execution/         # Phase 3: Execution & Review
 ├── .claude-plugin/
-├── skills/               # propose-changes, create-pr, review-code
+├── skills/               # create-pr (--plan/--exec), review-code
 ├── commands/             # /implement, /review
 └── examples/
 
@@ -146,7 +146,7 @@ Phase 1: Investigation & Analysis (AI)
   │
   ▼
 Phase 2: Change Proposal & PR Creation (AI)
-  │ /implement → pipeline: /propose-changes → (human review) → /create-pr
+  │ /implement → pipeline: /create-pr --plan → (human review) → /create-pr --exec
   │
   ├─ 【Human Checkpoint】Are the proposed changes appropriate?
   │
@@ -189,7 +189,7 @@ User defines task
    ↓
 /change-impact → ADR report with risks
    ↓
-Human reviews report & decides next action
+Human reviews report & decides next action (investigate further or implement)
 ```
 
 **Key characteristics**:
@@ -211,20 +211,20 @@ Extend Phase 1 with **AI-generated code proposals** for human review.
 │                  Phase 2 Workflow (Current)                  │
 └─────────────────────────────────────────────────────────────┘
 
-[Phase 1 investigation complete]
+[Phase 1 investigation complete, decision to implement made]
    ↓
-/propose-changes → AI generates code diffs
+/create-pr --plan → AI generates code diffs and proposals
    ↓
 Human reviews proposed changes
    ↓ (if approved)
-/create-pr → AI creates PR with ADR context
+/create-pr --exec → AI creates branch, applies changes, creates PR
    ↓
 Human merges after CI/CD passes
 ```
 
-**Available skills**:
-- `/propose-changes` — Generate code diffs with context
-- `/create-pr` — Create PR with ADR summary and checklist
+**Available skill**:
+- `/create-pr --plan` — Generate code diffs from impact analysis
+- `/create-pr --exec` — Create PR from approved change proposal
 
 **Safety mechanisms**:
 - All changes require explicit human approval
@@ -654,7 +654,7 @@ Every phase transition requires human confirmation. This ensures the core philos
 |------------|------|-----------------|
 | After Phase 0 | Information preparation complete | Domain knowledge is sufficient, project context is accurate |
 | After Phase 1 | Investigation & analysis complete | Investigation results are correct, analysis is thorough |
-| After /propose-changes | Change proposal ready | Proposed diffs are appropriate, test plan is adequate |
+| After /create-pr --plan | Change proposal ready | Proposed diffs are appropriate, test plan is adequate |
 | After /create-pr | PR created | Code quality, test results, ready to merge |
 
 **Why checkpoints matter**:
@@ -743,7 +743,7 @@ During investigation/analysis phases (before implementation decisions are made),
 | Report writing | Yes | -- |
 | Domain knowledge updates | Yes | -- |
 | Diagram updates (mermaid) | Yes | -- |
-| Code modification proposals | -- | Yes (defer to /propose-changes) |
+| Code modification proposals | -- | Yes (defer to /create-pr --plan) |
 | Direct code edits | -- | Yes (always prohibited during investigation) |
 | Configuration changes | -- | Yes (defer to implementation phase) |
 
@@ -783,9 +783,9 @@ When directory structure or knowledge management configuration changes, the lead
 
 ### Phase 2: Automated Change Proposals (Implemented)
 
-- `/propose-changes` skill — Generate code diffs with context
-- `/create-pr` skill — Automated PR creation with ADR context
-- Approval workflow: Human → AI proposes → Human reviews → CI/CD validates
+- `/create-pr --plan` skill — Generate code diffs from impact analysis
+- `/create-pr --exec` skill — Automated PR creation from approved proposals
+- Approval workflow: Human → AI proposes (--plan) → Human reviews → AI implements (--exec) → CI/CD validates
 
 ## Future Directions
 

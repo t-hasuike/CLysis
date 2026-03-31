@@ -338,6 +338,76 @@ All skills continue to work without modification. The path conventions are recom
 
 ---
 
+## v1.1 to v1.2: Unified create-pr Skill (propose-changes removed)
+
+### What Changed
+
+CLysis v1.2 merges `/propose-changes` and `/create-pr` into a single skill with two phases:
+
+| Before (v1.1) | After (v1.2) | Reason |
+|---------------|-------------|--------|
+| `/propose-changes` | `/create-pr --plan` | Merged into unified skill |
+| `/create-pr` | `/create-pr --exec` | Unified skill with two-phase workflow |
+
+### Benefits
+
+- **Simpler mental model**: One skill, two phases, explicit human approval gate between phases
+- **Clear workflow**: --plan for proposal generation, --exec for implementation
+- **Transparent checkpoints**: Human control is explicit at each phase
+
+### Migration Steps
+
+#### Step 1: Update project invocations
+
+Replace:
+```bash
+# Old workflow (v1.1)
+/propose-changes reports/impact_analysis_example.md
+# Then review...
+/create-pr reports/proposals/example.md repository
+```
+
+With:
+```bash
+# New workflow (v1.2)
+/create-pr --plan reports/impact_analysis_example.md
+# Human reviews and approves...
+/create-pr --exec reports/proposals/example.md repository
+```
+
+#### Step 2: Update CLAUDE.md references
+
+If your CLAUDE.md documents the workflow, update:
+
+**Before**:
+```markdown
+## Pipeline
+/project-guide → /current-spec → /change-impact
+→ /propose-changes → /create-pr → Merge
+```
+
+**After**:
+```markdown
+## Pipeline
+/project-guide → /current-spec → /change-impact
+→ /create-pr --plan → /create-pr --exec → Merge
+```
+
+#### Step 3: Update commands
+
+If using `/implement` command, it automatically uses the new `--plan`/`--exec` pattern. No changes needed.
+
+### Backward Compatibility
+
+- `/create-pr [proposal path] [repo]` is still supported (defaults to --exec)
+- Scripts using the old propose-changes + create-pr pipeline will need updates
+
+### No Breaking Changes to Other Skills
+
+All other skills remain unchanged. Only propose-changes is deprecated in favor of create-pr --plan.
+
+---
+
 ## Support
 
 If you encounter issues:
