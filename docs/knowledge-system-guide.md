@@ -67,6 +67,22 @@ These three files form the baseline context for all subsequent agent work.
 
 ---
 
+## Optional: Document Granularity Prefixes
+
+For projects with large knowledge bases where files of different granularity coexist in the same directory, consider using granularity prefixes:
+
+| Prefix | Perspective | Use for |
+|--------|------------|---------|
+| `birdseye_` | Bird's eye view | High-level overviews, architecture diagrams |
+| `fisheye_` | Fish eye view | Time-series flows, process sequences |
+| `wormseye_` | Worm's eye view | Implementation details, specifications |
+
+This helps users instantly identify the depth level of a document from its filename alone.
+
+Configure these prefixes in your `/doc-check` skill to enforce naming conventions automatically.
+
+---
+
 ## Related
 
 - `/current-legacy` skill — defines the Phase 0 → Phase 1 → Phase 3 cycle that produces these files

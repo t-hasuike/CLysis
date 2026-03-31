@@ -3,9 +3,19 @@
 Domain knowledge accumulation and management skills for legacy systems.
 
 ## Skills
-- **build-knowledge** — Extract and persist domain knowledge from investigation results
-- **archive-reports** — Archive investigation outputs for knowledge reuse
-- **templates** — General team operation templates for legacy system management
+- **doc-check** — Document integrity diagnosis (dead-link detection, naming conventions, README consistency, promotion readiness)
+- **doc-organize** — Document organization and filing (classify reports/ into knowledge/ by character type)
+- **doc-update** — Knowledge document maintenance and audience adaptation
+- **current-prd** — Extract and persist domain knowledge from investigation results
 
-## Templates
-- Generic team operation templates for legacy system management
+## Skill Pipeline
+
+```
+Investigation Output
+       ↓
+  /doc-check (diagnosis)
+       ↓ (if issues found)
+  /doc-organize (execution)
+       ↓
+  /doc-update (freshness maintenance)
+```
