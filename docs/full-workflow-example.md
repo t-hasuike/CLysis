@@ -14,7 +14,7 @@ This example demonstrates an end-to-end workflow using all skills sequentially.
 /project-guide Adding QR code payment
 ```
 
-Note: This workflow example uses skills `/project-guide`, `/current-spec`, `/change-impact`, `/propose-changes`, `/create-pr`, and `/review-code` (formerly `/investigate`, `/service-spec`, `/impact-analysis`, `/code-review`).
+Note: This workflow example uses skills `/project-guide`, `/current-spec`, `/change-impact`, `/create-pr` (with --plan and --exec phases), and `/review-code` (formerly `/investigate`, `/service-spec`, `/impact-analysis`, `/code-review`).
 
 ### OUTPUT
 
@@ -178,23 +178,24 @@ Submit impact analysis report (reports/impact_analysis_paypay.md) to user for ap
 
 ---
 
-## Phase 5: Propose Changes
+## Phase 5: Create PR (--plan Phase)
 
 ### INPUT
 
 ```
-/propose-changes reports/impact_analysis_paypay.md
+/create-pr --plan reports/impact_analysis_paypay.md Phase 0
 ```
 
 ### OUTPUT (Abbreviated)
 
 ```
-"Change proposal submitted.
+"Change proposal generated.
 
-# PayPay Payment Addition Change Proposal
+# PayPay Payment Addition Change Proposal - Phase 0
 
+**Created**: 2026-03-08
+**Target Repository**: backend
 **Source Report**: reports/impact_analysis_paypay.md
-**Proposal Date**: 2026-03-08
 
 ## Change Summary
 
@@ -305,18 +306,18 @@ Submit impact analysis report (reports/impact_analysis_paypay.md) to user for ap
 Report complete."
 ```
 
-**[Human Checkpoint]**
+**[Human Checkpoint 1]**
 
-Submit change proposal to user for review and approval.
+User reviews the change proposal and approves it. Submit to `/create-pr --exec` only after approval.
 
 ---
 
-## Phase 6: Create PR
+## Phase 6: Create PR (--exec Phase)
 
-### INPUT
+### INPUT (After Approval)
 
 ```
-/create-pr reports/propose_changes_paypay.md backend
+/create-pr --exec reports/proposals/add_paypay_phase0.md backend feature/add-paypay-phase0
 ```
 
 ### OUTPUT (Abbreviated)
@@ -354,9 +355,9 @@ https://github.com/your-org/backend/pull/456
 Report complete."
 ```
 
-**[Human Checkpoint]**
+**[Human Checkpoint 2]**
 
-User reviews, approves, and instructs merge of the PR.
+User reviews PR in GitHub, runs CI/CD, and merges when ready.
 
 ---
 
@@ -415,8 +416,8 @@ Report complete."
 | 1 | `/project-guide` | Identify references | Investigation order guidance |
 | 2 | `/current-spec` | Code investigation + detailed specification | Service overview, extension points, method specs |
 | 3 | `/change-impact` | Impact scope analysis | ADR-format report |
-| 4 | `/propose-changes` | Create change proposal | Diff-format change proposal |
-| 5 | `/create-pr` | Create PR | Branch, commit, PR |
+| 4 | `/create-pr --plan` | Generate change proposal from impact analysis | Diff-format change proposal (requires approval) |
+| 5 | `/create-pr --exec` | Implement approved proposal and create PR | Branch, commit, PR URL |
 | 6 | `/review-code` | PR review | Code quality validation |
 
 ### Key Benefits
