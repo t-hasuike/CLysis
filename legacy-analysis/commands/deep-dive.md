@@ -8,13 +8,13 @@ argument-hint: "<target system or subsystem name>"
 ## Overview
 
 A workflow for gaining a bird's-eye view of a legacy system.
-Sequentially execute legacy-analyze skill Phases 0-3 to create system correlation diagrams, DFD, and I/O interface diagrams.
+Sequentially execute current-legacy skill Phases 0-3 to create system correlation diagrams, DFD, and I/O interface diagrams.
 
 ## Workflow
 
 ### Step 1: Phase 0 -- Foundation Building
 
-Apply **legacy-analyze** skill (Phase 0):
+Apply **current-legacy** skill (Phase 0):
 
 - Auto-collect from README, docker-compose.yml, dependency management files (.env.example)
 - Extract repository roles, technology stack, and dependencies
@@ -27,10 +27,10 @@ $ARGUMENTS
 
 ### Step 2: Phase 1 -- Dig from the Concrete
 
-Apply **legacy-analyze** skill (Phase 1 [change theme]):
+Apply **current-legacy** skill (Phase 1 [change theme]):
 
 - Select a specific change theme (e.g., "add a new product category")
-- Trace impact across repositories using /impact-analysis
+- Trace impact across repositories using /change-impact
 - Document cross-repository connections, hidden outputs, hardcoded values
 - Update system overview diagram and DFD fragments
 - Refine "Known/Unknown" list
@@ -39,7 +39,7 @@ Apply **legacy-analyze** skill (Phase 1 [change theme]):
 
 ### Step 3: Phase 2 -- Audit to Eliminate Falsehoods
 
-Apply **legacy-analyze** skill (Phase 2):
+Apply **current-legacy** skill (Phase 2):
 
 - metsuke (Inspector) audits Phase 1 deliverables for accuracy
 - Verify all method names, class names, file paths exist
@@ -51,7 +51,7 @@ Apply **legacy-analyze** skill (Phase 2):
 
 ### Step 4: Phase 3 -- Return to the Abstract
 
-Apply **legacy-analyze** skill (Phase 3):
+Apply **current-legacy** skill (Phase 3):
 
 - Integrate Phase 1-2 fragments into three consolidated maps
 - Update system overview diagram with new connections
@@ -62,5 +62,4 @@ Apply **legacy-analyze** skill (Phase 3):
 
 ### Step 5: Suggest Next Actions
 
-- "To accumulate as domain knowledge, use `/build-knowledge`"
 - "To investigate a specific feature in detail, use `/understand`"

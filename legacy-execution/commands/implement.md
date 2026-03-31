@@ -1,5 +1,5 @@
 ---
-description: Based on impact analysis results, propose changes and create PR. Execute the propose-changes -> (human review) -> create-pr skill chain.
+description: Based on impact analysis results, propose changes and create PR. Execute the create-pr --plan -> (human review) -> create-pr --exec skill chain.
 argument-hint: "<impact analysis report path>"
 ---
 
@@ -14,7 +14,7 @@ Includes **2 human confirmation points**.
 
 ### Step 1: Create Change Proposal
 
-Apply **propose-changes** skill:
+Apply **create-pr** skill with `--plan` flag:
 
 - Read the impact analysis report and present Phase-specific changes in diff format
 - Includes change reason, impact scope, and test strategy
@@ -25,7 +25,7 @@ $ARGUMENTS
 
 ### Step 2: Create PR
 
-Apply **create-pr** skill:
+Apply **create-pr** skill with `--exec` flag:
 
 - Read the approved change proposal
 - Automatically execute branch creation -> code modification -> commit -> push -> PR creation

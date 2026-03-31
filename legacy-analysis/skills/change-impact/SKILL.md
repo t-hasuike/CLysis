@@ -1,5 +1,5 @@
 ---
-name: impact-analysis
+name: change-impact
 description: Systematically investigate the impact scope when adding new features or changing specifications, and create an impact analysis report. Used in combination with service specification summaries.
 argument-hint: <description of the change>
 ---
@@ -103,7 +103,7 @@ $ARGUMENTS
 
 ### [Service Name 1]
 
-Use Service specification summary format (/service-spec skill)
+Use Service specification summary format (/current-spec skill)
 
 ---
 
@@ -222,7 +222,7 @@ Example: Impact investigation for adding a product category
 | Type | Description | Required/Optional | Example |
 |------|-------------|-------------------|---------|
 | Change description | Description of the feature being added/changed | Required | `New category addition`, `Price calculation logic change` |
-| Prior investigation results | Output from /investigate or /service-spec | Optional | Reference investigation report |
+| Prior investigation results | Output from /current-spec | Optional | Reference investigation report |
 
 ### OUTPUT
 | Type | Format | Destination |
@@ -230,11 +230,14 @@ Example: Impact investigation for adding a product category
 | Impact analysis report | ADR-format Markdown (affected files list, risks, implementation plan) | stdout (report to leader) |
 
 ### Prerequisites
-- Change target specification has been understood (prior investigation with /service-spec recommended)
+- Change target specification has been understood (prior investigation with /current-spec recommended)
 - Service responsibility definitions are accessible (`knowledge/system/service_responsibilities.md`)
 
 ### Downstream Skills (Pipeline)
 - None (final deliverable; handoff material for implementation phase)
+
+### References
+- `/current-spec` -- Service specification summary for detailed understanding
 
 ### Quality Checkpoints
 - [ ] Included path:line numbers for affected files

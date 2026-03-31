@@ -1,5 +1,5 @@
 ---
-description: Review Pull Request code quality and business logic alignment. Execute the project-guide -> code-review skill chain.
+description: Review Pull Request code quality and business logic alignment. Execute the project-guide -> review-code skill chain.
 argument-hint: "<PR number> <repository name>"
 ---
 
@@ -24,7 +24,7 @@ $ARGUMENTS
 
 ### Step 2: Code Review
 
-Apply **code-review** skill:
+Apply **review-code** skill:
 
 - Evaluate code quality (readability, maintainability, security)
 - Verify business logic alignment

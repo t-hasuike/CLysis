@@ -69,5 +69,5 @@ These three files form the baseline context for all subsequent agent work.
 
 ## Related
 
-- `/legacy-analyze` skill — defines the Phase 0 → Phase 1 → Phase 3 cycle that produces these files
+- `/current-legacy` skill — defines the Phase 0 → Phase 1 → Phase 3 cycle that produces these files
 - `docs/full-workflow-example.md` — end-to-end example of the investigation workflow

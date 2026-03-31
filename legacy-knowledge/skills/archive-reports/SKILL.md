@@ -283,9 +283,8 @@ flowchart TD
 
 ## Reference: Integration with Existing Skills
 
-- `/investigate` -- Convert investigation output to ADR/SPEC using this skill
-- `/service-spec` -- Classify Service specification summaries into SPEC/ADR using this skill
-- `/impact-analysis` -- Elevate impact analysis reports to overview reports
+- `/current-spec` -- Convert investigation/specification output to ADR/SPEC using this skill
+- `/change-impact` -- Elevate impact analysis reports to overview reports
 - `/project-guide` -- Make classification decisions after understanding overall project structure
 
 ---

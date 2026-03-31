@@ -26,25 +26,25 @@ CLysis is organized into **4 modular plugins**, each with specialized skills and
 ```
 legacy-investigation/      # Phase 1: Investigation & Understanding
 ├── .claude-plugin/
-├── skills/               # project-guide, investigate, service-spec
+├── skills/               # project-guide, current-spec
 ├── commands/             # /investigate-flow, /bug-hunt, /understand
 └── examples/
 
 legacy-analysis/          # Phase 2: Analysis & Planning
 ├── .claude-plugin/
-├── skills/               # impact-analysis, legacy-analyze, distortion-analysis
+├── skills/               # change-impact, current-legacy, current-distortion
 ├── commands/             # /deep-dive
 └── examples/
 
 legacy-execution/         # Phase 3: Execution & Review
 ├── .claude-plugin/
-├── skills/               # propose-changes, create-pr, code-review
+├── skills/               # propose-changes, create-pr, review-code
 ├── commands/             # /implement, /review
 └── examples/
 
 legacy-knowledge/         # Knowledge Management
 ├── .claude-plugin/
-├── skills/               # build-knowledge, archive-reports, templates (reference only, not executable), prd-generate, doc-update
+├── skills/               # archive-reports, current-prd, doc-update
 ├── prompts/              # Domain knowledge templates
 └── examples/
 ```
@@ -70,13 +70,13 @@ legacy-execution
 - **Purpose**: Atomic, reusable tasks (SKILL.md format)
 - **Invocation**: `/skill-name [args]`
 - **Location**: `{plugin}/skills/{skill-name}/SKILL.md`
-- **Example**: `/investigate [target]` — Find and analyze specific code
+- **Example**: `/current-spec [target]` — Find and analyze specific code
 
 ### Commands
 - **Purpose**: Multi-step workflows (pipeline of skills)
 - **Invocation**: `/command-name [args]`
 - **Location**: `{plugin}/commands/{command-name}.md`
-- **Example**: `/investigate-flow [target]` → Runs `/project-guide` + `/investigate` + `/service-spec` + `/impact-analysis`
+- **Example**: `/investigate-flow [target]` → Runs `/project-guide` + `/current-spec` + `/change-impact`
 
 **Key Difference**: Commands orchestrate skills into end-to-end workflows with human checkpoints.
 
@@ -102,12 +102,12 @@ The `/start` command serves as the **unified entry point** for all CLysis users.
 
 1. **System Onboarding** (new to codebase)
    ```
-   /deep-dive [repo] → /understand [key-feature] → /prd-generate [repo]
+   /deep-dive [repo] → /understand [key-feature] → /current-prd [repo]
    ```
 
 2. **Bug Investigation**
    ```
-   /bug-hunt [symptom] → /distortion-analysis [area] → /implement
+   /bug-hunt [symptom] → /current-distortion [area] → /implement
    ```
 
 3. **Feature Development**
@@ -117,7 +117,7 @@ The `/start` command serves as the **unified entry point** for all CLysis users.
 
 4. **Knowledge Building**
    ```
-   /prd-generate [repo] → /doc-update [audience] → /build-knowledge
+   /current-prd [repo] → /doc-update [audience]
    ```
 
 5. **Code Review**
@@ -134,13 +134,13 @@ CLysis follows a three-phase workflow with **human checkpoints** at each transit
 ```
 Phase 0: Information Preparation (Human)
   │ Prepare domain knowledge & project context
-  │ /build-knowledge, /project-guide
+  │ /project-guide
   │
   ├─ 【Human Checkpoint】Is the prepared information sufficient?
   │
   ▼
 Phase 1: Investigation & Analysis (AI)
-  │ /investigate-flow → pipeline: /investigate → /service-spec → /impact-analysis
+  │ /investigate-flow → pipeline: /project-guide → /current-spec → /change-impact
   │
   ├─ 【Human Checkpoint】Are the investigation results correct?
   │
@@ -166,7 +166,7 @@ Merge → Implementation Complete
 - Gather domain knowledge and business rules
 - Define project structure and configuration
 - Document schemas, constraints, and conventions
-- Use `/build-knowledge` to extract and formalize information
+- Extract domain knowledge during Phase 1 investigation and persist to knowledge/domain/
 
 **Checkpoint**: Is the prepared information sufficient for AI to proceed?
 
@@ -185,11 +185,9 @@ User defines task
    ↓
 /project-guide → Context-aware document reference
    ↓
-/investigate → Semantic code search
+/current-spec → Semantic code search + detailed specification
    ↓
-/service-spec → Detailed specification
-   ↓
-/impact-analysis → ADR report with risks
+/change-impact → ADR report with risks
    ↓
 Human reviews report & decides next action
 ```
@@ -369,7 +367,7 @@ The leader follows a structured workflow for every mission:
 
 - **Generic skills and commands** work across projects (e.g., /investigate, /investigate-flow)
 - **Project-specific knowledge** stays local (business rules, schema, constraints)
-- `/build-knowledge` bridges the gap by extracting domain knowledge from investigations
+- Domain knowledge is extracted during investigations and persisted to knowledge/domain/
 
 ---
 
@@ -454,8 +452,8 @@ Problem patterns classify the ROOT CAUSE of a distortion:
 When documenting risks involving flags, variables, or columns, always explicitly state **"whose/what"** as the subject. This prevents ambiguity and ensures readers understand the context without cross-referencing.
 
 ```
-Bad:  "delflag is 0..."
-Good: "Event table's delflag (event logical deletion flag) is 0..."
+Bad:  "soft-delete flag is 0..."
+Good: "Event table's soft-delete flag (event logical deletion flag) is 0..."
 
 Bad:  "publication_end_date is not checked"
 Good: "Event's publication end date (event.publication_end_date) is not checked in PaymentProcessor's payment processing"
@@ -515,7 +513,7 @@ Phase 2: Part A/B/C Creation
    - **legacy-investigation**: Code understanding and exploration
    - **legacy-analysis**: Impact analysis and planning
    - **legacy-execution**: Code changes and PR workflows
-   - **legacy-knowledge**: Knowledge extraction and templates
+   - **legacy-knowledge**: Knowledge extraction, PRD generation, document updates
 
 2. Create skill directory:
    ```
@@ -629,16 +627,16 @@ CLysis implements common AI agent patterns:
 | Pattern | Implementation | Phase |
 |---------|---------------|-------|
 | **Advanced RAG** | schema.duckdb + Serena MCP | All phases |
-| **ReAct** (Reasoning + Acting) | /investigate, /service-spec | Phase 1 |
-| **Self-Reflection** | metsuke agent audit | Phase 2 (legacy-analyze) |
+| **ReAct** (Reasoning + Acting) | /current-spec | Phase 1 |
+| **Self-Reflection** | metsuke agent audit | Phase 2 (legacy-execution) |
 | **Multi-Agent Collaboration** | Leader + Workers + Inspector | All phases |
-| **Plan-and-Execute** | /impact-analysis + Phase decomposition | Phase 1 |
-| **Knowledge Graph Memory** | domain knowledge dir + diagrams/ | Phase 3 (legacy-analyze) |
-| **Sequential Chain** | Phase 0→1→2→3 iteration | /legacy-analyze |
+| **Plan-and-Execute** | /change-impact + Phase decomposition | Phase 1 |
+| **Knowledge Graph Memory** | domain knowledge dir + diagrams/ | Phase 3 (legacy-analysis) |
+| **Sequential Chain** | Phase 0→1→2→3 iteration | /current-legacy |
 
 ### Phase 3 Mandatory Rule
 
-After completing `/legacy-analyze` Phase 1-2 investigations, Phase 3 (map update) MUST be executed. Without Phase 3:
+After completing `/current-legacy` Phase 1-2 investigations, Phase 3 (map update) MUST be executed. Without Phase 3:
 - Knowledge remains trapped in the session and is lost
 - Subsequent investigations re-cover the same ground
 - The "unknown" list does not shrink
@@ -800,7 +798,7 @@ When directory structure or knowledge management configuration changes, the lead
 ### Integration Ideas
 
 - **IDE integration** — One-click skill invocation from editor
-- **CI/CD hooks** — Auto-trigger /code-review on PR creation
+- **CI/CD hooks** — Auto-trigger /review-code on PR creation
 - **Dashboard** — Visualize domain knowledge growth and "unknown" list shrinkage
 
 ---

@@ -1,5 +1,5 @@
 ---
-description: Map unfamiliar code — understand how a feature works, its dependencies, and data flow before making changes. Execute the project-guide -> investigate -> service-spec skill chain.
+description: Map unfamiliar code — understand how a feature works, its dependencies, and data flow before making changes. Execute the project-guide -> current-spec skill chain.
 argument-hint: "<feature or process name to understand>"
 ---
 
@@ -21,23 +21,17 @@ $ARGUMENTS
 
 > **Checkpoint**: "Reference guide prepared. Ready to proceed to the next phase (code investigation)?"
 
-### Step 2: Code Investigation
+### Step 2-3: Code Investigation + Specification Organization
 
-Apply **investigate** skill:
+Apply **current-spec** skill:
 
 - Explore the code flow and dependency relationships of the target feature
 - Identify key classes, methods, and tables
-
-> **Checkpoint**: "Do you have a clear picture of the overall structure, key dependencies, and data flow? Ready to proceed to the next phase (specification organization)?"
-
-### Step 3: Systematic Specification Organization
-
-Apply **service-spec** skill:
-
 - Systematically document the specification of discovered key Services
 - Organize method lists, dependencies, and business rules
 
+> **Checkpoint**: "Do you have a clear picture of the overall structure, key dependencies, and data flow? Ready to proceed?"
+
 ### Step 4: Suggest Next Actions
 
-- "To accumulate as domain knowledge, use `/build-knowledge`"
 - "If planning changes, proceed with impact analysis using `/investigate-flow`"

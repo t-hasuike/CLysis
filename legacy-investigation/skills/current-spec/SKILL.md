@@ -1,6 +1,6 @@
 ---
-name: service-spec
-description: Systematically investigate Service/UseCase/Model specifications and organize them in Service specification summary format. Used for legacy code investigation, impact analysis, and pre-investigation for new feature additions.
+name: current-spec
+description: Systematically investigate Service/UseCase/Model specifications and organize them in Service specification summary format. Combines investigative discovery with detailed specification documentation. Deploy scouts (Explore agents) for rapid initial investigation.
 argument-hint: <Service/UseCase/Model name> [repository name]
 ---
 
@@ -11,11 +11,7 @@ argument-hint: <Service/UseCase/Model name> [repository name]
 
 ## Overview
 
-Investigate the specification of the specified Service/UseCase/Model and organize it in a unified format.
-
-## Investigation Target
-
-$ARGUMENTS
+Investigate the specification of the specified Service/UseCase/Model and organize it in a unified format. This skill combines rapid investigative discovery (scout mode) with comprehensive detailed specification documentation.
 
 ## Investigation Procedure
 
@@ -28,6 +24,10 @@ $ARGUMENTS
 4. **Dependency investigation**: Identify callers/callees using find_referencing_symbols
 5. **Detailed reading**: Read only important method bodies using find_symbol
 6. **Diff check**: If the same class exists in multiple repositories, check differences
+
+## Investigation Target
+
+$ARGUMENTS
 
 ## Output Format
 
@@ -143,10 +143,10 @@ Upon investigation completion, verify the following:
 
 ### Prerequisites
 - Serena MCP is running
-- Target file has been identified (prior investigation with /investigate recommended)
+- Target file has been identified (prior investigation with /current-spec recommended)
 
 ### Downstream Skills (Pipeline)
-- `/impact-analysis` -- Impact analysis with specification understanding
+- `/change-impact` -- Impact analysis with specification understanding
 
 ### Quality Checkpoints
 - [ ] Covered all public methods
