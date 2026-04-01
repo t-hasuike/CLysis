@@ -772,6 +772,39 @@ Workers (Ashigaru) may stop responding due to context overflow, permission block
 | Read-only investigation | default | Code analysis, fact-checking |
 | GitHub operations (PR, push) | default (requires human approval) | PR creation, branch push |
 
+#### Task Output & Persistence (F006)
+
+Investigation results must be saved to files, not just returned via stdout. Results returned only in stdout are lost when the session ends.
+
+**Rules:**
+
+1. **Specify output path in every delegation prompt**
+   Include: "Save results to `reports/[descriptive-name].md` using the Write tool. This is mandatory — stdout alone is not acceptable."
+
+2. **Verify file creation on completion**
+   When receiving results from a worker, confirm:
+   - Worker explicitly reported "file saved"
+   - If not reported, verify file existence before proceeding
+
+3. **Pre-plan output paths for multi-step tasks**
+   For tasks with multiple steps, define output file paths upfront:
+   Example: `reports/step1_investigation.md`, `reports/step2_analysis.md`
+
+4. **Match agent type to output needs**
+
+   | Output Need | Agent Type | Reason |
+   |-------------|-----------|--------|
+   | File write required | general-purpose or ashigaru-scribe | Has Write/Edit tools |
+   | Read-only investigation | ashigaru-investigator | No Write/Edit tools — cannot save files |
+
+   **Critical**: Do not assign file-saving tasks to ashigaru-investigator. It lacks Write/Edit tools and will silently fail to persist results.
+
+**Delegation checklist:**
+- [ ] Output file path specified in prompt
+- [ ] "Write tool" explicitly mentioned
+- [ ] Agent type supports file writing
+- [ ] Worker's response includes file save confirmation
+
 #### Agent Type Selection
 
 | Agent Type | Capabilities | Use When |
