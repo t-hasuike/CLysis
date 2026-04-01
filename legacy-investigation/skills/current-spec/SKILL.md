@@ -57,6 +57,8 @@ $ARGUMENTS
 | `methodA()` | ... | public | 45-67 |
 | `methodB()` | ... | private | 70-85 |
 
+> **Checkpoint**: After completing the key feature list, report progress to the leader and confirm the investigation scope before proceeding to dependency and side-effect analysis.
+
 ### Key Method Details
 
 #### methodA()
