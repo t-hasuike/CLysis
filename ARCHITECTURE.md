@@ -275,7 +275,7 @@ Human reviews synthesis & selects approach
 | **Shogun** | General / Leader | Team coordination, task delegation | Yes |
 | **Karo** | Chief Retainer / Planner | Task decomposition, dependency management | Yes |
 | **Ashigaru** | Foot Soldier / Worker | Task execution (backend, frontend, docs, investigation, devops) | Yes |
-| **Metsuke** | Inspector / QA | Quality assurance, compliance verification (Phase 2 audit only — activated after deliverables are produced, not before) | Yes |
+| **Metsuke** | Inspector / QA | Quality assurance, compliance verification (Phase 2 audit only — activated after deliverables are produced, not before). **Shogun activates Metsuke autonomously after worker deliverables are produced. User instruction is not required.** | Yes |
 
 ### Hierarchy & Communication
 
@@ -317,12 +317,40 @@ The leader follows a structured workflow for every mission:
 3. **[Required]** Determine whether to consult the planner (karo) -- see "Planner Engagement Criteria" below
 4. Consult the planner (if applicable)
 5. Decide team composition (headcount, roles, model)
-6. **[Required]** Request user approval for team formation
-7. After approval, create and launch the agent team
+6. **[Conditional]** Request user approval -- Escalated-level decisions only (value tradeoffs). Delegated-level decisions (team composition, planner engagement, metsuke activation) are autonomous. Leader reports on completion
+7. After approval (Escalated) or autonomous decision (Delegated), create and launch the agent team
 8. Operate in delegate mode -- coordinate, do not implement
 9. Report results to the user upon completion
 
 > **Note**: Steps 3-4 must not be skipped. When in doubt, consult the planner.
+
+### Decision Level Classification
+
+| Level | Definition | Leader Action |
+|-------|-----------|----------------|
+| **Obvious** | Answer determined uniquely by facts | Leader decides immediately. Report only |
+| **Delegated** | Team composition, planner engagement, metsuke activation, technical tooling choices | Leader decides autonomously. Report on completion |
+| **Escalated** | Value tradeoffs (speed vs quality, uniformity vs flexibility, etc) | Leader presents 2 options + decision criteria + impact to user for approval |
+
+> **When in doubt**: Escalated is safer to consult planner. This prevents user overload while maintaining quality.
+
+### Operational Patterns
+
+**Pattern A: Standard Task (Autonomous Execution)**
+1. User provides goal and completion criteria
+2. Shogun autonomously: analyzes → consults Karo → delegates to Ashigaru → activates Metsuke
+3. Shogun reports results to User
+4. User approves or requests revision
+
+**Pattern B: Value Tradeoff (Escalated Decision)**
+1. Shogun autonomously analyzes and consults Karo
+2. Shogun presents 2 options with criteria + impact to User
+3. User decides
+4. Shogun executes and reports
+
+**Pattern C: Urgent (Post-hoc Report)**
+1. Shogun decides and executes immediately
+2. Shogun reports to User after completion
 
 ### Planner (Karo) Engagement Criteria
 
@@ -732,7 +760,7 @@ Key rules:
 
 | Rule ID | Rule | Enforcement |
 |---------|------|-------------|
-| F001 | Team formation requires user approval | Leader MUST request approval before creating team |
+| F001 | Escalated-level decisions (value tradeoffs) must not be executed without user approval | Team composition and tool selection are Delegated-level — Shogun decides autonomously and reports on completion |
 | F002 | Leader does NOT implement code | Leader delegates to workers -- investigation, analysis, and file reading are also included |
 | F003 | No simultaneous file edits by multiple agents | karo (planner) enforces file-level task splitting |
 | F004 | Leaving team unattended (risk of wasted work) | Leader MUST monitor progress and steer as needed |
