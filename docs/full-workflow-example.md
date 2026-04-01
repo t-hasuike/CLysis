@@ -14,6 +14,8 @@ This example demonstrates an end-to-end workflow using all skills sequentially.
 /project-guide Adding QR code payment
 ```
 
+Note: This workflow example uses skills `/project-guide`, `/current-spec`, `/change-impact`, `/create-pr` (with --plan and --exec phases), and `/review-code` (formerly `/investigate`, `/service-spec`, `/impact-analysis`, `/code-review`).
+
 ### OUTPUT
 
 ```
@@ -27,9 +29,8 @@ This example demonstrates an end-to-end workflow using all skills sequentially.
 3. app/Services/Payment/PaymentService.php -> Payment processing core implementation
 
 [Investigation Order]
-1. /investigate PaymentService -> Understand current state
-2. /service-spec PaymentService -> Detailed specification verification
-3. /impact-analysis Adding QR code payment -> Impact scope analysis
+1. /current-spec PaymentService -> Understand current state and specification
+2. /change-impact Adding QR code payment -> Impact scope analysis
 
 Report complete."
 ```
@@ -41,7 +42,7 @@ Report complete."
 ### INPUT
 
 ```
-/investigate PaymentService
+/current-spec PaymentService
 ```
 
 ### OUTPUT (Abbreviated)
@@ -76,9 +77,7 @@ Report complete."
 
 ### INPUT
 
-```
-/service-spec PaymentService
-```
+(Specification is now included in /current-spec output)
 
 ### OUTPUT (Abbreviated)
 
@@ -116,7 +115,7 @@ Report complete."
 ### INPUT
 
 ```
-/impact-analysis Adding QR code payment (PayPay)
+/change-impact Adding QR code payment (PayPay)
 ```
 
 ### OUTPUT (Abbreviated)
@@ -179,23 +178,24 @@ Submit impact analysis report (reports/impact_analysis_paypay.md) to user for ap
 
 ---
 
-## Phase 5: Propose Changes
+## Phase 5: Create PR (--plan Phase)
 
 ### INPUT
 
 ```
-/propose-changes reports/impact_analysis_paypay.md
+/create-pr --plan reports/impact_analysis_paypay.md Phase 0
 ```
 
 ### OUTPUT (Abbreviated)
 
 ```
-"Change proposal submitted.
+"Change proposal generated.
 
-# PayPay Payment Addition Change Proposal
+# PayPay Payment Addition Change Proposal - Phase 0
 
+**Created**: 2026-03-08
+**Target Repository**: backend
 **Source Report**: reports/impact_analysis_paypay.md
-**Proposal Date**: 2026-03-08
 
 ## Change Summary
 
@@ -306,18 +306,18 @@ Submit impact analysis report (reports/impact_analysis_paypay.md) to user for ap
 Report complete."
 ```
 
-**[Human Checkpoint]**
+**[Human Checkpoint 1]**
 
-Submit change proposal to user for review and approval.
+User reviews the change proposal and approves it. Submit to `/create-pr --exec` only after approval.
 
 ---
 
-## Phase 6: Create PR
+## Phase 6: Create PR (--exec Phase)
 
-### INPUT
+### INPUT (After Approval)
 
 ```
-/create-pr reports/propose_changes_paypay.md backend
+/create-pr --exec reports/proposals/add_paypay_phase0.md backend feature/add-paypay-phase0
 ```
 
 ### OUTPUT (Abbreviated)
@@ -355,9 +355,9 @@ https://github.com/your-org/backend/pull/456
 Report complete."
 ```
 
-**[Human Checkpoint]**
+**[Human Checkpoint 2]**
 
-User reviews, approves, and instructs merge of the PR.
+User reviews PR in GitHub, runs CI/CD, and merges when ready.
 
 ---
 
@@ -365,13 +365,7 @@ User reviews, approves, and instructs merge of the PR.
 
 ### INPUT
 
-```
-/build-knowledge PayPay payment business rules and implementation patterns
-
-Context:
-- Accumulate implementation patterns discovered during impact analysis as domain knowledge
-- Reference material for future QR code payment additions (LINE Pay, d-pay, etc.)
-```
+(Domain knowledge is now accumulated during the investigation and analysis phases)
 
 ### OUTPUT (Abbreviated)
 
@@ -420,12 +414,11 @@ Report complete."
 | Phase | Skill | Purpose | Output |
 |-------|-------|---------|--------|
 | 1 | `/project-guide` | Identify references | Investigation order guidance |
-| 2 | `/investigate` | Understand current state | Service overview, extension points |
-| 3 | `/service-spec` | Detailed specification verification | Method specifications, dependencies |
-| 4 | `/impact-analysis` | Impact scope analysis | ADR-format report |
-| 5 | `/propose-changes` | Create change proposal | Diff-format change proposal |
-| 6 | `/create-pr` | Create PR | Branch, commit, PR |
-| 7 | `/build-knowledge` | Accumulate domain knowledge | Addition to knowledge/domain/ |
+| 2 | `/current-spec` | Code investigation + detailed specification | Service overview, extension points, method specs |
+| 3 | `/change-impact` | Impact scope analysis | ADR-format report |
+| 4 | `/create-pr --plan` | Generate change proposal from impact analysis | Diff-format change proposal (requires approval) |
+| 5 | `/create-pr --exec` | Implement approved proposal and create PR | Branch, commit, PR URL |
+| 6 | `/review-code` | PR review | Code quality validation |
 
 ### Key Benefits
 
@@ -445,5 +438,5 @@ Report complete."
 
 - This workflow is sequential, but phases can be parallelized if multiple features are worked on simultaneously
 - Each skill output is self-contained and can be reviewed independently
-- The `/code-review` skill fits naturally after implementation (not shown in this example)
+- The `/review-code` skill fits naturally after implementation (see Phase 6 above)
 - Terminology can be customized by editing `config/terminology.md`

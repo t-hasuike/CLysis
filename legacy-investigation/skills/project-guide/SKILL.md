@@ -129,7 +129,7 @@ Present relevant files from knowledge/domain/ based on keywords in the task over
 Extract task-related notes from the "common pitfalls" section of environment.md.
 
 **Common notes (always presented)**:
-- Include project-specific soft-delete conditions (e.g., delflag='0') in all queries
+- Include project-specific soft-delete conditions (e.g., is_deleted = false) in all queries
 - Verify project-specific type safety rules (e.g., PHP strict_types)
 - Synchronize duplicate code across multiple repositories
 
@@ -187,7 +187,7 @@ After task completion, it is recommended to evaluate documents output to reports
 ## Notes
 
 ### Common (required)
-- Include project-specific soft-delete conditions (e.g., delflag='0') in all queries
+- Include project-specific soft-delete conditions (e.g., is_deleted = false) in all queries
 - Project-specific type safety rules (e.g., PHP strict_types) required
 - Synchronize duplicate code across multiple repositories
 
@@ -219,9 +219,8 @@ After task completion, it is recommended to evaluate documents output to reports
 - Domain knowledge in knowledge/domain/ exists
 
 ### Downstream Skills (Pipeline)
-- `/investigate` -- Detailed investigation of targets identified by the guide
-- `/service-spec` -- Create specification for Services identified by the guide
-- `/impact-analysis` -- Analyze impact scope identified by the guide
+- `/current-spec` -- Detailed investigation and specification of targets identified by the guide
+- `/change-impact` -- Analyze impact scope identified by the guide
 
 ### Quality Checkpoints
 - [ ] Correctly classified task type

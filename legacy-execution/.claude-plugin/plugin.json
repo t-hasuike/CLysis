@@ -2,5 +2,5 @@
   "name": "legacy-execution",
   "description": "Execution and review skills for legacy systems: diff-based change proposals, automated PR creation, and code review.",
   "version": "1.0.0",
-  "skills": ["code-review", "create-pr", "propose-changes"]
+  "skills": ["review-code", "create-pr"]
 }

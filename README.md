@@ -3,7 +3,7 @@
 > AI-powered framework for understanding, analyzing, and modernizing legacy systems.
 
 Systematic support for investigation, analysis, and modernization of legacy systems using AI agent teams.
-14 domain-specific skills and 7 workflow commands across 4 plugins.
+10 domain-specific skills and 7 workflow commands across 4 plugins.
 
 ## Repository Structure
 
@@ -19,7 +19,7 @@ CLysis/
 │   ├── commands/
 │   ├── examples/
 │   └── skills/
-├── legacy-execution/          # Plugin: code-review, create-pr, propose-changes
+├── legacy-execution/          # Plugin: code-review, create-pr
 │   ├── .claude-plugin/
 │   ├── commands/
 │   ├── examples/
@@ -44,16 +44,16 @@ CLysis/
 
 | Plugin | Skills | Commands | Description |
 |--------|--------|----------|-------------|
-| [legacy-investigation](./legacy-investigation/) | 3 | 4 | Investigation & understanding (project-guide, investigate, service-spec) |
-| [legacy-analysis](./legacy-analysis/) | 3 | 1 | Analysis & planning (impact-analysis, legacy-analyze, distortion-analysis) |
-| [legacy-execution](./legacy-execution/) | 3 | 2 | Execution & review (propose-changes, create-pr, code-review) |
-| [legacy-knowledge](./legacy-knowledge/) | 5 | 0 | Knowledge accumulation (build-knowledge, archive-reports, templates, prd-generate, doc-update) |
+| [legacy-investigation](./legacy-investigation/) | 2 | 4 | Investigation & understanding (project-guide, current-spec) |
+| [legacy-analysis](./legacy-analysis/) | 3 | 1 | Analysis & planning (change-impact, current-legacy, current-distortion) |
+| [legacy-execution](./legacy-execution/) | 2 | 2 | Execution & review (create-pr, review-code) |
+| [legacy-knowledge](./legacy-knowledge/) | 3 | 0 | Knowledge accumulation (archive-reports, current-prd, doc-update) |
 
 ## Prerequisites
 
 - **Claude Code** — Required
-- **Serena MCP** — Recommended. Enables semantic code search for `/investigate`, `/service-spec`. Skills work without it but with reduced accuracy.
-- **GitHub MCP** — Optional. Required for `/create-pr` and `/code-review`.
+- **Serena MCP** — Recommended. Enables semantic code search for `/current-spec`. Skills work without it but with reduced accuracy.
+- **GitHub MCP** — Optional. Required for `/create-pr` and `/review-code`.
 
 ## Quick Start
 
@@ -125,10 +125,10 @@ cp -r legacy-investigation/commands/* /path/to/your/project/.claude/commands/
 
 | Plugin | Skills | Description |
 |--------|--------|-------------|
-| **legacy-investigation** | project-guide, investigate, service-spec | Code exploration, service specification, documentation reference |
-| **legacy-analysis** | impact-analysis, legacy-analyze, distortion-analysis | Impact analysis, system overview, code quality patterns |
-| **legacy-execution** | propose-changes, create-pr, code-review | Change proposals, PR creation, automated code review |
-| **legacy-knowledge** | build-knowledge, archive-reports, templates, prd-generate, doc-update | Knowledge extraction, domain documentation, team templates, PRD generation, document updates |
+| **legacy-investigation** | project-guide, current-spec | Code exploration, service specification, documentation reference |
+| **legacy-analysis** | change-impact, current-legacy, current-distortion | Impact analysis, system overview, code quality patterns |
+| **legacy-execution** | create-pr, review-code | Change proposals and PR creation (--plan/--exec), automated code review |
+| **legacy-knowledge** | archive-reports, current-prd, doc-update | Knowledge extraction, PRD generation, document updates |
 
 ### Skill Chain Patterns
 
@@ -140,9 +140,8 @@ Investigate the full impact of proposed changes:
 
 ```bash
 /project-guide [your task]
-  → /investigate [target service or area]
-  → /service-spec [high-impact services]
-  → /impact-analysis [change description]
+  → /current-spec [target service or area]
+  → /change-impact [change description]
 ```
 
 **Use case**: Before implementing a change, understand its ripple effects across the codebase.
@@ -153,9 +152,8 @@ Locate and understand the root cause of defects:
 
 ```bash
 /project-guide [bug description]
-  → /investigate [suspected area]
-  → /service-spec [related services]
-  → /distortion-analysis [repository] [area]
+  → /current-spec [suspected area]
+  → /current-distortion [repository] [area]
 ```
 
 **Use case**: Systematically identify code quality patterns and risk areas.
@@ -166,9 +164,7 @@ Build comprehensive domain knowledge:
 
 ```bash
 /project-guide [feature or module]
-  → /investigate [target service]
-  → /service-spec [service documentation]
-  → /build-knowledge [output path]
+  → /current-spec [target service]
 ```
 
 **Use case**: Document and archive understanding of critical legacy components.
@@ -179,22 +175,16 @@ Build comprehensive domain knowledge:
 
 ```bash
 /project-guide my-legacy-feature
-/investigate AccountService
-/impact-analysis [describe your planned change]
+/current-spec AccountService
+/change-impact [describe your planned change]
 ```
 
-2. Build domain knowledge from your investigations:
+2. Use the execution skills to propose and review changes:
 
 ```bash
-/build-knowledge reports/investigation-results.md
-```
-
-3. Use the execution skills to propose and review changes:
-
-```bash
-/propose-changes [change description]
-/create-pr [task description]
-/code-review [PR number]
+/create-pr --plan [impact-analysis-report]
+/create-pr --exec [change-proposal]
+/review-code [PR number]
 ```
 
 ## Plugin Dependencies and Recommended Setup
@@ -205,7 +195,7 @@ Some commands reference skills from other plugins. Ensure required plugins are i
 
 | Command | Required Plugins | Purpose |
 |---------|-----------------|---------|
-| `/investigate-flow` | legacy-investigation + legacy-analysis | Full investigation pipeline with impact analysis |
+| `/investigate-flow` | legacy-investigation + legacy-analysis | Full investigation pipeline with change impact analysis |
 | `/bug-hunt` | legacy-investigation + legacy-analysis | Bug root cause analysis |
 | `/deep-dive` | legacy-analysis (+ others for context) | System-wide analysis |
 | `/implement` | legacy-execution + legacy-investigation | End-to-end change implementation |
@@ -246,18 +236,14 @@ claude plugin install legacy-investigation@CLysis legacy-analysis@CLysis legacy-
 | Skill | Plugin | Description |
 |-------|--------|-------------|
 | `/project-guide` | legacy-investigation | Context-aware documentation reference guide |
-| `/investigate` | legacy-investigation | Code investigation with semantic search (Serena MCP) |
-| `/service-spec` | legacy-investigation | Service/UseCase specification documentation |
-| `/impact-analysis` | legacy-analysis | Impact analysis with ADR-format reports |
-| `/legacy-analyze` | legacy-analysis | Legacy codebase understanding workflow (Phase 0->1->2->3) |
-| `/distortion-analysis` | legacy-analysis | Detect code distortion patterns and organize in Part A/B/C framework |
-| `/propose-changes` | legacy-execution | Generate code diffs with context |
-| `/create-pr` | legacy-execution | Create PR with ADR summary and checklist |
-| `/code-review` | legacy-execution | PR review with code quality and domain knowledge validation |
-| `/build-knowledge` | legacy-knowledge | Extract and persist domain knowledge from investigation results |
+| `/current-spec` | legacy-investigation | Code investigation and service specification documentation |
+| `/change-impact` | legacy-analysis | Impact analysis with ADR-format reports |
+| `/current-legacy` | legacy-analysis | Legacy codebase understanding workflow (Phase 0->1->2->3) |
+| `/current-distortion` | legacy-analysis | Detect code distortion patterns and organize in Part A/B/C framework |
+| `/create-pr` | legacy-execution | Generate code diffs (--plan) and create PR (--exec) from approved proposals |
+| `/review-code` | legacy-execution | PR review with code quality and domain knowledge validation |
 | `/archive-reports` | legacy-knowledge | Archive investigation outputs for knowledge reuse |
-| `/templates` | legacy-knowledge | General team operation templates (for leaders) |
-| `/prd-generate` | legacy-knowledge | Reverse-engineer PRD from existing codebase (Phase 1-3 workflow) |
+| `/current-prd` | legacy-knowledge | Reverse-engineer PRD from existing codebase (Phase 1-3 workflow) |
 | `/doc-update` | legacy-knowledge | Update knowledge documents for target audience (developer, PM, onboarding) |
 
 ## Initial Setup
@@ -293,8 +279,8 @@ See `docs/claude-md-template.md` for a minimal template. Key sections:
 
 ```
 /project-guide [your first task]
-/investigate [target service or module]
-/build-knowledge [investigation output path]
+/current-spec [target service or module]
+(Domain knowledge is now integrated into the investigation/analysis workflow)
 ```
 
 Each investigation builds your domain knowledge in `knowledge/domain/` and saves reports to `reports/`.
@@ -345,11 +331,8 @@ Commands provide pre-configured pipelines for common workflows:
 
 ```
 /investigate-flow [target]
-   → /project-guide + /investigate + /service-spec + /impact-analysis
+   → /project-guide + /current-spec + /change-impact
    → All-in-one investigation pipeline
-   ↓
-/build-knowledge [report path]
-   → Persists domain knowledge to knowledge/domain/
 ```
 
 ## Distortion Analysis Flow
@@ -357,7 +340,7 @@ Commands provide pre-configured pipelines for common workflows:
 Detect code-level risks ("distortions") and organize them systematically:
 
 ```
-/distortion-analysis [repository] [area]
+/current-distortion [repository] [area]
    → Phase 1: 5 parallel workers detect risks (flag gaps, type traps, missing checks, etc.)
    → Phase 2: 3 parallel workers create Part A/B/C report
    → Output: distortion-report-[repo]-[area]-[date].md
@@ -380,7 +363,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md#distortion-analysis-framework) for detaile
 
 ```
 /review [PR number]
-   → /project-guide + /code-review
+   → /project-guide + /review-code
    → Reviews code quality + business logic alignment
    → References knowledge/domain/ for domain knowledge validation
 ```
@@ -409,7 +392,7 @@ Each project maintains its own `knowledge/domain/` directory with:
 - System architecture and service responsibilities
 - Technical constraints and known limitations
 
-The `/build-knowledge` skill bridges the gap by extracting domain knowledge from investigation results and persisting it to `knowledge/domain/`.
+Domain knowledge is accumulated through the investigation and analysis phases and persisted to `knowledge/domain/`.
 
 ## Terminology
 

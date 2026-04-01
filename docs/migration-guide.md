@@ -27,15 +27,18 @@ The previous single `skills/` directory has been split into 4 specialized plugin
 | Before (v0.x) | After (v1.0) |
 |---------------|-------------|
 | `skills/project-guide/` | `legacy-investigation/skills/project-guide/` |
-| `skills/investigate/` | `legacy-investigation/skills/investigate/` |
-| `skills/service-spec/` | `legacy-investigation/skills/service-spec/` |
-| `skills/impact-analysis/` | `legacy-analysis/skills/impact-analysis/` |
-| `skills/legacy-analyze/` | `legacy-analysis/skills/legacy-analyze/` |
+| `skills/investigate/` + `skills/service-spec/` | `legacy-investigation/skills/current-spec/` (merged) |
+| `skills/impact-analysis/` | `legacy-analysis/skills/change-impact/` |
+| `skills/legacy-analyze/` | `legacy-analysis/skills/current-legacy/` |
+| `skills/distortion-analysis/` | `legacy-analysis/skills/current-distortion/` |
 | `skills/propose-changes/` | `legacy-execution/skills/propose-changes/` |
 | `skills/create-pr/` | `legacy-execution/skills/create-pr/` |
-| `skills/code-review/` | `legacy-execution/skills/code-review/` |
-| `skills/build-knowledge/` | `legacy-knowledge/skills/build-knowledge/` |
-| `skills/templates/` | `legacy-knowledge/skills/templates/` |
+| `skills/code-review/` | `legacy-execution/skills/review-code/` |
+| `skills/archive-reports/` | `legacy-knowledge/skills/archive-reports/` |
+| `skills/prd-generate/` | `legacy-knowledge/skills/current-prd/` |
+| `skills/doc-update/` | `legacy-knowledge/skills/doc-update/` |
+| `skills/build-knowledge/` | (removed) |
+| `skills/templates/` | (removed) |
 | `prompts/` | `legacy-knowledge/prompts/` |
 
 ### New Additions (v1.0)
@@ -65,11 +68,15 @@ rm -rf .claude/skills/investigate
 rm -rf .claude/skills/service-spec
 rm -rf .claude/skills/impact-analysis
 rm -rf .claude/skills/legacy-analyze
+rm -rf .claude/skills/distortion-analysis
 rm -rf .claude/skills/propose-changes
 rm -rf .claude/skills/create-pr
 rm -rf .claude/skills/code-review
 rm -rf .claude/skills/build-knowledge
 rm -rf .claude/skills/templates
+rm -rf .claude/skills/prd-generate
+rm -rf .claude/skills/archive-reports
+rm -rf .claude/skills/doc-update
 ```
 
 ### Step 3: Install Plugins
@@ -111,7 +118,7 @@ cp -r /path/to/CLysis/legacy-execution/commands/* .claude/commands/
 
 ```markdown
 ## Workflow Commands
-- `/investigate-flow [target]` -- Investigation pipeline
+- `/investigate-flow [target]` -- Investigation pipeline (project-guide -> current-spec -> change-impact)
 - `/implement [proposal path]` -- Implementation pipeline
 - `/review [PR number]` -- Review pipeline
 ```
@@ -120,7 +127,7 @@ cp -r /path/to/CLysis/legacy-execution/commands/* .claude/commands/
 
 ```bash
 # Test a skill
-claude /investigate [some target]
+claude /current-spec [some target]
 
 # Test a command (if supported)
 claude /investigate-flow [some target]
@@ -136,14 +143,14 @@ Skill paths are unchanged. Skills are automatically placed in `.claude/skills/` 
 ```markdown
 ## Skills
 This project uses skills from CLysis:
-- /investigate -- Code investigation
+- /current-spec -- Code investigation and service specification
 ```
 
 **After (v1.0)**: Same! No changes needed.
 ```markdown
 ## Skills
 This project uses skills from CLysis:
-- /investigate -- Code investigation
+- /current-spec -- Code investigation and service specification
 ```
 
 ### Optional: Document Commands
@@ -152,7 +159,7 @@ If using the new command features, documenting in CLAUDE.md is recommended:
 
 ```markdown
 ## Workflow Commands
-- `/investigate-flow [target]` -- Investigation pipeline (project-guide -> investigate -> service-spec -> impact-analysis)
+- `/investigate-flow [target]` -- Investigation pipeline (project-guide -> current-spec -> change-impact)
 - `/implement [proposal]` -- Implementation pipeline (propose-changes -> create-pr)
 - `/review [PR number]` -- Review pipeline (project-guide -> code-review)
 ```
@@ -167,10 +174,9 @@ Commands are **pre-configured pipelines** that chain multiple skills together wi
 
 Runs the following sequence:
 1. `/project-guide [target]` -- Get context
-2. `/investigate [target]` -- Find code
-3. `/service-spec [target]` -- Document specification
-4. `/impact-analysis [target]` -- Analyze impact
-5. [Human Checkpoint] Review full report
+2. `/current-spec [target]` -- Find code and document specification
+3. `/change-impact [target]` -- Analyze impact
+4. [Human Checkpoint] Review full report
 
 **Benefits**:
 - Reduces manual typing of skill sequences
@@ -232,7 +238,7 @@ cp -r .claude/skills.backup/* .claude/skills/
 ### Q: What's the difference between skills and commands?
 
 **A**:
-- **Skills**: Atomic tasks (e.g., `/investigate`)
+- **Skills**: Atomic tasks (e.g., `/current-spec`)
 - **Commands**: Pre-configured workflows (e.g., `/investigate-flow` = multiple skills chained)
 
 ### Q: Do I need to update my CLAUDE.md?
@@ -244,7 +250,7 @@ cp -r .claude/skills.backup/* .claude/skills/
 **A**: Run a test skill:
 
 ```bash
-claude /investigate [some target]
+claude /current-spec [some target]
 ```
 
 If it works, migration succeeded.
@@ -320,15 +326,85 @@ If you have saved commands or scripts referencing `output/` paths, update them t
 
 ```bash
 # Before
-/build-knowledge output/investigation-results.md
+(Build knowledge is now integrated into the investigation/analysis workflow)
 
 # After
-/build-knowledge reports/investigation-results.md
+(Build knowledge is now integrated into the investigation/analysis workflow)
 ```
 
 ### No Breaking Changes to Skills
 
 All skills continue to work without modification. The path conventions are recommendations in skill documentation, not hardcoded logic.
+
+---
+
+## v1.1 to v1.2: Unified create-pr Skill (propose-changes removed)
+
+### What Changed
+
+CLysis v1.2 merges `/propose-changes` and `/create-pr` into a single skill with two phases:
+
+| Before (v1.1) | After (v1.2) | Reason |
+|---------------|-------------|--------|
+| `/propose-changes` | `/create-pr --plan` | Merged into unified skill |
+| `/create-pr` | `/create-pr --exec` | Unified skill with two-phase workflow |
+
+### Benefits
+
+- **Simpler mental model**: One skill, two phases, explicit human approval gate between phases
+- **Clear workflow**: --plan for proposal generation, --exec for implementation
+- **Transparent checkpoints**: Human control is explicit at each phase
+
+### Migration Steps
+
+#### Step 1: Update project invocations
+
+Replace:
+```bash
+# Old workflow (v1.1)
+/propose-changes reports/impact_analysis_example.md
+# Then review...
+/create-pr reports/proposals/example.md repository
+```
+
+With:
+```bash
+# New workflow (v1.2)
+/create-pr --plan reports/impact_analysis_example.md
+# Human reviews and approves...
+/create-pr --exec reports/proposals/example.md repository
+```
+
+#### Step 2: Update CLAUDE.md references
+
+If your CLAUDE.md documents the workflow, update:
+
+**Before**:
+```markdown
+## Pipeline
+/project-guide → /current-spec → /change-impact
+→ /propose-changes → /create-pr → Merge
+```
+
+**After**:
+```markdown
+## Pipeline
+/project-guide → /current-spec → /change-impact
+→ /create-pr --plan → /create-pr --exec → Merge
+```
+
+#### Step 3: Update commands
+
+If using `/implement` command, it automatically uses the new `--plan`/`--exec` pattern. No changes needed.
+
+### Backward Compatibility
+
+- `/create-pr [proposal path] [repo]` is still supported (defaults to --exec)
+- Scripts using the old propose-changes + create-pr pipeline will need updates
+
+### No Breaking Changes to Other Skills
+
+All other skills remain unchanged. Only propose-changes is deprecated in favor of create-pr --plan.
 
 ---
 

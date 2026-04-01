@@ -3,9 +3,8 @@
 Skills for proposing changes, implementing, and reviewing legacy systems.
 
 ## Skills
-- **propose-changes** -- Diff-format change proposals
-- **create-pr** -- Automated PR creation
-- **code-review** -- PR review
+- **create-pr** -- Generate change proposals (--plan) and create PR (--exec)
+- **review-code** -- PR review and quality audit
 
 ## Commands
 - `/implement` -- Change proposal and implementation flow

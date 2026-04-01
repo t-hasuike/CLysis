@@ -66,14 +66,19 @@ Based on target audience, adjust:
 - State observations only. No modification proposals for application code
 - Subject-first rule: always specify "whose/what's" for domain terms
 
+**Strict F002 compliance**: Leader does not personally update knowledge/. Delegate execution to workers.
+
+### Language and Tone
+
+Clear, professional reporting with business etiquette. Clearly state OK/NG, explicitly state what is unclear.
+
 ## Integration with Existing Skills
 
 | Existing Skill | Relationship |
 |---------------|-------------|
-| /prd-generate | Provides bulk findings that doc-update integrates |
-| /build-knowledge | Point knowledge. doc-update handles systematic updates |
-| /archive-reports | Handles reports/ → knowledge/ promotion. doc-update handles knowledge/ maintenance |
-| /legacy-analyze | Phase 3 updates maps. doc-update extends to all knowledge/ |
+| `/current-spec` | Provides bulk findings that doc-update integrates |
+| `/doc-organize` | Handles reports/ → knowledge/ promotion. doc-update handles knowledge/ maintenance |
+| `/doc-check` | Diagnoses issues. doc-update executes fixes |
 
 ## I/O Specification
 
@@ -88,6 +93,11 @@ Based on target audience, adjust:
 |------|--------|-------------|
 | Updated documents | Markdown (in-place update) | `knowledge/` (direct modification) |
 | Change report | Markdown (diff summary) | stdout (session report) |
+
+### Downstream Skills (Pipeline)
+| Skill | Condition |
+|--------|-----------|
+| `/doc-check` | Post-update integrity verification |
 
 ## Quality Checklist
 
