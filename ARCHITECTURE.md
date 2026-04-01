@@ -684,6 +684,34 @@ Investigation reports should include at least one visualization diagram to make 
 
 ## Quality & Safety
 
+### Decision Presentation Format
+
+When presenting choices that require human judgment, use this standard format at all levels (Karo → Shogun → Uesama):
+
+```
+## Decision: [Title]
+**Context**: [Why this decision is needed — one line]
+
+| | Option A: [Label] | Option B: [Label] |
+|--|-------------------|-------------------|
+| Criteria 1: [name] | [assessment] | [assessment] |
+| Criteria 2: [name] | [assessment] | [assessment] |
+
+**Impact**:
+- Option A: [affected systems, processes, stakeholders]
+- Option B: [affected systems, processes, stakeholders]
+
+**Recommendation**: [A or B, with one-line rationale]
+**Decision owner's discretion**: [what only the decision owner can judge]
+```
+
+Key rules:
+- Maximum 2 options. If more exist, the presenter must narrow down first
+- Always include impact analysis — "how to" without "what happens" is insufficient
+- Each level adds its own recommendation before passing up
+
+---
+
 ### Quality Gates
 
 1. **Serena Memory Enforcement**:
@@ -712,6 +740,7 @@ Investigation reports should include at least one visualization diagram to make 
 | F004 | Leaving team unattended (risk of wasted work) | Leader MUST monitor progress and steer as needed |
 | F005 | Skipping karo for large-scale tasks (causes rework) | Leader MUST consult karo before delegating to workers |
 | F006 | Investigation results must be saved to files | Task tool delegation MUST include output file path; stdout-only return is prohibited |
+| F007 | Audit results must be saved to files | Metsuke audit reports sent only to stdout will be lost and become untraceable | Save to reports/audit/ with date-stamped filename |
 
 ### Worker Delegation Rules
 
@@ -724,6 +753,26 @@ When delegating to workers, the leader MUST include role clarification at the be
 ```
 
 This prevents workers from attempting to delegate further or behaving as coordinators.
+
+#### Preventing Worker Stalls
+
+Workers (Ashigaru) may stop responding due to context overflow, permission blocks, or unclear instructions. To prevent this:
+
+**Mandatory in every delegation:**
+1. **Completion condition**: What specific output marks "done"
+2. **Output destination**: File path for results (F006 compliance)
+3. **Fallback on uncertainty**: "If you cannot determine how to proceed, do not stop silently. Report what you have found so far and state what is unclear."
+
+**Task sizing guideline:**
+- Safe: Single file write + investigation scope of 1 feature/module
+- Risky: Multi-repository scan + multiple file writes → split into subtasks
+
+**Permission mode selection:**
+| Need | Mode | Example |
+|------|------|---------|
+| File write to output/reports | `bypassPermissions` | Investigation reports, audit logs |
+| Read-only investigation | default | Code analysis, fact-checking |
+| GitHub operations (PR, push) | default (requires human approval) | PR creation, branch push |
 
 #### Agent Type Selection
 
