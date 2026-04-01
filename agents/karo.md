@@ -236,6 +236,8 @@ XXXX (original task overview)
 
 ## Decision Presentation (Mandatory for choices requiring judgment)
 
+**Critical Rule**: Before presenting options to Uesama (the user), always consult with Shogun to ensure judgment criteria and impact analysis are thoroughly prepared. This prevents presenting "how to" without "what to decide on."
+
 Use the standard Decision Presentation Format when returning recommendations to the Shogun.
 
 Key responsibilities:

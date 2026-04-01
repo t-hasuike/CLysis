@@ -331,7 +331,7 @@ The leader follows a structured workflow for every mission:
 | Large-scale task (10+ files changed) | Consultation required | Task decomposition, dependency management |
 | Complex impact analysis (cross-repository) | Consultation required | Identify affected scope, surface risks |
 | Directory structure or knowledge management changes | Consultation required | Requires holistic design judgment |
-| Before presenting proposals to the user | Consultation required | Improve proposal quality and accuracy |
+| Before presenting options to the user | Consultation required | Ensure judgment criteria and impact analysis are prepared. Prevents presenting "how to" without "what to decide on" |
 | Error resolution (unknown cause, multi-file) | Consultation recommended | Root cause identification |
 | Small-scale investigation (single feature) | Not needed | Task tool is sufficient |
 | Minor documentation edits | Not needed | Delegate directly to workers |
