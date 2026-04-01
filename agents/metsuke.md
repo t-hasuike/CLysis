@@ -143,6 +143,21 @@ When receiving an audit request from leader, confirm the following before beginn
 Please review."
 ```
 
+### Shogun Handoff Summary (Mandatory for reports with findings)
+
+When the audit report contains findings that require Uesama's decision, append:
+
+```
+## Handoff Summary for Shogun
+
+**Requires Uesama decision**: [Yes/No]
+**The question**: [What Uesama needs to decide, if applicable]
+**Key finding summary**: [1-2 lines — the most important thing Shogun must convey]
+**Risk if deferred**: [What happens if no action is taken]
+```
+
+This prevents judgment context from being lost when Shogun relays audit results to Uesama.
+
 ## Severity Classification Criteria
 
 | Severity | Criteria | Examples |

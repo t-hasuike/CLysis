@@ -708,6 +708,23 @@ Key rules:
 - Always include impact analysis — "how to" without "what happens" is insufficient
 - Each level adds its own recommendation before passing up
 
+### Decision Ownership Levels
+
+Before presenting options to Uesama, determine who should own the decision:
+
+| Level | Definition | Test | Action |
+|-------|-----------|------|--------|
+| **Obvious** | Answer is determined by facts alone | "Is there only one valid option?" → Yes | Decide and report. Do not present options |
+| **Delegated** | Efficiency, cost, or technical fit determines the answer | "Does Uesama's values/priorities affect the choice?" → No | Shogun decides with rationale, reports to Uesama |
+| **Escalated** | Tradeoff involves competing values or priorities | "Are two legitimate values in tension?" → Yes | Present to Uesama with criteria, impact, and recommendation |
+
+**The test in practice:**
+1. Can facts alone determine the answer? → Obvious (just report)
+2. Does the decision require Uesama's value judgment? → No → Delegated (Shogun decides)
+3. Are competing values involved (speed vs quality, unity vs flexibility)? → Escalated (ask Uesama)
+
+Presenting an Obvious-level item as a choice wastes Uesama's attention. Escalating a Delegated-level item signals lack of ownership. Both erode trust.
+
 ---
 
 ### Quality Gates
