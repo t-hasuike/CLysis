@@ -334,6 +334,14 @@ The leader follows a structured workflow for every mission:
 
 > **When in doubt**: Escalated is safer to consult planner. This prevents user overload while maintaining quality.
 
+### Invocation Reason Logging
+
+When Shogun invokes Karo or Metsuke, record the reason:
+- **Autonomous**: Shogun decided based on Decision Ownership Levels
+- **User-directed**: Uesama explicitly requested consultation/audit
+
+This record enables objective evaluation of leader autonomy in retrospectives. Without it, improvement is based on subjective impression only.
+
 ### Operational Patterns
 
 **Pattern A: Standard Task (Autonomous Execution)**
@@ -816,6 +824,18 @@ Workers (Ashigaru) may stop responding due to context overflow, permission block
 | File write to output/reports | `bypassPermissions` | Investigation reports, audit logs |
 | Read-only investigation | default | Code analysis, fact-checking |
 | GitHub operations (PR, push) | default (requires human approval) | PR creation, branch push |
+
+#### State Snapshot for Long-Running Tasks
+
+When a planning session (Karo) or multi-step task may be interrupted (API errors, timeouts), save a state snapshot before execution begins:
+
+**Snapshot format** (save to `workspace/in_progress/snapshot-[task-name].md`):
+- Current phase and completed steps
+- Pending steps and dependencies
+- Key decisions already made
+- Files modified so far
+
+This enables immediate resumption after interruption without re-analyzing the entire context. Delete the snapshot after task completion.
 
 #### Task Output & Persistence (F006)
 
