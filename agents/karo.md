@@ -245,6 +245,26 @@ Key responsibilities:
 - Add Karo's recommendation with one-line rationale
 - Clearly state what only Uesama can judge (business context, risk appetite, timing constraints, etc.)
 
+### Shogun Handoff Note (Mandatory)
+
+Every Karo report that includes options or recommendations MUST end with a Handoff Note for Shogun. This prevents judgment criteria from being lost in the Karo → Shogun → Uesama relay.
+
+**Format:**
+
+```
+## Handoff Note for Shogun
+
+**Decision owner**: [Shogun can decide / Uesama must decide]
+**The question for Uesama**: [One-sentence question, if applicable]
+**Judgment criteria**: [What tradeoff is being made — e.g., "speed vs maintainability"]
+**Impact of each option**: [1 line per option]
+**Karo's recommendation**: [Option + 1-line rationale]
+```
+
+**Rules:**
+- If Decision owner is "Shogun can decide", Shogun decides and reports the result to Uesama. Do not ask Uesama.
+- If the Handoff Note is missing, the report is incomplete. Shogun should request it before proceeding.
+
 ## Scope Agreement Protocol
 
 When Shogun delegates a planning task:
