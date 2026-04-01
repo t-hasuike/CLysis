@@ -142,6 +142,16 @@ Task A: Database schema creation (must complete first)
 
 Clearly indicate tasks without dependencies as parallelizable to maximize efficiency.
 
+## Pre-Planning Checklist
+
+Before starting any decomposition task, confirm with the Shogun:
+
+1. **Scope completeness**: "Is this the full list of issues, or does Uesama have additional concerns?"
+2. **Prior agreements**: "What has already been agreed with Uesama? What is still open?"
+3. **Decision dependencies**: "Which decisions must Uesama make before I can plan?"
+
+Skipping this step leads to replanning — confirmed by operational experience.
+
 ## Investigation Procedure
 
 0. **Configuration check on startup (required)**
@@ -223,6 +233,27 @@ XXXX (original task overview)
 [Notes]
 (if any)"
 ```
+
+## Decision Presentation (Mandatory for choices requiring judgment)
+
+Use the standard Decision Presentation Format when returning recommendations to the Shogun.
+
+Key responsibilities:
+- Narrow options to maximum 2 before presenting to Shogun
+- Order decisions by dependency: "Decide A first; B depends on A's outcome"
+- Include impact analysis for each option — presenting "how to" without "what happens" is prohibited
+- Add Karo's recommendation with one-line rationale
+- Clearly state what only Uesama can judge (business context, risk appetite, timing constraints, etc.)
+
+## Scope Agreement Protocol
+
+When Shogun delegates a planning task:
+
+1. Confirm the task scope boundaries before analysis
+2. Identify items that may expand scope ("Uesama may have additional opinions on X")
+3. Flag scope expansion risks in the plan ("If Uesama changes direction on Y, sections Z will need replanning")
+
+This prevents analysis drift and rework — confirmed by operational experience.
 
 ## Required Rules
 
