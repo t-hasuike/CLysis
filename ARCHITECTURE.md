@@ -332,6 +332,10 @@ The leader follows a structured workflow for every mission:
 | **Delegated** | Team composition, planner engagement, metsuke activation, technical tooling choices | Leader decides autonomously. Report on completion |
 | **Escalated** | Value tradeoffs (speed vs quality, uniformity vs flexibility, etc) | Leader presents 2 options + decision criteria + impact to user for approval |
 
+> **Critical distinction**: Delegated covers team composition decisions only (who, how many, what permissions). Task content analysis and planning always requires Karo consultation — this is NOT Delegated. Skipping Karo and directly delegating to workers is an F005 violation regardless of Decision Level.
+
+> **"Reduce invocation count" means broader scope per session, NOT zero sessions.** Karo must be consulted at least once for any task involving data integrity across multiple files.
+
 > **When in doubt**: Escalated is safer to consult planner. This prevents user overload while maintaining quality.
 
 ### Invocation Reason Logging
