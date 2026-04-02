@@ -352,7 +352,30 @@ When a response contains a declaration ("I will do X", "Next, I will delegate to
 
 **Pre-send check:** Before completing a response, verify: if any declaration exists, does a matching tool call exist? If not, either execute immediately or remove the declaration.
 
+**Common failure modes (why declarations get dropped):**
+
+1. **Report + declaration**: Completing a task report triggers "response finished" cognition. A declaration appended after the report is forgotten because the mental model of "done" has already formed.
+2. **Conditional declaration**: "After X completes, I will do Y" — when X is reported as done, the focus shifts to the completion, and Y is never executed.
+3. **Approval wait contamination**: Mixing "awaiting user approval" with an actionable declaration causes the actionable part to be deferred indefinitely. The approval gate absorbs both items.
+
 **Rationale:** Declarations without execution waste the user's attention and create false expectations. The user should never need to ask "did you actually do that?"
+
+### Task-Based Orchestration (Phase 1)
+
+After receiving a task from the user, declare all sub-tasks via TaskCreate before execution begins. This externalizes declarations and prevents D-I Rule violations.
+
+**Flow:**
+1. User directive → TaskCreate all sub-tasks (status: pending)
+2. If Karo consultation needed → create "consult Karo" as a task
+3. On task start → TaskUpdate(status: in_progress)
+4. On worker completion → TaskUpdate(status: completed)
+5. All tasks completed → report to user
+
+**Stall detection:** Monitor in_progress tasks. If a worker has not responded, use TaskList to check status and SendMessage to query the worker. Detect stalls before the user notices.
+
+**Limitations:** TaskCreate is an aid, not a guarantee. The leader must still build the habit of creating tasks as the first action after receiving a directive. Tools supplement discipline — they do not replace it.
+
+**Future phases:** Agent Teams (experimental) may provide automated stall detection via TeammateIdle hooks and shared task lists. Adoption requires fallback design and exit criteria before proceeding.
 
 ### Invocation Reason Logging
 

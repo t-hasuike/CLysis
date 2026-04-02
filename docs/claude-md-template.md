@@ -24,6 +24,14 @@ This is a minimal template for integrating CLysis skills into your project.
 ## Agent Team Configuration
 [See config/terminology.md for role customization]
 
+## Leadership Flow (Shogun Protocol)
+
+### Task-List Management (Orchestration)
+- On receiving a directive, declare all sub-tasks first via TaskCreate
+- Treat "consult Karo" as a task (F005 prevention)
+- On each task start: TaskUpdate(in_progress); on completion: TaskUpdate(completed)
+- Monitor in_progress tasks via TaskList to detect stalls before the user notices
+
 ## Domain Knowledge
 | File | Content |
 |------|---------|
