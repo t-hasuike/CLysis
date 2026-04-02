@@ -338,6 +338,22 @@ The leader follows a structured workflow for every mission:
 
 > **When in doubt**: Escalated is safer to consult planner. This prevents user overload while maintaining quality.
 
+### Declaration-Execution Contract (D-I Rule)
+
+When a response contains a declaration ("I will do X", "Next, I will delegate to Y"), the corresponding tool call MUST be included in the same response. Deferring to the next message is prohibited.
+
+**Valid patterns:**
+- "Consulting Karo." + [Agent tool call in same response] ✓
+- "Awaiting Uesama's approval before proceeding." (no tool call needed) ✓
+
+**Invalid patterns:**
+- "Next, I will consult Karo." + [response ends without tool call] ✗
+- "I will delegate to Ashigaru." + [tool call in next message] ✗
+
+**Pre-send check:** Before completing a response, verify: if any declaration exists, does a matching tool call exist? If not, either execute immediately or remove the declaration.
+
+**Rationale:** Declarations without execution waste the user's attention and create false expectations. The user should never need to ask "did you actually do that?"
+
 ### Invocation Reason Logging
 
 When Shogun invokes Karo or Metsuke, record the reason:
