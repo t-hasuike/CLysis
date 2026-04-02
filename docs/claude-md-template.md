@@ -32,6 +32,19 @@ This is a minimal template for integrating CLysis skills into your project.
 - On each task start: TaskUpdate(in_progress); on completion: TaskUpdate(completed)
 - Monitor in_progress tasks via TaskList to detect stalls before the user notices
 
+## Safety Rules
+
+| Rule ID | Rule | Enforcement |
+|---------|------|-------------|
+| F001 | [Project-specific escalation rule] | [How escalations are handled] |
+| F002 | Leader does NOT implement code | Leader delegates to workers |
+| F003 | No simultaneous file edits by multiple agents | Assign files to single owner |
+| F004 | Leaving team unattended | Leader monitors progress and steers |
+| F005 | Skip karo (planner) for large tasks | Leader MUST consult before delegating |
+| F006 | Investigation results must be saved to files | Include output file path in delegations |
+| F007 | Audit results must be saved to files | Save reports to reports/ directory |
+| F008 | Direct push to main/master is prohibited | Always use branch + PR. Exception: initial commit only |
+
 ## Domain Knowledge
 | File | Content |
 |------|---------|

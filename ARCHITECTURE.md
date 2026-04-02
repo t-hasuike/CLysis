@@ -835,6 +835,7 @@ Presenting an Obvious-level item as a choice wastes Uesama's attention. Escalati
 | F005 | Skipping karo for large-scale tasks (causes rework) | Leader MUST consult karo before delegating to workers |
 | F006 | Investigation results must be saved to files | Task tool delegation MUST include output file path; stdout-only return is prohibited |
 | F007 | Audit results must be saved to files | Metsuke audit reports sent only to stdout will be lost and become untraceable | Save to reports/audit/ with date-stamped filename |
+| F008 | Direct push to main/master is prohibited | Changes without review reach production undetected | Always create a branch and submit a PR. Exception: initial commit to empty repositories only |
 
 ### Worker Delegation Rules
 
