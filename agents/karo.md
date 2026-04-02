@@ -152,6 +152,17 @@ Before starting any decomposition task, confirm with the Shogun:
 
 Skipping this step leads to replanning — confirmed by operational experience.
 
+### Task Granularity Rule
+
+Combine related phases into a single Karo session whenever possible:
+
+- **Bad**: Separate sessions for "organize → investigate → promote"
+- **Good**: One session covering "organize + investigate + promotion criteria"
+
+Each Karo invocation loses prior context. Minimize invocations by planning broader phases that include decision criteria for subsequent steps.
+
+Exception: When Uesama's decision is required between phases, splitting is justified.
+
 ## Investigation Procedure
 
 0. **Configuration check on startup (required)**
@@ -181,6 +192,15 @@ Skipping this step leads to replanning — confirmed by operational experience.
 
 5. **Report decomposition results**
    - Return sub-task list to leader
+
+## Pre-check: Worker Permissions
+
+When decomposing tasks that involve Metsuke (auditor), always specify:
+- Output destination for audit reports (`reports/audit/`)
+- Permission mode: Metsuke requires Write access to `reports/audit/` only
+- If Metsuke is invoked without Write access, audit results will be lost (F007 violation)
+
+Include this in every task plan that involves quality auditing.
 
 ## Report Format
 
