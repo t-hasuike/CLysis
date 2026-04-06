@@ -4,10 +4,8 @@ Skills for investigating and understanding legacy systems.
 
 ## Skills
 - **project-guide** -- Task-specific reference guide
-- **investigate** -- Codebase investigation
-- **service-spec** -- Service specification documentation (single and cross-repository)
+- **current-spec** -- Code investigation and service specification documentation (merged from investigate + service-spec)
 
 ## Commands
-- `/investigate-flow` -- Impact investigation flow
-- `/bug-hunt` -- Bug investigation flow
-- `/understand` -- Code comprehension flow
+- `/current-spec` -- Code investigation and service specification
+- `/project-guide` -- Task-specific reference guide for code exploration
