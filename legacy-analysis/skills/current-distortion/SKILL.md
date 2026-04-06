@@ -44,24 +44,24 @@ $ARGUMENTS
 ### Command Syntax
 
 ```
-/distortion-analysis [repository-name] [target-area]
-/distortion-analysis Phase 1 [repository-name] [target-area]
-/distortion-analysis Phase 2
+/current-distortion [repository-name] [target-area]
+/current-distortion Phase 1 [repository-name] [target-area]
+/current-distortion Phase 2
 ```
 
 ### Examples
 
 ```
 # Default (all-in-one: Phase 1 -> Phase 2 in sequence)
-/distortion-analysis your-ec-repo checkout-flow
-/distortion-analysis your-backend-repo order-delivery
+/current-distortion your-ec-repo checkout-flow
+/current-distortion your-backend-repo order-delivery
 
 # Step-by-step execution (explicit Phase)
-/distortion-analysis Phase 1 your-backend-repo order-delivery
-/distortion-analysis Phase 2
+/current-distortion Phase 1 your-backend-repo order-delivery
+/current-distortion Phase 2
 
 # Discussion integration
-/distortion-analysis your-ec-repo checkout-flow --discussion 42
+/current-distortion your-ec-repo checkout-flow --discussion 42
 ```
 
 When Phase is omitted, it runs as all-in-one (All). Step-by-step execution requires explicit Phase specification.
@@ -488,7 +488,7 @@ reports/distortion-report-backend-order-delivery-2026-03-13.md
 When a Discussion number is specified, a report summary is automatically posted to the GitHub Discussion upon completion.
 
 ```
-/distortion-analysis your-ec-repo checkout-flow --discussion 42
+/current-distortion your-ec-repo checkout-flow --discussion 42
 ```
 
 Post content:
@@ -520,21 +520,21 @@ When distortion analysis covers multiple repositories, risks that span repositor
 
 | Skill | Relationship |
 |-------|-------------|
-| `/legacy-analyze` | Discovers risks during change-theme investigation -> `/distortion-analysis` organizes systematically |
-| `/investigate` | Individual code investigation -> `/distortion-analysis` Phase 1 for distortion-focused investigation |
-| `/impact-analysis` | Change impact analysis -> Part B remediation priority judgment benefits from this |
+| `/current-legacy` | Discovers risks during change-theme investigation -> `/current-distortion` organizes systematically |
+| `/current-spec` | Individual code investigation -> `/current-distortion` Phase 1 for distortion-focused investigation |
+| `/change-impact` | Change impact analysis -> Part B remediation priority judgment benefits from this |
 
 ### Skill Chain Examples
 
 ```
 # From legacy analysis to distortion analysis
-/legacy-analyze Phase 1 order-delivery  ->  /distortion-analysis your-backend-repo order-delivery
+/current-legacy Phase 1 order-delivery  ->  /current-distortion your-backend-repo order-delivery
 
 # From individual investigation to distortion analysis
-/investigate ShoppingCartService  ->  /distortion-analysis your-ec-repo checkout-flow
+/current-spec ShoppingCartService  ->  /current-distortion your-ec-repo checkout-flow
 
 # From distortion analysis to impact analysis
-/distortion-analysis your-backend-repo pricing  ->  /impact-analysis price-pattern-fix
+/current-distortion your-backend-repo pricing  ->  /change-impact price-pattern-fix
 ```
 
 ---
@@ -576,7 +576,7 @@ When distortion analysis covers multiple repositories, risks that span repositor
 
 ### Downstream Skills (Pipeline)
 
-- `/impact-analysis` -- Impact analysis based on Part B remediation priority
+- `/change-impact` -- Impact analysis based on Part B remediation priority
 - Used as handoff material for implementation phase
 
 ### Quality Checklist

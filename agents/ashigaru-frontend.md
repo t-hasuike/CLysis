@@ -4,7 +4,7 @@ description: Frontend implementation specialist. Handles code modification and i
 tools: Read, Edit, Write, Bash, Grep, Glob
 model: sonnet
 skills:
-  - service-spec
+  - current-spec
 memory: project
 ---
 

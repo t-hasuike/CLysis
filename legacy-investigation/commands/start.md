@@ -84,7 +84,7 @@ Based on the user's selection, provide:
 
 **Journey 1: System Onboarding (new to the codebase)**
 ```
-/deep-dive [repo] → /understand [key-feature] → /prd-generate [repo]
+/deep-dive [repo] → /understand [key-feature] → /current-prd [repo]
 ```
 "Start with the big picture, then zoom into key features, then generate specs."
 

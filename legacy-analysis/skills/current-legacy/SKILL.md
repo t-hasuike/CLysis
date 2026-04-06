@@ -174,7 +174,7 @@ Select one specific change theme and trace it through the system. Map fragments 
 
 ### Procedure
 1. User specifies a change theme (e.g., "I want to add a new product category")
-2. Trace impact scope with /impact-analysis
+2. Trace impact scope with /change-impact
 3. Record the following discovered during tracing:
    - Inter-repository connections (API calls, shared DB, shared Enums, etc.)
    - Hidden outputs (email, CSV, batch processing, external API integrations)
