@@ -11,7 +11,7 @@ argument-hint: "[repository-name] [target-area]"
 
 ## Overview
 
-Systematically detect "distortions" (validation gaps, implicit dependencies, type comparison traps, etc.) lurking in legacy code and organize findings from three perspectives (business process-driven, root cause-driven, and mermaid overview). This skill produces structured, actionable reports.
+Systematically detect "distortions" (validation gaps, implicit dependencies, type comparison traps, race conditions, etc.) lurking in legacy code and organize findings from three perspectives (business process-driven, root cause-driven, and remediation-impact-driven). This skill produces structured, actionable reports with risk classification via a 2-axis framework: **5 Root Cause Axes (A-E)** and **6 Symptom Patterns (DR1-DR6)**.
 
 **Design Philosophy**: "Detect risks" then "Organize from 3 perspectives" (output-centric 2-Phase design). Distortion investigation does not produce standalone artifacts; instead, risks are naturally embedded within the Part A/B/C output.
 
@@ -22,8 +22,9 @@ See `config/terminology.md` for term customization.
 ### Target
 - Real-world problems existing in codebase across multiple repositories
 - Cross-repository problems spanning service boundaries (P7-P11)
-- Language/framework-specific structural distortions (P1-P6)
-- Data context loss during data transitions (P11)
+- Structural and logical distortions affecting data integrity, control flow, and system boundaries
+- Root causes spanning validation gaps (A), type/value mismatches (B), logic gaps (C), architectural flaws (D), and security issues (E)
+- All 6 symptom patterns (DR1-DR6): data corruption, crashes, missing checks, inconsistencies, data loss, cross-system divergence
 
 ### Out of Scope
 - Hypothetical/generic anti-patterns (comprehensive SOLID violations, etc.)
@@ -132,41 +133,59 @@ Launch 6 workers in parallel.
 
 | Worker | Agent Type | Assignment | Investigation Content | Pattern Coverage |
 |--------|-----------|------------|----------------------|-----------------|
-| Worker A | investigator | Integrate existing investigation results | Extract and integrate known risks from past reports in reports/ | All patterns |
-| Worker B | investigator | Flag consistency check gaps | Implicit dependencies on shared flags, missing soft-delete flag / JOIN conditions | P1, P4, P11 |
-| Worker C | investigator | Cross-table consistency | Missing foreign key constraints, data inconsistency between tables | P2, P5, P11 |
-| Worker D | investigator | Constant definition vs DB value drift | Mismatch between Enum/constant definitions and DB stored values, hardcoding | P2, P3 |
-| Worker E | investigator | Incomplete conditional branching | Language-specific type comparison traps, insufficient branching, validation gaps | P3, P6 |
-| Worker E2 | investigator | Concurrency, asynchronous, and external dependencies | Lack of idempotency, unreplayable transitions, async boundary gaps, single points of failure | P7, P8, P9, P10 |
+| Worker A | investigator | Integrate existing investigation results | Extract and merge known risks from past reports in reports/; deduplicate; preserve source tracking | All patterns |
+| Worker B | investigator | Flag consistency & soft-delete gaps | Implicit shared-flag dependencies, missing logical deletion filters, JOIN condition validation | P1, P4, P11 |
+| Worker C | investigator | Cross-table consistency & conversions | Foreign key constraints, data transformation gaps, format/type divergence between tables | P2, P5, P11 |
+| Worker D | investigator | Constant/Enum definition drift | Mismatch between code constant defs and DB values; hardcoded values; multi-repo divergence | P2, P3 |
+| Worker E | investigator | Type comparison & branching gaps | Type coercion pitfalls, insufficient case handling, missing else/default branches, validation omissions | P3, P6 |
+| Worker E2 | investigator | Concurrency, async, external deps | Idempotency gaps, unreplayable transitions, async state sync issues, external service SPoFs | P7, P8, P9, P10 |
 
-### 11 Problem Patterns (P1-P11)
+### Detection Framework: Problem Patterns (P1-P11)
 
-Each worker uses these as detection criteria:
+Each worker uses these 11 problem patterns as detection criteria:
 
 | ID | Pattern Name | Description | Detection Focus |
 |----|-------------|-------------|----------------|
-| P1 | Implicit shared flag dependency | Multiple processes reference the same flag with different assumptions | Cross-search references to columns/variables containing `flag`. Record "whose/what" flag using Subject-First Rule |
-| P2 | Constant/Enum mismatch | Mismatch between code constant definitions and DB stored values, or between multiple repositories | Compare Enum definitions, `const` declarations, and DB initial data |
-| P3 | Type comparison traps | Language-specific loose comparison pitfalls (e.g., PHP `==` vs `===`, missing strict mode in array search) | Loose comparisons, missing strict parameters, switch statement type matching |
-| P4 | Soft-delete/JOIN condition gaps | Missing logical deletion conditions (e.g., soft-delete flags) or JOIN conditions | Search SQL queries, ORM scopes, raw queries |
-| P5 | Implicit value conversion | Unintended type/value conversions affecting processing results | Track casts, type conversion functions, date/time parsing |
-| P6 | Insufficient branching | Unhandled cases, if-else without else, switch without default | Branch coverage verification, missing error handling |
-| P7 | Non-idempotent concurrent operations | Concurrent operations on same resource lack idempotency; data inconsistency on collision | Database/file mutations without idempotency guarantees; high request concurrency without locking |
-| P8 | Unreplayable state transitions | Processing failure mid-way cannot safely retry due to irreversible side effects | External API calls with DB update after; SFTP sends then DB updates; message bus publishes before persistence |
-| P9 | Async boundary gaps | Integrity between synchronous and asynchronous processing not guaranteed | Order confirmation (sync) -> fulfillment dispatch (async); status update flags stuck in intermediate states |
-| P10 | External dependency single points of failure | External service dependencies lack redundancy, timeout design, or recovery paths | SQS message loss on processing failure; no retry limit on service failures; no fallback paths |
-| P11 | Data context loss | Data loses intent/metadata as it passes through transformation programs | SQL identity binding loss when written by external process; session-dependent context not persisted; type/meaning divergence across service boundaries |
+| P1 | Implicit shared flag dependency | Multiple processes reference the same flag column/variable with different assumptions | Cross-search references to flag columns/variables. Record "whose/what" flag using Subject-First Rule |
+| P2 | Constant/Enum mismatch | Code constant definitions diverge from DB stored values or differ across repositories | Compare Enum/const declarations with DB initial data and schema; cross-repo comparisons |
+| P3 | Type comparison traps | Language-specific loose comparison pitfalls (PHP `==` vs `===`, missing strict flags in searches) | Loose equality operators, missing strict parameters, switch-case type coercion |
+| P4 | Soft-delete/JOIN condition gaps | Missing logical deletion filters (e.g., soft-delete flags) or incomplete JOIN conditions | SQL queries, ORM scopes, raw queries; search for deleted-record filters |
+| P5 | Implicit value conversion | Unintended type/value conversions during processing affect correctness | Casts, type conversion functions, date/time parsing, encoding/decoding |
+| P6 | Insufficient branching | Missing cases, if-else without else, switch without default, unhandled exceptions | Branch coverage analysis, explicit error handling validation |
+| P7 | Non-idempotent concurrent operations | Concurrent mutations on same resource lack idempotency; collisions cause data inconsistency | Database/file mutation without idempotency guarantees; concurrent request handling without locks |
+| P8 | Unreplayable state transitions | Mid-way processing failure cannot safely retry due to irreversible side effects | External API calls followed by DB updates; SFTP sends before DB updates; message publishing before persistence |
+| P9 | Async boundary gaps | Integrity between sync and async processing not guaranteed; state stuck in intermediate states | Sync request completes before async worker starts; flag updates delayed or not propagated |
+| P10 | External dependency single points of failure | External service dependencies lack redundancy, timeouts, or recovery; messages can be lost | No retry limits, no fallback paths, message loss on service unavailability |
+| P11 | Data context loss | Data loses intent/metadata as it transforms through integration points | Identity/reference loss when external process writes; session context not persisted; type/semantic divergence across boundaries |
 
-### 6 Distortion Patterns (A-F)
+### Classification Framework: 2-Axis Risk Model
 
-| ID | Pattern Name | Description | Typical Example |
-|----|-------------|-------------|----------------|
-| A | Invalid value passes through | Due to insufficient validation, values that should be rejected flow to downstream processing | Expired items included in cart checkout |
-| B | Stops midway | Some processing succeeds but downstream processing fails or becomes inconsistent | Order confirms but routing to fulfillment errors |
-| C | No check exists | Required validation logic does not exist at all | No expiration check at payment time |
-| D | Design flaw | Structural design issues (responsibility separation failures, circular dependencies, inappropriate architecture) | Session-dependent pricing design; multiple competing Enum systems in parallel |
-| E | Security defect | Missing authentication, authorization, or input validation | session_regenerate_id not implemented; BFF auth check missing |
-| F | Integrity mismatch | Value, type, or semantic mismatches across multiple systems (cross-system inconsistency) | ProductType int vs string across repos; PrintingCompanyTypes values reversed between systems |
+Risk classification uses **two orthogonal axes**: Root Cause (A-E) and Symptom Pattern (DR1-DR6).
+
+#### Root Cause Axes (A-E)
+
+**Classification Priority**: E → D → C → B → A (evaluate in this order; highest-ranked root cause is primary)
+
+| ID | Root Cause | Description | Scope |
+|----|-----------|-------------|-------|
+| E | Security & Robustness defects | Missing authentication, authorization, input validation; insufficient error handling | Authentication gaps, injection vulnerabilities, unhandled exceptions |
+| D | Architecture & Design flaws | Structural issues: responsibility separation failures, circular dependencies, inappropriate layering, session-dependent designs | Design patterns, system boundaries, component coupling |
+| C | Algorithmic/Logic gaps | Incomplete branching, missing cases, unhandled edge cases; conditions without corresponding handlers | if-else without else, switch without default, null checks, case coverage |
+| B | Value/Type conversion defects | Type mismatches, implicit conversions, encoding/format divergence, constant-definition drift | Type coercion, casting, data representation mismatches |
+| A | Validation bypass | Insufficient validation allowing invalid data to pass downstream | Input validation, state preconditions, boundary checks |
+
+#### Symptom Patterns (DR1-DR6)
+
+Describes **how the risk manifests** in the system:
+
+| ID | Symptom | Description | Typical Manifestation |
+|----|---------|-------------|----------------------|
+| DR1 | Invalid data passes | Invalid/expired values flow to downstream processing without rejection | Expired items in cart, out-of-range values in computations |
+| DR2 | Stops/crashes midway | Processing succeeds initially, then fails downstream or crashes unexpectedly | Order created but fulfillment dispatch errors; NullPointerException in payment |
+| DR3 | Check missing entirely | Required validation step does not exist in code | No expiration check at all, missing authorization check |
+| DR4 | Inconsistent behavior | Same operation produces different results in different contexts or systems | Pricing differs between frontend validation and backend logic |
+| DR5 | Silent data loss | Data modified, lost, or corrupted without explicit error | Concurrent updates overwrite each other; async transitions skip states |
+| DR6 | Cross-system divergence | Data representation or meaning differs across service boundaries or repositories | ProductType stored as int in one service, string in another |
 
 ### Subject-First Rule
 
@@ -216,11 +235,13 @@ Map all risks to business processes (e.g., PR1-PR5 or your project's process def
 
 ### Part B: Root Cause-driven
 
-Classify all risks by problem pattern (P1-P11) and map to distortion patterns (A-F).
+Classify all risks by problem pattern (P1-P11) and map to root cause axes (A-E) and symptom patterns (DR1-DR6).
 
-**Part B Responsibility**: Describe state and severity (why it happens + how critical). Delegate remediation approach to Part C.
+**Part B Responsibility**: Describe state and severity (why it happens + how critical). Explain root cause chain (which axis is primary + which problem pattern). Delegate remediation specifics to Part C.
 
-- Analyze root causes for each pattern
+- Analyze root causes for each pattern (P1-P11)
+- Map to root cause axes (A-E) using priority order: E → D → C → B → A
+- Map to symptom patterns (DR1-DR6)
 - Present remediation approach and effort estimate
 - **Remediation Priority Table** (the core of Part B): List remediation targets, resolved risks, and ROI
 
@@ -274,21 +295,22 @@ reports/distortion-report-backend-order-delivery-2026-03-13.md
 
 ### Summary Table
 
-| ID | Distortion Name | Severity | Distortion Pattern | Problem Pattern | Primary File |
-|----|----------------|:--------:|:-----------------:|:--------------:|-------------|
-| XX-01 | [name] | High/Med/Low | A/B/C | P1-P6 | `[file path]` |
+| ID | Risk Name | Severity | Symptom Pattern | Root Cause | Problem Pattern | Primary File |
+|----|-----------|:--------:|:---------------:|:----------:|:---------------:|-------------|
+| XX-01 | [name] | High/Med/Low | DR1-DR6 | A-E | P1-P11 | `[file path]` |
 
-### Detail for Each Distortion
+### Detail for Each Risk
 
-#### XX-01: [Distortion Name]
+#### XX-01: [Risk Name]
 
 - **Severity**: High/Medium/Low
-- **Distortion Pattern**: A (Invalid value passes) / B (Stops midway) / C (No check) / D (Design flaw) / E (Security defect) / F (Integrity mismatch)
-- **Problem Pattern**: P1-P11
+- **Symptom Pattern**: DR1 (Invalid data passes) / DR2 (Stops midway) / DR3 (Check missing) / DR4 (Inconsistent behavior) / DR5 (Silent data loss) / DR6 (Cross-system divergence)
+- **Root Cause Axis**: A (Validation bypass) / B (Value/Type conversion) / C (Logic/Branching gaps) / D (Architecture/Design) / E (Security & Robustness)
+- **Problem Pattern(s)**: P1-P11
 - **Repository**: [repository-name]
-- **Summary**: [Description with explicit subject - "whose/what"]
-- **Passes Through**: [Processing flow that incorrectly succeeds]
-- **Fails At**: [Processing that fails or lacks verification]
+- **Summary**: [Description with explicit "whose/what" subject]
+- **How It Occurs**: [Conditions and processing flow that trigger the risk]
+- **Where It Fails**: [Point of failure or missing validation]
 - **File Paths**:
   - `[file path]` line N: [code description]
 - **Affected Business Processes**: PR1-PR5
@@ -329,7 +351,7 @@ reports/distortion-report-backend-order-delivery-2026-03-13.md
 ### Overview
 (Same risk count as Part A. Only the perspective differs)
 
-### Risk Count by Pattern
+### Risk Count by Problem Pattern
 
 | Pattern | Description | High | Med | Low | Total |
 |---------|------------|:----:|:---:|:---:|:-----:|
@@ -346,12 +368,38 @@ reports/distortion-report-backend-order-delivery-2026-03-13.md
 | P11 | Data context loss | ... | ... | ... | ... |
 | **Total** | | **X** | **Y** | **Z** | **N** |
 
+### Risk Count by Root Cause Axis
+
+| Axis | Description | High | Med | Low | Total |
+|------|------------|:----:|:---:|:---:|:-----:|
+| E | Security & Robustness defects | ... | ... | ... | ... |
+| D | Architecture & Design flaws | ... | ... | ... | ... |
+| C | Logic/Branching gaps | ... | ... | ... | ... |
+| B | Value/Type conversion defects | ... | ... | ... | ... |
+| A | Validation bypass | ... | ... | ... | ... |
+| **Total** | | **X** | **Y** | **Z** | **N** |
+
+### Risk Count by Symptom Pattern
+
+| Pattern | Description | High | Med | Low | Total |
+|---------|------------|:----:|:---:|:---:|:-----:|
+| DR1 | Invalid data passes | ... | ... | ... | ... |
+| DR2 | Stops/crashes midway | ... | ... | ... | ... |
+| DR3 | Check missing entirely | ... | ... | ... | ... |
+| DR4 | Inconsistent behavior | ... | ... | ... | ... |
+| DR5 | Silent data loss | ... | ... | ... | ... |
+| DR6 | Cross-system divergence | ... | ... | ... | ... |
+| **Total** | | **X** | **Y** | **Z** | **N** |
+
 ### Pattern Details & Remediation Approach
 
 #### P1: Implicit Shared Flag Dependency
-**Root Cause**: [analysis]
+**Root Cause(s)**: [analysis of which axes A-E are involved]
+**Symptom Pattern(s)**: [which DR1-DR6 patterns manifest]
 **Affected Risks**:
-- **[XX-01]** [distortion name] [severity]
+- **[XX-01]** [risk name] [severity]
+  - Root Cause Axis: [A-E]
+  - Symptom Pattern: [DR1-DR6]
   - Repository: [repository-name]
   - File Path: `[file path:line number]`
 
@@ -373,9 +421,9 @@ reports/distortion-report-backend-order-delivery-2026-03-13.md
 
 ### Remediation Class Mapping
 
-| Remediation ID | Remediation Description | Remediation Class | Resolved Risks | Side Effects | Ordering Constraints |
+| Remediation ID | Description | Class | Resolved Risks | Side Effects | Constraints |
 |:------:|---------|:--------:|-----------|--------|---------|
-| FIX-01 | [description] | Quick Fix / Planned Fix / Arch Fix / Deferred | XX-01 (High) | None / [Impact Target] | None / After FIX-XX |
+| FIX-01 | [description] | Quick / Planned / Architecture / Deferred | XX-01 (High) | None / [Impact System] | None / After FIX-XX |
 
 ### Remediation Priority Matrix
 
@@ -389,20 +437,21 @@ reports/distortion-report-backend-order-delivery-2026-03-13.md
 
 ## Visualization (Supplementing Part A/B/C)
 
-### 1. Processing Flow Diagram (Distortion Occurrence Point Mapping)
+### 1. Processing Flow Diagram (Risk Occurrence Point Mapping)
 
-[Draw target area processing flow in mermaid flowchart. Color-code distortion points]
+[Draw target area processing flow in mermaid flowchart. Color-code risk occurrence points by severity]
 - High severity: Red (fill:#e74c3c)
 - Medium severity: Orange (fill:#f39c12)
 - Low severity: Gray (fill:#95a5a6)
 
-### 2. Root Cause -> Distortion -> Symptom Causality Diagram
+### 2. Root Cause → Problem Pattern → Symptom Causality Diagram
 
-[Draw causality from root causes through distortions to user-experienced symptoms in mermaid flowchart]
+[Draw multi-level causality diagram in mermaid flowchart]
+- Root Cause Axes (A-E) → Problem Patterns (P1-P11) → Symptom Patterns (DR1-DR6) → User Impact
 
 ### 3. Remediation Impact Diagram (Fix Points and Resolved Risks)
 
-[Draw relationship between each fix and directly/indirectly resolved risks in mermaid flowchart]
+[Draw relationship between each fix and directly/indirectly resolved risks in mermaid flowchart. Show dependencies between fixes]
 
 ---
 
@@ -533,14 +582,15 @@ When distortion analysis covers multiple repositories, risks that span repositor
 ### Quality Checklist
 
 - [ ] All risks include file path:line number
-- [ ] All risks have distortion pattern (A-F) and problem pattern (P1-P11) assigned
+- [ ] All risks have symptom pattern (DR1-DR6), root cause axis (A-E), and problem pattern (P1-P11) assigned
+- [ ] Root cause axis classification follows priority: E → D → C → B → A
 - [ ] Flag/variable descriptions explicitly state "whose/what" (Subject-First Rule)
 - [ ] Part A: All risks mapped to business processes
-- [ ] Part B: Remediation priority table created (with ROI)
-- [ ] Part C: Remediation class mapping, priority matrix, and ordering constraints included
-- [ ] Visualization: 3 mermaid diagrams included (flow, causality, remediation impact)
+- [ ] Part B: Root cause analyses completed for each pattern; remediation priority table with ROI created
+- [ ] Part C: Remediation class mapping, priority matrix, ordering constraints, and side effect analysis included
+- [ ] Visualization: 3 mermaid diagrams included (processing flow, causality chain, remediation impact)
 - [ ] Risk counts match across Part A/B/C (same risk set, different perspectives)
+- [ ] P7-P10 risks (concurrency, async, external dependencies) explicitly identified with root cause mapping
 - [ ] Remaining investigation items and next actions documented
 - [ ] Findings verified against actual code (no hallucinations)
-- [ ] P7-P10 risks (cross-repository, concurrency, async, external dependencies) explicitly identified
-- [ ] Part C "WHAT TO DO" view is decision-maker-oriented (not just state description)
+- [ ] Part C "WHAT TO DO" view is decision-maker-oriented with clear remediation effort/impact tradeoffs
