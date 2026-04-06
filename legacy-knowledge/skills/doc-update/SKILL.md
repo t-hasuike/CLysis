@@ -15,7 +15,7 @@ Update existing knowledge documents to match the needs of a specific audience. M
 
 ## When to Use
 
-- After `/prd-generate` produces new findings that need to be integrated
+- After `/current-prd` produces new findings that need to be integrated
 - When onboarding a new team member (generate audience-appropriate docs)
 - Periodic document freshness checks
 - When code changes make existing documentation outdated

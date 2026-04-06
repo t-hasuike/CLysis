@@ -32,7 +32,7 @@ Collect facts that can be extracted without human input:
 4. **Database**: schema files, migration history, table/column inventory
 5. **Directory Structure**: top-level organization, naming patterns
 
-Output: `reports/prd-generate-{repo}-phase1.md`
+Output: `reports/current-prd-{repo}-phase1.md`
 
 ### Phase 2: Module Analysis (Deep Dive)
 
@@ -45,7 +45,7 @@ For each significant module/service discovered in Phase 1:
 5. **Business rules**: conditional logic, flag-based branching, calculation formulas
 6. **Cross-repository dependencies**: shared DB tables, API calls between repos
 
-Output: `reports/prd-generate-{repo}-phase2.md`
+Output: `reports/current-prd-{repo}-phase2.md`
 
 ### Phase 3: Structured Output (PRD Assembly)
 
@@ -59,7 +59,7 @@ Assemble findings into PRD format, mapped to the project's knowledge structure:
 6. **Batch Process Specification**: schedule, input/output, dependencies
 7. **Cross-Repository Dependency Map**: which repos read/write shared resources
 
-Output: `reports/prd-generate-{repo}-final.md`
+Output: `reports/current-prd-{repo}-final.md`
 
 ## Scope Control
 
@@ -71,7 +71,7 @@ To manage token consumption on large codebases, scope can be limited:
 ## Output Rules
 
 - Output to `reports/` only. Never overwrite `knowledge/` directly
-- Human reviews output, then uses `/archive-reports` to promote to `knowledge/`
+- Human reviews output, then uses `/doc-organize` to promote to `knowledge/`
 - State observations only. No modification proposals (state assessment phase rule)
 - Subject-first rule: always specify "whose/what's" for domain terms
 
@@ -81,8 +81,8 @@ To manage token consumption on large codebases, scope can be limited:
 |---------------|-------------|
 | /current-spec | Point investigation and detailed specification. current-prd is the surface-level counterpart |
 | /current-prd | Promotes bulk findings. current-spec promotes individual findings |
-| /archive-reports | Transfers prd-generate output from reports/ to knowledge/ |
-| /legacy-analyze | Phase 0 auto-collection overlaps. prd-generate extends with Module Analysis |
+| /doc-organize | Transfers current-prd output from reports/ to knowledge/ |
+| /current-legacy | Phase 0 auto-collection overlaps. current-prd extends with Module Analysis |
 
 ## I/O Specification
 
@@ -95,13 +95,13 @@ To manage token consumption on large codebases, scope can be limited:
 ### OUTPUT
 | Type | Format | Destination |
 |------|--------|-------------|
-| Phase 1 report | Markdown (tech stack, endpoints, DB tables) | `reports/prd-generate-{repo}-phase1.md` |
-| Phase 2 report | Markdown (module analysis, dependencies) | `reports/prd-generate-{repo}-phase2.md` |
-| Final PRD | Markdown (assembled PRD with knowledge/ mapping) | `reports/prd-generate-{repo}-final.md` |
+| Phase 1 report | Markdown (tech stack, endpoints, DB tables) | `reports/current-prd-{repo}-phase1.md` |
+| Phase 2 report | Markdown (module analysis, dependencies) | `reports/current-prd-{repo}-phase2.md` |
+| Final PRD | Markdown (assembled PRD with knowledge/ mapping) | `reports/current-prd-{repo}-final.md` |
 
 ### Post-processing
 - Human reviews final PRD
-- `/archive-reports` promotes relevant sections to `knowledge/`
+- `/doc-organize` promotes relevant sections to `knowledge/`
 - `/doc-update` adjusts depth for target audience
 
 ## Quality Checklist

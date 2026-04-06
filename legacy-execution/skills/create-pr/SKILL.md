@@ -26,7 +26,7 @@ This two-phase structure ensures human judgment gates all code modifications.
 ## Usage
 
 ```
-/create-pr --plan <impact-analysis-report> [Phase]    # Generate change proposal
+/create-pr --plan <change-impact-report> [Phase]    # Generate change proposal
 /create-pr --exec <change-proposal> [repo] [branch]   # Create PR from approved proposal
 /create-pr <change-proposal> [repo] [branch]           # Legacy: --exec only (backward compatible)
 ```

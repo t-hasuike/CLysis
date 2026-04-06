@@ -3,9 +3,11 @@
 Skills for analyzing and planning legacy system modernization.
 
 ## Skills
-- **impact-analysis** -- Systematic impact scope analysis
-- **legacy-analyze** -- System overview diagrams, DFD, I/O diagrams
-- **distortion-analysis** -- Code distortion detection, Part A/B/C framework
+- **change-impact** -- Systematic impact scope analysis with dual-axis criteria
+- **current-legacy** -- Incremental legacy code understanding through 3 evolving maps
+- **current-distortion** -- Code distortion detection with 2-axis framework (Root Cause A-E × Symptom DR1-DR6)
 
 ## Commands
-- `/deep-dive` -- In-depth system-wide analysis
+- `/change-impact` -- Impact scope analysis
+- `/current-legacy` -- Legacy system understanding and visualization
+- `/current-distortion` -- Code distortion pattern detection

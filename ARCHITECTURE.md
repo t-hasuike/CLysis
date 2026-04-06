@@ -44,7 +44,7 @@ legacy-execution/         # Phase 3: Execution & Review
 
 legacy-knowledge/         # Knowledge Management
 ├── .claude-plugin/
-├── skills/               # archive-reports, current-prd, doc-update
+├── skills/               # doc-organize, current-prd, doc-update
 ├── prompts/              # Domain knowledge templates
 └── examples/
 ```
@@ -487,7 +487,7 @@ Use business Japanese for all reports.
 
 ## Distortion Analysis Framework
 
-The Distortion Analysis Framework provides a systematic approach to detecting and organizing code-level risks ("distortions") in legacy systems. It is implemented as the `/distortion-analysis` skill in the `legacy-analysis` plugin.
+The Distortion Analysis Framework provides a systematic approach to detecting and organizing code-level risks ("distortions") in legacy systems. It is implemented as the `/current-distortion` skill in the `legacy-analysis` plugin.
 
 ### Part A/B/C Framework
 

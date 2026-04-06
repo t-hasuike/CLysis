@@ -5,8 +5,7 @@ tools: Read, Grep, Glob, Bash, Write
 disallowedTools: Edit
 model: sonnet
 skills:
-  - investigate
-  - service-spec
+  - current-spec
 memory: project
 ---
 

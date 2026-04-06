@@ -3,7 +3,7 @@
 > AI-powered framework for understanding, analyzing, and modernizing legacy systems.
 
 Systematic support for investigation, analysis, and modernization of legacy systems using AI agent teams.
-10 domain-specific skills and 7 workflow commands across 4 plugins.
+11 domain-specific skills and 7 workflow commands across 4 plugins.
 
 ## Repository Structure
 
@@ -14,22 +14,22 @@ CLysis/
 ├── assessment/                # Quality evaluation criteria & maturity model
 ├── config/                    # Terminology customization
 ├── docs/                      # Templates, workflow examples, migration guide
-├── legacy-analysis/           # Plugin: impact-analysis, legacy-analyze, distortion-analysis
+├── legacy-analysis/           # Plugin: change-impact, current-legacy, current-distortion
 │   ├── .claude-plugin/
 │   ├── commands/
 │   ├── examples/
 │   └── skills/
-├── legacy-execution/          # Plugin: code-review, create-pr
+├── legacy-execution/          # Plugin: create-pr, review-code
 │   ├── .claude-plugin/
 │   ├── commands/
 │   ├── examples/
 │   └── skills/
-├── legacy-investigation/      # Plugin: investigate, project-guide, service-spec
+├── legacy-investigation/      # Plugin: project-guide, current-spec
 │   ├── .claude-plugin/
 │   ├── commands/
 │   ├── examples/
 │   └── skills/
-├── legacy-knowledge/          # Plugin: build-knowledge, archive-reports, templates
+├── legacy-knowledge/          # Plugin: doc-organize, current-prd, doc-update, templates
 │   ├── .claude-plugin/
 │   ├── examples/
 │   ├── prompts/
@@ -47,7 +47,7 @@ CLysis/
 | [legacy-investigation](./legacy-investigation/) | 2 | 4 | Investigation & understanding (project-guide, current-spec) |
 | [legacy-analysis](./legacy-analysis/) | 3 | 1 | Analysis & planning (change-impact, current-legacy, current-distortion) |
 | [legacy-execution](./legacy-execution/) | 2 | 2 | Execution & review (create-pr, review-code) |
-| [legacy-knowledge](./legacy-knowledge/) | 3 | 0 | Knowledge accumulation (archive-reports, current-prd, doc-update) |
+| [legacy-knowledge](./legacy-knowledge/) | 4 | 0 | Knowledge accumulation (doc-organize, current-prd, doc-update, templates) |
 
 ## Prerequisites
 
@@ -128,7 +128,7 @@ cp -r legacy-investigation/commands/* /path/to/your/project/.claude/commands/
 | **legacy-investigation** | project-guide, current-spec | Code exploration, service specification, documentation reference |
 | **legacy-analysis** | change-impact, current-legacy, current-distortion | Impact analysis, system overview, code quality patterns |
 | **legacy-execution** | create-pr, review-code | Change proposals and PR creation (--plan/--exec), automated code review |
-| **legacy-knowledge** | archive-reports, current-prd, doc-update | Knowledge extraction, PRD generation, document updates |
+| **legacy-knowledge** | doc-organize, current-prd, doc-update, templates | Knowledge extraction, PRD generation, document updates |
 
 ### Skill Chain Patterns
 
@@ -182,7 +182,7 @@ Build comprehensive domain knowledge:
 2. Use the execution skills to propose and review changes:
 
 ```bash
-/create-pr --plan [impact-analysis-report]
+/create-pr --plan [change-impact-report]
 /create-pr --exec [change-proposal]
 /review-code [PR number]
 ```
@@ -242,7 +242,7 @@ claude plugin install legacy-investigation@CLysis legacy-analysis@CLysis legacy-
 | `/current-distortion` | legacy-analysis | Detect code distortion patterns and organize in Part A/B/C framework |
 | `/create-pr` | legacy-execution | Generate code diffs (--plan) and create PR (--exec) from approved proposals |
 | `/review-code` | legacy-execution | PR review with code quality and domain knowledge validation |
-| `/archive-reports` | legacy-knowledge | Archive investigation outputs for knowledge reuse |
+| `/doc-organize` | legacy-knowledge | Archive investigation outputs for knowledge reuse |
 | `/current-prd` | legacy-knowledge | Reverse-engineer PRD from existing codebase (Phase 1-3 workflow) |
 | `/doc-update` | legacy-knowledge | Update knowledge documents for target audience (developer, PM, onboarding) |
 
