@@ -393,6 +393,16 @@ This record enables objective evaluation of leader autonomy in retrospectives. W
 3. Shogun reports results to User
 4. User approves or requests revision
 
+**Pattern A-extended: Plan-then-Audit chain (mandatory for fact-critical plans)**
+When Karo returns a plan containing fact-sensitive content (file lists, counts, impact scope, ID mappings, rename targets), Shogun MUST immediately activate Metsuke for independent verification before presenting to User. This is NOT optional — Karo plans may contain hallucinated file paths or miscounted references that only a second-pass grep-based audit will catch. Sequence:
+1. Karo returns plan
+2. Shogun autonomously activates Metsuke in the same response (D-I Rule)
+3. Metsuke re-scans referenced files independently (no reliance on Karo's claims)
+4. If Metsuke finds discrepancies, Shogun requests Karo revision before User presentation
+5. Only after Metsuke approves does the plan reach User
+
+This pattern emerged from recurring Karo fact-check failures (missed references, wrong category counts, incorrect file classifications). Metsuke's independent grep of the same scope reliably catches these.
+
 **Pattern B: Value Tradeoff (Escalated Decision)**
 1. Shogun autonomously analyzes and consults Karo
 2. Shogun presents 2 options with criteria + impact to User

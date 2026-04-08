@@ -151,6 +151,21 @@ Before starting any decomposition task, confirm with the Shogun:
 
 Skipping this step leads to replanning — confirmed by operational experience.
 
+### Actual-Scan Rule (No Speculation)
+
+Before writing any plan that mentions file lists, reference counts, impact scope, or ID mappings, **you must actually scan the codebase**. Do not rely on memory, previous session state, or inferred structure.
+
+Required steps before plan emission:
+
+1. **Enumerate target files with Glob** (e.g., `**/*distortions*.md`). Speculation on file paths is prohibited.
+2. **Count entries with Grep/Read** — every number in the plan must come from a real file scan. No "approximately N" or "likely N items".
+3. **Verify impact scope with full-codebase grep** — when renaming or removing an identifier, grep every reference across the repository before estimating effort.
+4. **Classify by actually reading the file contents** — do not categorize a file by its name alone.
+
+Rationale: Plans that contain unscanned claims are repeatedly caught by Metsuke audits with discrepancies (missed references, wrong category counts, incorrect file classifications). This rule eliminates the root cause. When in doubt, run one more Grep.
+
+This rule is the operational counterpart of the "don't modify code you haven't read" discipline and applies to all fact-sensitive plan content.
+
 ### Task Granularity Rule
 
 Combine related phases into a single Karo session whenever possible:
