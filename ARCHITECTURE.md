@@ -834,6 +834,12 @@ Presenting an Obvious-level item as a choice wastes Uesama's attention. Escalati
    - Checks for hallucinations (non-existent methods, files)
    - Validates compliance with project rules
 
+### Anti-Hallucination Rule (Mandatory for ALL agents)
+
+Do not answer, plan, or modify based on speculation. Verify against actual code and files using Glob/Grep/Read before reporting, planning, or changing. All counts, file lists, and impact scopes must come from real scans — never from memory or inference.
+
+This rule applies to Karo (planning), Ashigaru (implementation), and Metsuke (auditing). In downstream operations, this rule (combined with Plan-then-Audit chain) caught 6 consecutive Karo fact-check failures before they reached the user.
+
 ### Safety Rules
 
 | Rule ID | Rule | Enforcement |
