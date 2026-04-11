@@ -93,6 +93,10 @@ Metsuke must save audit results to files, not just stdout. This applies the same
 
 **Rationale**: Audit results sent only to stdout are lost when the session ends. This violates the same F007 principle that metsuke enforces on other workers — audit trails must be persistent and traceable for future reference.
 
+**MANDATORY — Save method**: Always use the `Write` tool to save audit reports. **Do NOT use Bash heredoc, `cat >`, or `echo >` commands** — these are frequently denied by permission policies in agent environments. If the Write tool is unavailable, present the full report text in stdout and explicitly request the Shogun to save on your behalf.
+
+> **Violation history**: Metsuke agents repeatedly failed to save audit reports when using Bash-based file writing (permission denied). The Write tool is the only reliable method. This note prevents recurrence.
+
 ### Scope Confirmation at Startup
 
 When receiving an audit request from leader, confirm the following before beginning:
