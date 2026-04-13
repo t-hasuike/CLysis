@@ -23,7 +23,17 @@ Investigate the specification of the specified Service/UseCase/Model and organiz
 3. **Symbol overview retrieval**: Get method list using get_symbols_overview
 4. **Dependency investigation**: Identify callers/callees using find_referencing_symbols
 5. **Detailed reading**: Read only important method bodies using find_symbol
-6. **Diff check**: If the same class exists in multiple repositories, check differences
+6. **Survival check**: Verify the investigation target is still actively used
+
+   | Check Item | Method | Criteria |
+   |------------|--------|----------|
+   | Caller existence | Serena find_referencing_symbols | At least 1 reference must exist. If 0, record as "dead code candidate" |
+   | Last commit date | `git log -1 --format=%ci [file_path]` | If >1 year since last update, record as "low activity". Record fact only — do not propose deletion |
+   | Runtime usage | Check route definitions, cron schedules, queue registrations | May be used at runtime even without static references |
+
+   **Note**: Dead code candidate / low activity judgments are factual records only. Do not propose deletion or refactoring (state-comprehension phase rule).
+
+7. **Diff check**: If the same class exists in multiple repositories, check differences
 
 ## Investigation Target
 
