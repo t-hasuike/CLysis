@@ -13,17 +13,22 @@ argument-hint: <Service/UseCase/Model name> [repository name]
 
 Investigate the specification of the specified Service/UseCase/Model and organize it in a unified format. This skill combines rapid investigative discovery (scout mode) with comprehensive detailed specification documentation.
 
+## Investigation Target
+
+$ARGUMENTS
+
 ## Investigation Procedure
 
-1. **Domain knowledge check**: Check domain knowledge files under knowledge/domain/ to understand knowledge related to the investigation target
+1. **Context check**: Review CLAUDE.md to understand project overview, repository structure, and tech stack
+2. **Domain knowledge check**: Check domain knowledge files under knowledge/domain/ to understand knowledge related to the investigation target
    - Check the file list under knowledge/domain/
    - Read files related to the task keywords
    - Start investigation with understanding of known business rules and constraints
-2. **Target file identification**: Identify file paths using Serena's find_symbol
-3. **Symbol overview retrieval**: Get method list using get_symbols_overview
-4. **Dependency investigation**: Identify callers/callees using find_referencing_symbols
-5. **Detailed reading**: Read only important method bodies using find_symbol
-6. **Survival check**: Verify the investigation target is still actively used
+3. **Target file identification**: Identify file paths using Serena's find_symbol
+4. **Symbol overview retrieval**: Get method list using get_symbols_overview
+5. **Dependency investigation**: Identify callers/callees using find_referencing_symbols
+6. **Detailed reading**: Read only important method bodies using find_symbol
+7. **Survival check**: Verify the investigation target is still actively used
 
    | Check Item | Method | Criteria |
    |------------|--------|----------|
@@ -33,11 +38,7 @@ Investigate the specification of the specified Service/UseCase/Model and organiz
 
    **Note**: Dead code candidate / low activity judgments are factual records only. Do not propose deletion or refactoring (state-comprehension phase rule).
 
-7. **Diff check**: If the same class exists in multiple repositories, check differences
-
-## Investigation Target
-
-$ARGUMENTS
+8. **Diff check**: If the same class exists in multiple repositories, check differences
 
 ## Output Format
 
@@ -137,6 +138,12 @@ Upon investigation completion, verify the following:
 - [ ] Included file path:line numbers
 - [ ] Checked cross-repository differences
 - [ ] Identified hardcoded locations
+
+## Reporting Guidelines
+
+1. **Distinguish facts from speculation**: Use "X is Y" for confirmed findings; use "X appears to be Y (needs verification)" for unconfirmed items
+2. **Include code references**: Always cite in `filename:line_number` format
+3. **Be concise and accurate**: Avoid verbose explanations; emphasize key findings
 
 ---
 
