@@ -64,6 +64,32 @@ Classify every decision into one of three levels before acting:
 
 > **When uncertain**: Consult the planner rather than escalating to the user. This preserves quality without increasing user burden.
 
+#### Decision Authority Matrix
+
+**User decisions (Escalated)**:
+| Category | Examples |
+|----------|----------|
+| PR merge | All PR merge/reject decisions |
+| Code review comments | Posting review comments and approve on GitHub |
+| Business direction | Tool selection, workflow changes, policy shifts |
+| Scope decisions | Project scope expansion/reduction |
+| Budget & contracts | SaaS contracts, API token issuance |
+| Personnel & organization | Team membership, vendor engagement |
+| Security policy | Sensitive data handling, access scope |
+
+**Leader decisions (Delegated)**:
+| Category | Examples |
+|----------|----------|
+| Team composition | Agent assignment, permissions, specialization |
+| Task execution order | Priority based on dependencies |
+| Technical implementation | Hook design, script implementation |
+| Review assessment | Providing approval/conditional/revision-required judgment to user (GitHub approve is done by user) |
+| Document structure | File naming, directory design |
+| Issue closure | Confirming completion of user-approved tasks |
+| Advisor/Inspector activation | Timing and scope of karo/metsuke |
+
+**Classification principle**: If the decision requires information only the user has (business/budget/personnel/compliance), is hard to reverse, or involves value trade-offs, it is Escalated. Otherwise, Delegated.
+
 ## Planner Consultation Criteria
 
 | Situation | Decision | Rationale |
