@@ -86,6 +86,21 @@ Karo determines the PR's characteristics and formulates the plan:
 - Medium: Ashigaru (1-2 workers)
 - Large: Consult CLAUDE.md "Team Composition Judgment Criteria"
 
+#### Karo Plan Output Template (Step 1.5 Deliverable)
+
+Karo must document the following and hand off to Ashigaru:
+
+| Item | Content |
+|------|---------|
+| PR Characteristic Classification | Domain rule change: Yes/No, System structure impact: Yes/No, Known distortion fix: Yes/No |
+| Reference Scope | Baseline references + additional file paths |
+| PR Scale Judgment | Small/Medium/Large + rationale |
+| Metsuke Scope | Lightweight/Standard/Full |
+| Primary Focus Area | Specific concern (e.g., "High risk of missing soft-delete condition") |
+| Fallback Judgment Criteria | Specific criteria for uncertain cases |
+
+**Ashigaru Receipt Check**: Verify that all items above are filled. If any are missing, report to Shogun and request revision.
+
 ### Step 2: Reference Domain Knowledge - Dynamic Scope (Ashigaru)
 
 Based on Karo's Step 1.5 scope determination:
@@ -104,15 +119,25 @@ Based on Karo's Step 1.5 scope determination:
 
 ### Step 3: Code Quality Review (Ashigaru)
 
+Reference: `knowledge/standards/review/base_checklist.md`
+
+**CLAUDE.md Mandatory Rules (must check)**:
+1. Soft-delete check: **Are all queries including the soft-delete condition** (e.g., `is_deleted = false`, `deleted_at IS NULL`) — Violation example: `SELECT * FROM xxx WHERE id=1` (no soft-delete condition)
+2. Type safety: **Is strict mode declared at the top of each source file** (e.g., `declare(strict_types=1)` for PHP)
+3. Cross-repository duplicate code: **Verify with grep whether identical methods exist in other repositories**
+
 **Core Checklist**:
-- [ ] Type safety and type system usage
-- [ ] Strict mode declaration where required
+- [ ] Soft-delete check: soft-delete condition included in all queries
+- [ ] Type safety: strict mode declaration present
+- [ ] Type comparison: strict equality used (no loose comparison traps)
 - [ ] Proper parameter binding (SQL injection prevention)
 - [ ] Output escaping (XSS prevention)
 - [ ] Error handling and exception management
 - [ ] N+1 query prevention (eager loading)
 - [ ] Consistency with existing code patterns
 - [ ] Test coverage for changes
+- [ ] All callers of changed functions: verify with grep that all call sites of modified functions/methods are reviewed and no parallel fix is needed (lesson: a fix in one PR may require the same change in another call site)
+- [ ] Full method read-through: read the entire method containing the change, not just the diff lines, to verify branch consistency
 
 ### Step 4: Business Perspective Review (Ashigaru)
 
@@ -278,6 +303,9 @@ Upon review completion, verify the following:
 - [ ] Was Metsuke audit performed per Step 1.5 scope?
 - [ ] Was knowledge/ impact determination completed?
 - [ ] Was the report saved to `reports/`? (F006 compliance)
+- [ ] Were CLAUDE.md mandatory rules (soft-delete, type safety) verified?
+- [ ] Were all callers of changed functions verified with grep?
+- [ ] Was the Karo plan (Step 1.5) verified to have all items filled?
 
 ---
 
@@ -311,6 +339,7 @@ Upon review completion, verify the following:
 
 ### Quality Checkpoints
 - [ ] Karo approved the review plan (Step 1.5)?
+- [ ] Karo plan (Step 1.5) has all items filled?
 - [ ] Scope of domain knowledge references determined per PR characteristics?
 - [ ] All changed files reviewed?
 - [ ] Code quality + business perspective + test coverage reviewed?
@@ -319,3 +348,5 @@ Upon review completion, verify the following:
 - [ ] Metsuke audit performed per planned scope?
 - [ ] knowledge/ impact determination completed?
 - [ ] Report saved to `reports/`?
+- [ ] CLAUDE.md mandatory rules (soft-delete, type safety) verified?
+- [ ] All callers of changed functions verified with grep?
