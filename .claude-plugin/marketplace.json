@@ -2,7 +2,7 @@
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "CLysis",
   "version": "1.0.0",
-  "description": "AI-powered framework for understanding, analyzing, and modernizing legacy systems. 14 domain-specific skills and 7 chained workflows across 4 plugins — from investigation to analysis, execution, and knowledge management.",
+  "description": "AI-powered framework for understanding, analyzing, and modernizing legacy systems. 13 domain-specific skills and 7 chained workflows across 5 plugins — from investigation to analysis, execution, knowledge management, and process improvement.",
   "owner": {
     "name": "t-hasuike",
     "url": "https://github.com/t-hasuike/CLysis"
@@ -30,6 +30,12 @@
       "name": "legacy-knowledge",
       "description": "Knowledge management skills for legacy systems: converting investigation results into reusable domain knowledge.",
       "source": "./legacy-knowledge",
+      "category": "legacy-systems"
+    },
+    {
+      "name": "legacy-workflow",
+      "description": "Process improvement skills for legacy system teams: KPT retrospectives and skill quality optimization.",
+      "source": "./legacy-workflow",
       "category": "legacy-systems"
     }
   ]

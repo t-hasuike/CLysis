@@ -141,6 +141,16 @@ Task A: Database schema creation (must complete first)
 
 Clearly indicate tasks without dependencies as parallelizable to maximize efficiency.
 
+### 5. Comparison Task Decomposition Constraints (Mandatory)
+
+When tasks involve comparing or diffing across multiple files or repositories, worker instructions MUST include:
+
+- **Full-scan obligation**: Workers must read target files in their entirety before making diff judgments. Judgments based on reading only the beginning of a file are prohibited.
+- **Comparison granularity specification**: Explicitly state whether comparison should be at the section level, line level, or concept level.
+- **Evidence for diff judgments**: Every "present/absent" determination must cite the relevant line numbers or section names as evidence.
+
+**Rationale**: Without these constraints, workers tend to sample only the beginning of files and report incorrect "missing" findings when the content actually exists further down in the file.
+
 ## Pre-Planning Checklist
 
 Before starting any decomposition task, confirm with the Shogun:

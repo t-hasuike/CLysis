@@ -116,6 +116,18 @@ After workers complete their tasks, the leader **must** deploy the inspector (me
 - [ ] Inspector has Write access to `reports/audit/` for saving audit results
 - [ ] Audit results will be persisted to file (not stdout only)
 
+### Inspector Review of Planner Output
+
+When the planner produces plans or analysis, the inspector must evaluate them before the leader acts on them, under the following conditions:
+
+| Condition | Inspector review |
+|-----------|-----------------|
+| Planner's plan will be presented to the user for approval | Required |
+| Planner's analysis will be used as the basis for worker delegation | Required |
+| Minor factual inquiry to the planner | Not required |
+
+**Rationale**: If the planner's decomposition is flawed, all downstream worker tasks will be misdirected. Quality assurance is needed not only for worker deliverables but also at the planning stage.
+
 ## Task List Management (Orchestration)
 
 Upon receiving a mission, declare all sub-tasks with TaskCreate as the **first action**. This externalizes the plan and prevents declaration-without-execution violations.
