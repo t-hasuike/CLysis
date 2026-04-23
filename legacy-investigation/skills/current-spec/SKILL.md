@@ -13,6 +13,20 @@ argument-hint: <Service/UseCase/Model name> [repository name]
 
 Investigate the specification of the specified Service/UseCase/Model and organize it in a unified format. This skill combines rapid investigative discovery (scout mode) with comprehensive detailed specification documentation.
 
+## Roles and Responsibilities
+
+| Role | Responsibility |
+|------|----------------|
+| **Leader** | Select investigation targets, delegate to workers, consolidate reports. Does not read code directly (F002) |
+| **Planner** | Task decomposition and strategy for large-scale investigations |
+| **Worker** | Execute actual code investigation and create specification summaries |
+| **Inspector** | Quality audit of deliverables (hallucination detection, symbol existence verification) |
+
+> **F002**: The leader must not read code directly. All investigation and analysis must be delegated to workers.
+
+### Communication Style
+Use clear, business-appropriate language. Be explicit about what is confirmed vs. uncertain.
+
 ## Investigation Target
 
 $ARGUMENTS
@@ -93,10 +107,9 @@ $ARGUMENTS
 
 ### External Dependencies (other repositories / external services)
 
-| Type | Name | Purpose |
-|------|------|---------|
-| API | xxx | ... |
-| DB | xxx table | ... |
+| Dependency | Type | Operation | Purpose |
+|------------|------|-----------|---------|
+| [Dependency name] | DB / API / S3 / Queue / Email etc. | **Read / Write / Both** | [Purpose] |
 
 ---
 
@@ -123,6 +136,19 @@ $ARGUMENTS
 
 ---
 
+### Cross-Repository Investigation (for features spanning multiple repositories)
+
+When investigating features that do not complete within a single repository, record the following additional items:
+
+| Item | Description |
+|------|-------------|
+| **Source of Truth** | Which repository's implementation is authoritative |
+| **Sync Timing** | Is data synchronization between repositories real-time, batch, or event-driven |
+| **Inconsistency Behavior** | Impact and recovery methods when synchronization is delayed or fails |
+| **Data Flow** | Pathway: Repository A -> API/DB/Kinesis -> Repository B |
+
+---
+
 ## Change History
 
 | Date | Description |
@@ -130,14 +156,26 @@ $ARGUMENTS
 | YYYY-MM-DD | Initial version |
 ```
 
+## Investigation Status Template
+
+When managing multiple investigation targets in parallel, track progress using this template:
+
+| Target | Status | Date | Investigator | Notes |
+|--------|--------|------|-------------|-------|
+| [Class/Feature name] | Done/Pending/In Progress | YYYY-MM-DD | [Worker name] | [Notable findings] |
+
 ## Quality Checks
 
 Upon investigation completion, verify the following:
 
 - [ ] Confirmed with actual code (not assumptions)
+- [ ] Covered all public methods
+- [ ] Documented dependencies (DI)
+- [ ] Extracted business rules and validations
 - [ ] Included file path:line numbers
 - [ ] Checked cross-repository differences
 - [ ] Identified hardcoded locations
+- [ ] (Cross-repo investigation) Documented Source of Truth, sync timing, and inconsistency behavior
 
 ## Reporting Guidelines
 
@@ -158,17 +196,31 @@ Upon investigation completion, verify the following:
 ### OUTPUT
 | Type | Format | Destination |
 |------|--------|-------------|
-| Service specification summary | Detailed Markdown (method list, dependencies, business rules) | stdout (report to leader) |
+| Service specification summary | Detailed Markdown (method list, dependencies, business rules) | reports/ + stdout (report to leader) |
 
 ### Prerequisites
 - Serena MCP is running
 - Target file has been identified (prior investigation with /current-spec recommended)
 
 ### Downstream Skills (Pipeline)
-- `/change-impact` -- Impact analysis with specification understanding
+
+| Skill | Condition | Instruction |
+|-------|-----------|-------------|
+| `/change-impact` | When the task involves changes | After specification summary is complete, report to leader and proceed to `/change-impact` upon approval |
+| `/create-pr --plan` | For bug fixes or minor changes | If impact analysis is deemed unnecessary, propose to leader for judgment |
+
+> **Fallback**: If prerequisites are not met, report to the leader and await further instructions.
 
 ### Quality Checkpoints
 - [ ] Covered all public methods
 - [ ] Documented dependencies (DI)
 - [ ] Extracted business rules and validations
 - [ ] Included file path:line numbers
+
+## Effort Setting
+
+For large-scale specification investigations (cross-service investigation, tracking 10+ file dependencies), using `/effort xhigh` is recommended.
+
+Reason: High reasoning capacity is effective for exhaustive dependency tracking and hallucination prevention. Particularly improves accuracy in tracking DI bindings, configuration file branching, and dynamic dependencies via reflection.
+
+For typical small-scale investigations (single Service, 5 files or fewer), `/effort high` is sufficient.
