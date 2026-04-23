@@ -37,6 +37,14 @@ Update existing knowledge documents to match the needs of a specific audience. M
 3. Compare against current codebase (use Serena for symbol verification)
 4. Identify gaps: documented but changed, exists but undocumented, documented but removed
 
+**Specific execution methods**:
+- Version check: Check first 10 lines of file for `Version:` and `Last Updated:`
+- Staleness detection: If Last Updated is 30+ days old, flag as `[NEEDS VERIFICATION]` candidate
+- Code comparison: Use Serena `find_symbol` to verify existence of classes/methods documented in the file
+  - **Fallback**: If Serena is unresponsive, use `grep -rn '[class/method name]' app/` as alternative search. If 0 results, report "symbol not found" and request confirmation
+  - **Prohibition**: Do not delete from documents without existence verification. Deletion candidates must be backed by grep evidence, and reasoning must be noted in version history
+- Gap classification: Categorize into "documented but changed", "exists but undocumented", "documented but removed"
+
 ### Step 2: Audience Adaptation
 
 Based on target audience, adjust:
@@ -68,9 +76,33 @@ Based on target audience, adjust:
 
 **Strict F002 compliance**: Leader does not personally update knowledge/. Delegate execution to workers.
 
+### Observation vs Modification Proposal Judgment Criteria
+
+| Allowed (Observation) | Prohibited (Modification Proposal) | Judgment Rule |
+|----------------------|-----------------------------------|---------------|
+| "Method A is called from 3 locations" | "Method A should be split" | "X is Y" (state description) is allowed. "X should Y" (action directive) is prohibited |
+| "Column X has been deprecated" | "Column X should be fully removed" | Factual recording is allowed. Modification instructions are prohibited |
+| "No index is being used" | "An index should be created" | Problem identification is allowed. Modification instructions are prohibited |
+
+**Self-check**: Verify with grep that the file contains no "should be", "needs to be", "must be changed to" directives
+
 ### Language and Tone
 
 Clear, professional reporting with business etiquette. Clearly state OK/NG, explicitly state what is unclear.
+
+### Verification Flow
+
+1. After update, increment Version number and set Last Updated to current date
+2. Verify all @reference links in the file are valid using grep
+3. After completion, always run `/doc-check` to request quality audit
+
+### Edge Case Handling
+
+| Case | Action |
+|------|--------|
+| Target file does not exist | Report to leader. Request guidance on post-deletion handling |
+| Reference link is broken | Fix the link and note in version history |
+| Update conflicts with CLAUDE.md rules | Suspend the update and report to leader |
 
 ## Integration with Existing Skills
 
@@ -97,13 +129,15 @@ Clear, professional reporting with business etiquette. Clearly state OK/NG, expl
 ### Downstream Skills (Pipeline)
 | Skill | Condition |
 |--------|-----------|
-| `/doc-check` | Post-update integrity verification |
+| `/doc-check` | **Skipping `/doc-check` after update is prohibited.** Report to leader and obtain approval before executing |
+
+> **Fallback**: If prerequisites are not met, report to leader and await further instructions
 
 ## Quality Checklist
 
-- [ ] Version number incremented
-- [ ] Last-updated date set to current
-- [ ] Cross-references verified (no broken links)
-- [ ] Audience-appropriate depth applied
-- [ ] No modification proposals for application code
-- [ ] Stale content flagged where applicable
+- [ ] Version number incremented: verify +1 increment via `git diff`
+- [ ] Last-updated date set to current: visually confirm `Last Updated:` in file header matches today's date
+- [ ] Cross-references verified: confirm all link paths in the file exist via `ls`, no broken links
+- [ ] Audience-appropriate depth applied: visually review that terminology and detail level match target audience (developer/pm/onboarding)
+- [ ] No modification proposals: grep the file for "should be", "needs to be", "must be changed" and confirm zero matches
+- [ ] Stale content flagged: grep for sections where `Last Updated` is 30+ days old and confirm `[NEEDS VERIFICATION]` tag is present
