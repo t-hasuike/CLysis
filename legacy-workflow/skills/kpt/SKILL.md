@@ -20,7 +20,9 @@ Run KPT (Keep / Problem / Try) retrospectives at session boundaries or milestone
 
 KPT is mandatory when any primary condition is met:
 
-- [ ] M1: All phases of an epic or multi-issue task are complete
+- [ ] M1: All planned deliverables of an epic or multi-issue task (3+ related Issues) are complete
+   - Definition: "All phases" = all planned work items in planner decomposition, or all related GitHub Issues marked as closed
+   - Example: Epic "Skill improvement" with 5 Issues → all 5 Issues closed = M1 met
 - [ ] M2: A mechanism was created or removed (hook, skill, directory structure change)
 - [ ] M3: A multi-session effort has concluded
 
@@ -44,6 +46,15 @@ Load the most recent KPT file and verify execution status of previous Try items:
 ls -t reports/*_kpt.md | head -1
 ```
 
+**Judgment criteria** (select one per Try):
+
+| Status | Condition | Evidence |
+|--------|-----------|----------|
+| **Complete** | Try action fully executed and Problem resolved | Git commit / closed Issue / feedback memory created |
+| **Partial** | Try action partially executed or Problem only partially resolved | Partial commit / partial Issue completion |
+| **Not Executed** | Try action was not attempted | No relevant commit / Issue not opened |
+| **Ineffective** | Try was executed but Problem persists (triggers Five Whys) | Commit exists but recurrence detected |
+
 ### Step 2: Confirm Current Session Outcomes
 
 - Review git log / GitHub Issues completion status
@@ -53,15 +64,24 @@ ls -t reports/*_kpt.md | head -1
 
 Fill in the output format below.
 
-### Step 4: Five Whys for Recurring Problems
+### Step 4: Five Whys for Recurring Problems (if applicable)
 
-If the same Problem appeared in the previous KPT (2nd+ occurrence), run Five Whys:
+**Trigger**: Run Five Whys only if BOTH conditions are met:
+1. Same Problem ID (by title, not semantically similar) appears in 2+ consecutive KPTs
+2. Associated Try from previous KPT was marked as "Complete" but Problem persists, OR Try was not executed
 
-1. Why did the Problem occur?
-2. Why wasn't it resolved by the previous Try?
-3. Why was the Try not executed / ineffective?
-4. Identify root cause
-5. Draft a feedback memory entry for persistent storage
+**Procedure**:
+1. Why did the Problem occur? (current session evidence)
+2. Why wasn't it resolved by the previous Try? (if Try was executed)
+3. Why was the Try not executed / ineffective? (root cause level)
+4. Identify systemic root cause (e.g., process ambiguity, skill definition gap, tooling limitation)
+5. Draft feedback memory entry:
+   - Format: use memory frontmatter (name, description, type: feedback, **Why:**, **How to apply:**)
+   - File naming: `feedback_[brief-title].md`
+
+**Non-trigger cases** (do NOT run Five Whys):
+- First-time Problem (Recurrence Count = 1)
+- Previous Try marked as "Not Executed" (indicates evaluation-phase problem, not implementation failure)
 
 ### Step 5: Save to File
 
