@@ -44,15 +44,21 @@ argument-hint: [scope] - e.g., `reports/` / `knowledge/` / `--all` / specific fi
 
 ### Layer 1: Document Character (What is this document for?)
 
-| Character | Definition | Storage | Example |
-|-----------|------------|---------|---------|
-| **Domain Knowledge** | Business rules, term definitions, confirmed facts | `knowledge/domain/` | Photo size definitions, incentive calculation rules |
-| **System Knowledge** | Architecture, structure, behavior, infrastructure configuration | `knowledge/system/` | Repository structure, database connection config, S3 bucket layout |
-| **Quality Records** | Distortions, risks, technical debt, diagnostic results | `knowledge/quality/` | Core distortion patterns, cross-cutting risk inventory |
-| **Decision Records** | Option comparison, decision rationale, consequences (ADR format) | `workspace/in_progress/adr/` | Payment calculation method selection, repository split decision |
-| **Implementation Specs** | Detailed specifications for engineer implementation | `workspace/in_progress/` | API specs, validation rule details |
-| **Runbooks** | Environment setup, troubleshooting, operational procedures | `knowledge/runbooks/` | Local dev environment setup, deployment procedures |
-| **Standards & Guidelines** | Checklists, maturity models, review rules | `knowledge/standards/` | PR checklist, legacy maturity model |
+| Character | Definition | Storage | Example | Decision Authority |
+|-----------|------------|---------|---------|-------------------|
+| **Domain Knowledge** | Business rules, term definitions, confirmed facts | `knowledge/domain/` | Photo size definitions, incentive calculation rules | Worker can classify |
+| **System Knowledge** | Architecture, structure, behavior, infrastructure configuration | `knowledge/system/` | Repository structure, database connection config, S3 bucket layout | Worker can classify |
+| **Quality Records** | Distortions, risks, technical debt, diagnostic results | `knowledge/quality/` | Core distortion patterns, cross-cutting risk inventory | Worker can classify |
+| **Decision Records** | Option comparison, decision rationale, consequences (ADR format) | `workspace/in_progress/adr/` | Payment calculation method selection, repository split decision | Leader makes final decision |
+| **Implementation Specs** | Detailed specifications for engineer implementation | `workspace/in_progress/` | API specs, validation rule details | Worker can classify |
+| **Runbooks** | Environment setup, troubleshooting, operational procedures | `knowledge/runbooks/` | Local dev environment setup, deployment procedures | Worker can classify |
+| **Standards & Guidelines** | Checklists, maturity models, review rules | `knowledge/standards/` | PR checklist, legacy maturity model | Decision maker makes final decision |
+
+**Escalation Path for Uncertain Classification**:
+- Worker uncertain → Report to leader for judgment
+- Leader uncertain → Request analysis from planner, then leader decides based on results
+- Document matches multiple characters and requires decomposition → Leader makes final decision (see PRD decomposition rule)
+- New standards/guidelines creation → Requires decision maker approval (updates to existing standards can be decided by leader)
 
 ### Representative Document Type Mapping
 
@@ -72,8 +78,33 @@ argument-hint: [scope] - e.g., `reports/` / `knowledge/` / `--all` / specific fi
 | Decision | Definition | Conditions |
 |----------|------------|-----------|
 | **Promote** | Integrate summary version into knowledge/ or workspace/ | Referenced across multiple sessions + knowledge confirmed |
-| **Discard** | Delete temporary notes, duplicates, obsolete content | Content merged elsewhere or information outdated |
+| **Discard** | Delete temporary notes, duplicates, obsolete content (see "Discard Criteria" below for details) | Content merged elsewhere or information outdated |
 | **Hold** | Keep in reports/ (waiting for decision maker judgment) | Future plans, improvement proposals (To-Be) requiring decision maker approval |
+
+### Discard Criteria
+
+#### 4 Conditions for Discard
+
+| Condition | Definition | Verification Method |
+|-----------|------------|-------------------|
+| **Merged** | Content has been integrated into existing knowledge/ files | grep knowledge/ for keywords from the original file. 5+ hits AND visual confirmation of content coverage |
+| **Obsolete** | Documented information has diverged from current code/specifications | Verify whether file paths, class names, and method names mentioned in the document exist in current codebase |
+| **Duplicate** | Another file already documents the same information | Compare file names, headings, and content similarity. Discard candidate at 80%+ content overlap |
+| **Temporary note** | Session working notes with no value for persistence | Content is bullet-point-only, TODO/memo format, no dates, or context is unclear |
+
+#### Discard Prohibitions
+
+1. **No deletion of files created within 2 weeks**: Files less than 2 weeks old are marked as discard candidates only. Do not delete immediately (they may be referenced across sessions)
+2. **No deletion of referenced files**: Files linked from other Markdown files (`[text](path)` format) must not be deleted without first updating the referencing files
+3. **No deletion based solely on automated judgment**: Do not finalize discard based on grep results or filename similarity alone. Always require human confirmation (leader or decision maker)
+
+#### Fallback
+
+When in doubt, do not delete. Add the following mark to the file header and report to leader:
+
+```
+> **Discard candidate**: [reason in one line] (YYYY-MM-DD classified by worker)
+```
 
 ### Promotion Decision Criteria (Purpose-Based)
 
@@ -252,10 +283,13 @@ When describing domain terms and flag names, always explicitly state "whose/what
 - Promotion rules (README.md v3.2) are accessible
 
 ### Downstream Skills (Pipeline)
-| Skill | Condition |
-|------|-----------|
-| `/doc-check` | Post-organization integrity verification |
-| `/doc-update` | Freshness management of filed knowledge/ files |
+
+| Skill | Condition | Instruction |
+|-------|-----------|-------------|
+| `/doc-check` | When file moves or renames occurred | **Running `/doc-check` after organization is mandatory and must not be skipped.** Report to leader for approval, then execute |
+| `/doc-update` | When freshness verification of promoted files is needed | Execute after `/doc-check` completes; propose to leader and await judgment |
+
+> **Fallback**: If prerequisites are not met, report to leader and await further instructions
 
 ---
 
