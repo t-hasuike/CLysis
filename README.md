@@ -3,7 +3,7 @@
 > AI-powered framework for understanding, analyzing, and modernizing legacy systems.
 
 Systematic support for investigation, analysis, and modernization of legacy systems using AI agent teams.
-11 domain-specific skills and 7 workflow commands across 4 plugins.
+13 domain-specific skills and 7 workflow commands across 5 plugins.
 
 ## Repository Structure
 
@@ -34,6 +34,9 @@ CLysis/
 │   ├── examples/
 │   ├── prompts/
 │   └── skills/
+├── legacy-workflow/           # Plugin: kpt, empirical-prompt-tuning
+│   ├── .claude-plugin/
+│   └── skills/
 ├── ARCHITECTURE.md
 ├── LICENSE
 ├── README.md
@@ -48,6 +51,7 @@ CLysis/
 | [legacy-analysis](./legacy-analysis/) | 3 | 1 | Analysis & planning (change-impact, current-legacy, current-distortion) |
 | [legacy-execution](./legacy-execution/) | 2 | 2 | Execution & review (create-pr, review-code) |
 | [legacy-knowledge](./legacy-knowledge/) | 4 | 0 | Knowledge accumulation (doc-organize, current-prd, doc-update, templates) |
+| [legacy-workflow](./legacy-workflow/) | 2 | 0 | Process improvement (kpt, empirical-prompt-tuning) |
 
 ## Prerequisites
 
@@ -84,7 +88,7 @@ Or install all plugins at once:
 
 ```bash
 # Install all 4 plugins in one command
-claude plugin install legacy-investigation@CLysis legacy-analysis@CLysis legacy-execution@CLysis legacy-knowledge@CLysis
+claude plugin install legacy-investigation@CLysis legacy-analysis@CLysis legacy-execution@CLysis legacy-knowledge@CLysis legacy-workflow@CLysis
 
 # Verify installation
 claude plugin list
@@ -99,7 +103,7 @@ If running locally or adding to an existing marketplace:
 claude plugin marketplace add CLysis /path/to/CLysis
 
 # Then install plugins as above
-claude plugin install legacy-investigation@CLysis legacy-analysis@CLysis legacy-execution@CLysis legacy-knowledge@CLysis
+claude plugin install legacy-investigation@CLysis legacy-analysis@CLysis legacy-execution@CLysis legacy-knowledge@CLysis legacy-workflow@CLysis
 
 # Verify installation
 claude plugin list
@@ -129,6 +133,7 @@ cp -r legacy-investigation/commands/* /path/to/your/project/.claude/commands/
 | **legacy-analysis** | change-impact, current-legacy, current-distortion | Impact analysis, system overview, code quality patterns |
 | **legacy-execution** | create-pr, review-code | Change proposals and PR creation (--plan/--exec), automated code review |
 | **legacy-knowledge** | doc-organize, current-prd, doc-update, templates | Knowledge extraction, PRD generation, document updates |
+| **legacy-workflow** | kpt, empirical-prompt-tuning | KPT retrospectives, skill quality optimization |
 
 ### Skill Chain Patterns
 
@@ -203,10 +208,10 @@ Some commands reference skills from other plugins. Ensure required plugins are i
 
 ### Recommended Setup
 
-**For all users**: Install all 4 plugins to unlock full functionality and workflow chains:
+**For all users**: Install all 5 plugins to unlock full functionality and workflow chains:
 
 ```bash
-claude plugin install legacy-investigation@CLysis legacy-analysis@CLysis legacy-execution@CLysis legacy-knowledge@CLysis
+claude plugin install legacy-investigation@CLysis legacy-analysis@CLysis legacy-execution@CLysis legacy-knowledge@CLysis legacy-workflow@CLysis
 ```
 
 **By team role**:
@@ -217,7 +222,8 @@ claude plugin install legacy-investigation@CLysis legacy-analysis@CLysis legacy-
 | **Implementers** (make changes) | legacy-execution + legacy-investigation | `legacy-execution@CLysis legacy-investigation@CLysis` |
 | **Reviewers** (validate changes) | legacy-execution + legacy-analysis | `legacy-execution@CLysis legacy-analysis@CLysis` |
 | **Knowledge Architects** (document systems) | legacy-knowledge + legacy-investigation | `legacy-knowledge@CLysis legacy-investigation@CLysis` |
-| **Full Teams** | All 4 plugins | `legacy-investigation@CLysis legacy-analysis@CLysis legacy-execution@CLysis legacy-knowledge@CLysis` |
+| **Process Leads** (improve workflows) | legacy-workflow | `legacy-workflow@CLysis` |
+| **Full Teams** | All 5 plugins | `legacy-investigation@CLysis legacy-analysis@CLysis legacy-execution@CLysis legacy-knowledge@CLysis legacy-workflow@CLysis` |
 
 ## Workflow Commands
 
@@ -245,6 +251,8 @@ claude plugin install legacy-investigation@CLysis legacy-analysis@CLysis legacy-
 | `/doc-organize` | legacy-knowledge | Archive investigation outputs for knowledge reuse |
 | `/current-prd` | legacy-knowledge | Reverse-engineer PRD from existing codebase (Phase 1-3 workflow) |
 | `/doc-update` | legacy-knowledge | Update knowledge documents for target audience (developer, PM, onboarding) |
+| `/kpt` | legacy-workflow | KPT (Keep/Problem/Try) retrospective with Five Whys for recurring problems |
+| `/empirical-prompt-tuning` | legacy-workflow | Bias-free skill definition evaluation and iterative improvement |
 
 ## Initial Setup
 
