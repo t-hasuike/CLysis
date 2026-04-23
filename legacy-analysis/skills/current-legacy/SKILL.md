@@ -174,12 +174,15 @@ Select one specific change theme and trace it through the system. Map fragments 
 
 ### Procedure
 1. User specifies a change theme (e.g., "I want to add a new product category")
-2. Trace impact scope with /change-impact
+2. Trace impact scope with /change-impact. Combine the following techniques for comprehensive coverage:
+   - **Serena find_referencing_symbols**: Enumerate all reference sites for the target class, method, and constant
+   - **grep keyword scan**: Search for table names, Enum values, flag names, constant values, and other string-level references that symbol search cannot capture
+   - **Call Hierarchy (upstream/downstream)**: Apply Serena find_referencing_symbols recursively to trace at least 2 levels of "caller of caller" (upstream) and "callee of callee" (downstream)
 3. Record the following discovered during tracing:
-   - Inter-repository connections (API calls, shared DB, shared Enums, etc.)
-   - Hidden outputs (email, CSV, batch processing, external API integrations)
-   - Hardcoded locations
-   - Technical debt
+   - **Inter-repository connection flows**: Specific data paths including API calls, shared DB, shared Enums, event-driven (SQS/Kinesis/DynamoDB Streams)
+   - **Hidden outputs**: Email sending, CSV/PDF generation, batch processing, SFTP transfer, S3 writes, external API integrations, and other side effects not visible from the main flow
+   - **Hardcoded locations**: Magic numbers, hardcoded URLs, environment-dependent fixed values
+   - **Technical debt**: Raw SQL, logic within God Classes, untested code paths, deprecated API usage
 4. Organize related Services with /current-spec
 5. For cross-repository cases, use /current-spec (CROSS) for diff analysis
 6. Output:
@@ -200,13 +203,17 @@ Verify the accuracy of Phase 1 deliverables. AI can hallucinate.
 
 ### Procedure
 1. **Metsuke** (inspector) audits deliverables
-2. Verification items:
-   - Do all method names and class names actually exist?
-   - Are all file paths correct?
-   - Do code snippets match actual code?
-   - Are project-specific mandatory rules properly considered?
-3. Correct findings and re-audit
-4. Output: Audited deliverables (with corrections applied)
+2. Verification items (each with procedure, pass criteria, and failure response):
+
+| # | Verification Item | Procedure | Pass Criteria | Failure Response |
+|---|------------------|-----------|---------------|------------------|
+| 1 | All method/class names actually exist | Use Serena find_symbol to search every symbol mentioned in deliverables | All symbols return 1+ hits and the containing file matches | List mismatched symbols, identify correct symbol names, and issue correction instructions |
+| 2 | All file paths are correct | Use `ls` or Glob to verify every path mentioned in deliverables | All paths exist and file types (.php/.ts, etc.) match | List non-existent paths, identify correct paths, and issue correction instructions |
+| 3 | Code snippets match actual code | Use Read to retrieve the relevant lines from actual files and diff against deliverable snippets | Function signatures, conditional branches, and return values in snippets match actual code | Specify diff locations and issue correction instructions based on actual code |
+| 4 | Project-specific mandatory rules considered | Use grep to search for soft-delete conditions (`delflag`, `deleted_at`, etc.) and verify consistency with queries mentioned in deliverables | All queries mentioned in deliverables account for soft-delete conditions | List omission locations and report impact scope with correction instructions |
+
+3. Correct findings and re-audit (iterate until all items pass)
+4. Output: Audited deliverables (with corrections applied + audit log)
 
 ## Phase 3: Return to the Abstract
 
@@ -292,7 +299,15 @@ Repeat Phase 1-3 with different change themes. With each iteration:
 - Phase 1-3: Phase 0 completed
 
 ### Downstream Skills (Pipeline)
-Phase 0 -> Phase 1 -> Phase 2 -> Phase 3 -> (return to Phase 1 and iterate)
+
+| Phase | Next Action | Instruction |
+|-------|------------|-------------|
+| Phase 0 complete | Begin Phase 1 | Select one change theme from the "still unknown" list, report to leader for approval, then execute Phase 1 |
+| Phase 1 complete | Begin Phase 2 | Deploy inspector to verify deliverable accuracy in Phase 2 |
+| Phase 2 complete | Begin Phase 3 | **Skipping Phase 3 is prohibited.** Execute map updates (historical violation: Phase 3 omitted in past sessions) |
+| Phase 3 complete | Iterate Phase 1 | If items remain on the "unknown" list, report to leader and execute Phase 1 with the next theme |
+
+> **Fallback**: If prerequisites are not met, report to leader and await further instructions
 
 ### Quality Checkpoints
 - [ ] Phase 0: Obtained 65-73% of information through auto-collection

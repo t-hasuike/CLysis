@@ -77,6 +77,21 @@ Verify knowledge/ files follow naming conventions by character type.
 
 **Check method**: Scan knowledge/system/ and knowledge/domain/ `.md` files (excluding: README.md, filenames ending in `_template.md`, files in `_reference/` directories) for required prefix. Report any unprefixed files.
 
+**Execution command**:
+
+```bash
+find knowledge/domain/ knowledge/system/ -name "*.md" \
+  ! -name "README.md" ! -name "*_template.md" ! -path "*/_reference/*" \
+  | while read f; do
+  basename="$(basename "$f" .md)"
+  if [[ ! "$basename" =~ ^(birdseye|fisheye|wormseye)_ ]]; then
+    echo "[NAMING VIOLATION] $f"
+  fi
+done
+```
+
+**Pass criteria**: Output is empty (zero violations)
+
 ### 3. README Consistency Check
 
 Cross-reference knowledge/README.md against actual directory structure.
@@ -111,10 +126,16 @@ For unpromoted files, run heuristics to detect "possible mark omission".
    - Example: `c19_bulk_delivery_90days_investigation.md` → `bulk_delivery_90days`
    - Example: `pr37_arrangement_route_draft.md` → `pr37_arrangement_route`
 2. Grep knowledge/ for keywords (case-insensitive)
-3. Interpret results:
-   - 3+ hits → `[Review needed] Possible mark omission: {hit file list}`
-   - 1-2 hits → `[Info] Partial reflection possible`
-   - 0 hits → `[Not reflected] No corresponding content in knowledge/`
+3. Interpret results using the 4-tier judgment table:
+
+   | Hit Count | Judgment | Label | Action |
+   |-----------|---------|-------|--------|
+   | 5+ hits | Definitively reflected | `[Promoted candidate]` | Recommend adding promotion mark |
+   | 3-4 hits | Partially reflected (strong) | `[Review needed]` | Consult leader for judgment |
+   | 1-2 hits | Partially reflected (weak) | `[Info]` | Record as information. No immediate action required |
+   | 0 hits | Not reflected | `[Not reflected]` | Recommend discard evaluation |
+
+**Prohibition**: Do not judge by grep matches alone. For each hit, verify one line of the hit file's content to confirm the keyword appears in the context of "same information reflected." Do not miscount partial filename matches or unrelated context hits.
 
 **Caveat**: Keyword grep detects "some content exists" but NOT "information fully integrated." Human judgment is final.
 
@@ -139,9 +160,14 @@ For unpromoted files, run heuristics to detect "possible mark omission".
 - knowledge/README.md is current
 
 ### Downstream Skills (Pipeline)
-| Skill | Condition |
-|------|-----------|
-| `/doc-organize` | When promotion candidates or placement errors detected |
+
+| Skill | Condition | Instruction |
+|-------|-----------|-------------|
+| `/doc-organize` | When 1+ promotion candidates detected | Save diagnosis results, then report to leader for approval before executing `/doc-organize` |
+
+> **When To-Be (awaiting decision) items are numerous**: Present the full list to decision maker and await priority judgment before executing
+>
+> **Fallback**: If prerequisites are not met, report to leader and await further instructions
 
 ---
 
