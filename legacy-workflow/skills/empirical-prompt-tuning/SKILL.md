@@ -40,6 +40,8 @@ Read the target skill's SKILL.md and score on 5 axes (0-10):
 | Quality Guards | Prohibitions, checklists, and fallbacks are in place |
 | Integration | Pre/post pipeline connections are clearly defined |
 
+**Calibration reference (mandatory)**: Before scoring, read the project's calibration examples file. For Quality Guards axis, apply the skill type-specific threshold checklist (Code-oriented / Document-oriented / Process-oriented).
+
 **Output**: Scores + weakness rationale (1-2 sentences per axis)
 
 #### 1a. Weakness Rationale guidance
@@ -89,6 +91,8 @@ Worker B must extract from Step 1 output:
 ### Step 3: Re-evaluation (Worker C: Re-evaluator)
 
 Re-evaluate the improved SKILL.md using the same 5 axes as Step 1.
+
+**Calibration reference (mandatory)**: Worker C must also read the calibration examples file before scoring, including the skill type-specific Quality Guards section.
 
 **Important**: Worker C must be a separate agent from Workers A and B, evaluating without knowledge of the improvement process (bias prevention).
 
