@@ -205,6 +205,44 @@ Good: "Event's publication end date (event.publication_end_date) is not checked 
 
 **When Phase 1 only is executed**: The leader verbally reports the integration summary (count, severity distribution) to the user. Only output to an intermediate file if the user explicitly requests "save to file."
 
+### Phase 1 to Phase 2 Handoff Contract
+
+After Phase 1 completion, processing follows one of these 3 patterns:
+
+| Pattern | Condition | Leader Action |
+|---------|-----------|---------------|
+| **Immediate Phase 2** | Phase not specified (all-in-one mode) | Hold integrated results locally and immediately launch 3 Phase 2 workers |
+| **Intermediate file output** | Phase 1 only executed AND user requests "save to file" | Output integrated risk list to `reports/distortion-phase1-[repo]-[area]-[date].md` |
+| **Phase 1 only completion** | Phase 1 only executed AND no additional user instruction | Report summary (count, severity distribution) verbally and ask user whether to proceed to Phase 2 |
+
+**When executing Phase 2 in a separate session**: An intermediate file is required. The leader must ask the user at Phase 1 completion: "If Phase 2 may be executed in a separate session, should an intermediate file be created?"
+
+#### Phase 2 Worker Delegation Template (for leader use)
+
+```
+**Important: You are a worker (executor). You are not the leader.
+Do not propose team formation or consult the planner.
+Execute the analysis yourself and write results to a file.**
+
+[Phase 2 Assignment]
+- Assigned Part: Part {A/B/C}
+- Target Repository: {repository name}
+- Target Area: {area name}
+
+[Input]
+- Phase 1 Integrated Risk List: {local integration results or intermediate file path}
+- Risk Count: {count} (High {X}, Medium {Y}, Low {Z})
+
+[Output Rules]
+- Output destination: {leader-specified temporary file path} (file persistence required)
+- Template: Follow the Part {A/B/C} section of this skill's "Integrated Report Template"
+- Visualization: Must include mermaid diagrams (Part C additionally requires remediation ordering constraint diagram)
+
+[Completion Criteria]
+- Assigned Part section is complete
+- Risk count matches Phase 1 integration results (no omissions or duplicates)
+```
+
 ---
 
 ## Phase 2: Part A/B/C Creation
@@ -482,6 +520,14 @@ reports/distortion-report-backend-order-delivery-2026-03-13.md
 | Repository Name | Target repository | Required for Phase 1 | -- | `your-backend-repo`, `your-ec-repo` |
 | Target Area | Target functional area | Optional | All areas when omitted | `order-delivery`, `checkout-flow`, `pricing` |
 | --discussion | Discussion number | Optional | -- | `--discussion 42` |
+
+### Target Area Specification Rules
+
+- **When omitted**: The entire specified repository becomes the investigation target. If the repository is large, consulting the planner for scope partitioning is recommended
+- **When specified**: Specify by business domain or functional unit
+  - Format examples: `order-delivery`, `checkout-flow`, `pricing`, `print-integration`, `incentive-payments`, `authentication`
+  - Direct specification of directories or classes within the repository is also acceptable (e.g., `app/Services/Order/`)
+- **When ambiguous**: Request clarification from the leader: "The target area is ambiguous; please select from the following candidates." Do not determine scope by guessing
 
 ### --discussion Option
 

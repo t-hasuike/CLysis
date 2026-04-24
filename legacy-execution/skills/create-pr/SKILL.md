@@ -84,10 +84,34 @@ For each target file, use semantic code analysis (Serena) to:
 
 For each file, generate:
 
-1. **Change Content (diff format)**: Show before/after code
+1. **Change Content (diff format)**: Show before/after code (see "Diff Generation Requirements" below)
 2. **Change Reason**: Why this change is needed
 3. **Impact Scope**: Ripple effects to other areas
 4. **Test Strategy**: Unit/integration/manual approach
+
+##### Diff Generation Requirements
+
+**Unified diff format requirements**:
+- Context lines: Always include +-3 lines before and after the modification point (for position identification during review)
+- Line numbers: Include `@@ -start_line,count +start_line,count @@` headers
+- File paths: Use `--- a/path/to/file` / `+++ b/path/to/file` format with paths relative to repository root
+
+**3 Generation Patterns**:
+
+| Pattern | Condition | Generation Method |
+|---------|-----------|-------------------|
+| Code verified (single location) | Target code retrieved via Serena/Read | Create unified diff manually from retrieved code. Use actual line numbers from the file |
+| Multiple modification locations | Multiple modification points within the same file | Separate `@@` blocks per modification point. Ensure context lines between blocks do not overlap |
+| New file creation | File does not exist | Use `--- /dev/null` / `+++ b/path/to/new/file` format. All lines are `+` lines |
+
+**Verification Checklist (confirm after diff creation)**:
+- [ ] Line numbers match the actual file's line numbers (not guessed)
+- [ ] Context line code matches the actual file contents
+- [ ] Indentation (tabs/spaces) matches the original file's style
+- [ ] Before-modification code (`-` lines) exactly matches the existing code
+- [ ] After-modification code (`+` lines) is syntactically correct
+
+**Fallback**: If Serena is unresponsive or times out, retrieve the target code using Grep/Read tools and create the diff with equivalent accuracy. Note "Serena unresponsive; retrieved via Grep/Read" in the proposal's remarks section (not as comments within the diff).
 
 #### Step 6: Organize Dependencies
 
@@ -254,8 +278,24 @@ From the specified proposal file, extract:
 - `workspace/in_progress/adr/` -- If an ADR (Architecture Decision Record) exists for this change, review it for inclusion in the PR description
 - `workspace/in_progress/` -- If an implementation spec (SPEC) exists, verify alignment with the change proposal. Reference the SPEC path noted in the proposal
 
-**Approval Verification**: Confirm that the change proposal has been approved by the user.
-If not approved, halt execution and request approval.
+**Approval Confirmation Protocol**:
+
+Verify that the change proposal has been approved by the user through the following procedure.
+
+**Prohibited Actions (approval-related)**:
+
+| ID | Prohibited Action | Reason |
+|----|-------------------|--------|
+| APR-01 | Execute --exec without a confirmed approval comment | Execution is prohibited if no explicit approval ("approved", "OK", "proceed", etc.) exists in session history or Discussion/Issue |
+| APR-02 | Execute --exec without identifiable approval timestamp | If the timing of approval is unknown, the proposal may have been updated since. Verify the approval timestamp |
+| APR-03 | Execute --exec with proposal version mismatch | If the proposal was modified after approval (file modification timestamp > approval timestamp), re-approval is required. Present changes to the user and obtain fresh approval |
+
+**Approval Verification Checklist**:
+- [ ] User's approval comment exists in session history or Discussion/Issue
+- [ ] Approved proposal version (file path, creation date) matches the current proposal
+- [ ] User has acknowledged and accepted high-risk items (from the proposal's "High Risk" section)
+
+**Fallback (approval not confirmed)**: If approval cannot be confirmed, do not execute --exec. Report to the leader: "Cannot confirm change proposal approval; requesting user confirmation." Self-declaring "considered approved" is prohibited.
 
 #### Step 3: Create Branch
 
