@@ -210,6 +210,14 @@ Save to `reports/proposals/{feature_name}_{phase}.md`:
 2. **Launch `/create-pr --exec`**: After approval, use this proposal as input to create PR
 ```
 
+### Change History Template
+
+After creating a change proposal, record change management using this template:
+
+| Date | Change Description | Target File | Impact Scope | Executor | Notes |
+|------|-------------------|-------------|-------------|----------|-------|
+| YYYY-MM-DD | [Change summary] | [File path] | [Impact classification] | [Worker/Team] | [Notable items] |
+
 ### Approval Gate
 
 **Human approval is required before proceeding to --exec phase.**
@@ -240,9 +248,13 @@ From the specified proposal file, extract:
 - Test strategy
 - Risks and concerns
 
-#### Step 2: Verify Approval Status
+#### Step 2: Knowledge Reference and Approval Verification
 
-Confirm that the change proposal has been approved by the user.
+**Knowledge Reference (if applicable)**:
+- `workspace/in_progress/adr/` -- If an ADR (Architecture Decision Record) exists for this change, review it for inclusion in the PR description
+- `workspace/in_progress/` -- If an implementation spec (SPEC) exists, verify alignment with the change proposal. Reference the SPEC path noted in the proposal
+
+**Approval Verification**: Confirm that the change proposal has been approved by the user.
 If not approved, halt execution and request approval.
 
 #### Step 3: Create Branch
@@ -306,6 +318,14 @@ gh pr create --title "{feature} [- Phase {X}]" --body "$(cat <<'EOF'
 
 ### Context
 {Reason for change / business requirements}
+
+---
+
+## Background (ADR)
+{If an Architecture Decision Record exists, link or summarize it. Otherwise "N/A"}
+
+## Specification (SPEC)
+{If an implementation spec exists, link or summarize it. Otherwise "N/A"}
 
 ---
 
@@ -432,7 +452,12 @@ Communicate in clear, business-appropriate language. Be explicit about successes
 - gh CLI is configured and authenticated
 
 ### Downstream Skills (Pipeline)
-- `/review-code` — PR quality audit and code review (post-creation)
+
+| Skill | Condition | Instruction |
+|-------|-----------|-------------|
+| `/review-code` | After --exec PR creation completes | **Skipping `/review-code [PR number]` after PR creation is prohibited.** Report to leader and obtain approval before executing review |
+
+> **Fallback**: If prerequisites are not met, report to the leader and await further instructions.
 
 ### Quality Checkpoints
 
@@ -454,17 +479,47 @@ Communicate in clear, business-appropriate language. Be explicit about successes
 
 ---
 
-## Delegation Template
+## Delegation Templates
 
-When delegating this skill to workers, include role clarification:
+When delegating this skill to workers, include role clarification.
+
+### --plan Delegation
 
 ```
 **Important: You are a worker (executor). You are not the leader.
-Execute the task yourself without delegating further.**
+Do not propose team formation or consult the planner.
+Execute the change proposal creation yourself and report results.**
 
-Phase: --plan or --exec
-Input: [Specify file path or repository]
-Output: Save to reports/proposals/ or reports/pr_logs/
+Target:
+- Impact analysis report: {report_path}
+- Target repository: {repository_name}
+
+Rules:
+- Present before/after code in diff format
+- Include change reason, risks, and test strategy
+- This proposal requires user approval before execution
+
+Output: Save to reports/proposals/ (file persistence required)
+```
+
+### --exec Delegation
+
+```
+**Important: You are a worker (executor). You are not the leader.
+Do not propose team formation or consult the planner.
+Execute the PR creation yourself and report results.**
+
+Target:
+- Change proposal: {proposal_path} (user-approved)
+- Target repository: {repository_name}
+
+Rules:
+- Apply changes following dependency order
+- Commit messages must follow 5W1H format
+- Include risks and test results in PR body
+- Use default permission mode for GitHub operations (requires approval for push/PR)
+
+Output: Save execution log to reports/pr_logs/ (file persistence required)
 ```
 
 ---
