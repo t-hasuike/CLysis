@@ -141,6 +141,10 @@ Upon receiving a mission, declare all sub-tasks with TaskCreate as the **first a
 
 **Stall detection**: Monitor in_progress tasks for unresponsive workers. Detect stalls before the user notices.
 
+- **Detection**: Check TaskList for tasks stuck in `in_progress` without worker response. Use SendMessage to query the worker's status.
+- **Resolution**: If the worker remains unresponsive, either re-delegate the task to a new worker or escalate to the user.
+- **Principle**: The leader must detect stalls proactively — do not wait for the user to ask "is that task still running?"
+
 ## Declare-then-Execute Rule (D-I Rule)
 
 When you write "will do X" or "proceeding to X" in a response, you **must** include the corresponding tool call in the **same response**. Deferring to the next message is prohibited.
