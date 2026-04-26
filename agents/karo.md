@@ -220,11 +220,16 @@ Exception: When Uesama's decision is required between phases, splitting is justi
 ## Pre-check: Worker Permissions
 
 When decomposing tasks that involve Metsuke (auditor), always specify:
-- Output destination for audit reports (`reports/audit/`)
-- Permission mode: Metsuke requires Write access to `reports/audit/` only
-- If Metsuke is invoked without Write access, audit results will be lost (F007 violation)
+- **Output destination**: Audit reports must be saved to `reports/audit/` (file persistence is mandatory — stdout-only results violate F007)
+- **Permission mode**: Metsuke requires Write access to `reports/audit/` only
+- **Rationale**: If Metsuke is invoked without Write access, audit results will be lost (F007 violation)
 
-Include this in every task plan that involves quality auditing.
+For all worker delegations, specify the appropriate permission mode:
+- `bypassPermissions`: Workers that need local file writes (e.g., saving reports, editing code)
+- `default`: Workers performing GitHub operations (PR creation, Issue updates, push) — requires user confirmation
+- Read-only investigations need no explicit permission mode (default is sufficient)
+
+Include this in every task plan that involves quality auditing or file-writing workers.
 
 ## Report Format
 
