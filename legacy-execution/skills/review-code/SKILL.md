@@ -1,7 +1,7 @@
 ---
 name: review-code
 description: Systematically review PR code quality and business perspective, providing approval judgment material.
-argument-hint: <PR number> [repository name] [review focus]
+argument-hint: <PR number> [repository name] [review focus] [--ultrareview]
 ---
 
 > This is a generic skill from [CLysis](https://github.com/t-hasuike/CLysis).
@@ -40,6 +40,8 @@ flowchart TD
     F --> G["Step 6 (Metsuke): Audit - Scope per plan"]
     G --> H["Step 7 (Ashigaru): knowledge/ impact determination"]
 ```
+
+> **Note**: When `--ultrareview` is specified, Step 5.5 (parallel multi-agent review) is inserted between Steps 5 and 6. See Step 5.5 for details.
 
 ## Investigation Procedure
 
@@ -163,6 +165,29 @@ Reference: `knowledge/standards/review/base_checklist.md`
 | **Conditional Approval** | Minor findings; mergeable after fixes |
 | **Changes Required** | Quality or business perspective issues; re-review after changes |
 
+### Step 5.5: --ultrareview Mode (Future Implementation / Stub)
+
+If the `--ultrareview` flag is specified, a parallel multi-agent review is conducted in addition to the standard review.
+
+**Current Status**: The `/ultrareview` skill is not yet implemented. When `--ultrareview` is specified, the standard review flow completes as normal (fallback).
+
+#### Future Implementation Design
+
+- Step 5.5 launches 4 parallel agents:
+  - UR-1 (Security): OWASP Top 10 perspective
+  - UR-2 (Performance): N+1 queries, index usage
+  - UR-3 (Business Rules): Domain rule alignment, soft-delete checks
+  - UR-4 (DB Impact): Schema change propagation, migration safety
+
+- Trigger criteria: 200+ changed lines OR DB changes OR cross-repository changes
+
+#### Fallback (Current Behavior)
+
+If `--ultrareview` is specified but the `/ultrareview` skill is not available:
+1. Report to leader: "The /ultrareview skill is not yet implemented; proceeding with standard review only"
+2. Complete standard Steps 1-7
+3. Note "ultrareview not executed" in the review report
+
 ### Step 6: Metsuke Audit (Metsuke)
 
 Audit scope per Step 1.5 plan:
@@ -182,9 +207,42 @@ Audit scope per Step 1.5 plan:
 - Release risk
 - Architecture alignment (repository boundaries)
 
+### Step 7: knowledge/ Impact Determination (Ashigaru)
+
+Determine whether the PR's changes affect knowledge/ documentation:
+- Domain logic change -> Does `knowledge/domain/` need updating?
+- API change -> Does the UI flow map or API documentation need updating?
+- DB change -> Does the schema documentation need updating?
+- Architecture change -> Does the system overview need updating?
+
+If impact is found, propose a `/doc-organize` handoff.
+
 ## Critical Rules
 
 **F002 Rule**: Shogun must not review directly. Always delegate to Ashigaru. Shogun's role is to approve plans, make final judgments, and coordinate team.
+
+## Ashigaru Delegation Template
+
+```
+Leader to Ashigaru:
+
+**Important: You are an Ashigaru (worker). You are NOT the Shogun. Do not propose team formation or consult the planner. Execute the review yourself and report results.**
+
+[Review Target]
+- Repository: {repository name}
+- PR: #{PR number}
+
+[Reference Scope per Karo Plan]
+{Step 1.5 scope determination -- fill in before delegating; do not leave as placeholder}
+
+[Review Focus]
+- Code quality: Follow Step 3 checklist
+- Business perspective: Step 4 (domain rule alignment, user impact, release risk)
+
+[Output]
+- Save review report to reports/ (F006 compliance)
+- Clearly state approval judgment (Approved/Conditional/Changes Required) with rationale
+```
 
 ## Output Format
 
@@ -289,6 +347,10 @@ Audit scope per Step 1.5 plan:
 | none / `knowledge/domain/xxx.md` | ... | `/doc-organize` handoff |
 ```
 
+## Tone
+
+Business-appropriate, clear reporting style. State OK/NG clearly. State unknowns clearly as unknowns.
+
 ## Quality Checklist
 
 Upon review completion, verify the following:
@@ -317,6 +379,7 @@ Upon review completion, verify the following:
 | PR number | PR number to review | Required | `12345` |
 | Repository | Target repository | Optional | `backend`, `frontend` |
 | Review focus | Specify particular focus | Optional | `security`, `performance`, `business` |
+| --ultrareview | Enable parallel multi-agent review | Optional | `--ultrareview` |
 
 ### OUTPUT
 | Type | Format | Destination |
@@ -350,3 +413,15 @@ Upon review completion, verify the following:
 - [ ] Report saved to `reports/`?
 - [ ] CLAUDE.md mandatory rules (soft-delete, type safety) verified?
 - [ ] All callers of changed functions verified with grep?
+
+---
+
+## Related Skills
+
+| Skill | Relationship |
+|-------|-------------|
+| `/create-pr --plan` | **Upstream**: Creates the modification proposal diff. review-code evaluates its quality |
+| `/create-pr` | **Downstream**: After review-code approval, proceed to PR creation/merge |
+| `/current-distortion` | **Complement**: Distortion pattern detection is delegated to current-distortion |
+| `/doc-check` | **Parallel**: Code quality via /review-code; document quality via /doc-check |
+| `/doc-organize` | **Handoff**: When Step 7 determines knowledge/ updates are needed |

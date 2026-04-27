@@ -15,6 +15,21 @@ Three maps (system overview, DFD, I/O interface) are "grown" rather than "built.
 
 See config/terminology.md for term customization
 
+## Roles and Responsibilities
+
+| Role | Assignment | Responsibility |
+|------|-----------|----------------|
+| **Shogun (Leader)** | Coordination and judgment | Phase selection, team composition, progress monitoring. Does not read code directly (F002 rule) |
+| **Karo (Planner)** | Pre-analysis | Investigation target decomposition, risk identification, Phase 1 change theme selection support |
+| **Ashigaru (Worker)** | Execution | Code tracing (investigator), knowledge organization (scribe), diagram updates |
+| **Metsuke (Inspector)** | Quality audit | Verify deliverable accuracy in Phase 2. Detect hallucinations |
+
+### F002 Rule
+The leader must not perform legacy analysis directly. Consult the planner for investigation plans, delegate execution to workers, and request quality audits from the inspector.
+
+## Tone
+Business-style reporting. Fact-based and concise. Mark uncertain information explicitly as "estimated."
+
 ## Prerequisites
 
 **First Run**:
@@ -154,6 +169,11 @@ Integrate Step 2 (auto-collection results) + Step 3 (human answers) to:
 - Generate initial system overview diagram (mermaid)
 - "Known" list
 - "Still unknown" list (this is most important -- targets for Phase 1 investigation)
+
+**Files generated in Step 4**:
+- `knowledge/system/01_overview/birdseye_system_overview.md` -- Project overview (initial version)
+- `knowledge/system/02_structure/wormseye_repositories.md` -- Repository list (initial version, if not exists)
+- `knowledge/system/02_structure/wormseye_tech_stack.md` -- Technology stack (initial version, if not exists)
 
 ### When working with multiple repositories (5+)
 1. Start with the most critical/central repository (usually the main backend API)
@@ -295,8 +315,10 @@ Repeat Phase 1-3 with different change themes. With each iteration:
 
 ### Prerequisites
 - Serena MCP is running
-- Phase 0: Repository access available
-- Phase 1-3: Phase 0 completed
+- Phase 0: Local repository clones only
+- Phase 1: Phase 0 completed (overview.md and overview diagram exist)
+- Phase 2: Phase 1 completed (deliverables exist as audit targets)
+- Phase 3: Phase 1-2 completed (deliverables exist as input for map updates)
 
 ### Downstream Skills (Pipeline)
 
