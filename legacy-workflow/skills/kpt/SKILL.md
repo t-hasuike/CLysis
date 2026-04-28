@@ -95,6 +95,28 @@ Save to `reports/YYYY.MM.DD_kpt.md` (F006 mandatory).
 | `--full` (default) | All items + Five Whys check |
 | `--analyze` | Analyze last 3 months of KPTs (recurring Problem detection + Try completion rate) |
 
+## Acceptance Criteria per Item
+
+Entries that fail these criteria must be rejected and rewritten:
+
+### Keep Acceptance Criteria
+- Must describe a reproducible behavior applicable across the project
+- Record specific team-level actions, not personal impressions
+- Fail example: "Things went well today" / "I felt productive"
+- Pass example: "Consulted planner before task decomposition, resulting in 0 rework items"
+
+### Problem Acceptance Criteria
+- Must state the observed fact and its impact. No speculation or emotion
+- Must include Recurrence Count (use "1" for first occurrence)
+- Fail example: "Quality feels low somehow" / "Should have tried harder"
+- Pass example: "F002 violation: leader directly edited a file (3rd recurrence). Root cause: failed to delegate to worker"
+
+### Try Acceptance Criteria
+- Must include Owner, Deadline, and Completion Verification Method
+- Vague actions like "try harder", "be careful", "stay aware" are prohibited (not verifiable as actions)
+- Fail example: "Be more careful next time" / "Do a better job"
+- Pass example: "Add delegation checklist to leader agent definition (Owner: leader, Deadline: before next session start, Verification: checklist item exists in agent definition file)"
+
 ## Output Format
 
 ```markdown
@@ -139,8 +161,22 @@ Save to `reports/YYYY.MM.DD_kpt.md` (F006 mandatory).
 
 > **Fallback**: Even if Problem count is 0, record at least 1 Keep and 1 Try.
 
+**Additional Fallbacks**:
+- Previous KPT file not found → run `git log --oneline -n 20` to review recent commits and reconstruct session context. Record "No previous KPT (first run)" in the Previous Try section
+- git log returns 0 entries → record "No code changes" and conduct KPT based on documentation/configuration changes only
+- Five Whys trigger judgment is ambiguous → report to the leader for decision. Do not self-decide to skip Five Whys
+
+## Edge Case Handling
+
+| Case | Action |
+|------|--------|
+| Previous KPT file not found | Run `ls -t reports/*_kpt.md` to verify. If 0 results, treat as "First KPT" and skip Step 1 |
+| Previous and current Problem are similar but not identical | Record as separate Problems (Five Whys not applicable). If judgment is unclear, escalate to leader |
+| Five Whys root cause points to skill definition gap | Propose new feedback memory creation to leader. Consider running /empirical-prompt-tuning |
+| 5+ Problems exceed timebox | Record only top 3 by severity. Mark remaining as "Carried over to next session" |
+
 ## Prohibited Actions
 
-- Concealing or downplaying Problems
-- Recording a Problem without a Try (always include an improvement plan)
-- Generic entries (vague Try items like "try harder" are prohibited)
+- Concealing or downplaying Problems: record all observed facts. "Impact was small so I omitted it" is prohibited. Verification: cross-check that all user corrections and feedback during the session are reflected in the Problem table
+- Recording a Problem without a Try: every Problem must have a corresponding Try entry. Verification: Problem table row count <= Try table row count
+- Generic entries: vague Try items like "try harder", "be careful", or "stay aware" are prohibited. Try entries must always include Owner, Deadline, and Completion Verification Method. Verification: confirm all rows in the Try table have these three fields populated
