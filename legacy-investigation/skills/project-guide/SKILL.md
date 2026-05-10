@@ -12,9 +12,23 @@ argument-hint: <task overview>
 ## Overview
 
 A guide skill that analyzes the nature of the task and presents the optimal reference order from knowledge/system/ and knowledge/domain/.
-Helps the leader's team reach "the knowledge needed for the current mission" as quickly as possible.
+Helps the team reach "the knowledge needed for the current mission" as quickly as possible.
 
 See config/terminology.md for term customization
+
+## Role Assignment
+
+| Role | Responsibility |
+|------|----------------|
+| **Shogun (Leader)** | Triggers the skill and receives the report. Does not read code directly (F002 strictly enforced) |
+| **Karo (Strategist)** | For large-scale tasks, evaluates the validity of the reference order before task decomposition |
+| **Ashigaru (Worker)** | Executor of this skill. Determines task type and generates/reports the reference guide |
+| **Metsuke (Inspector)** | After deliverables are produced, verifies that referenced files actually exist and detects hallucinations |
+
+> **F002 strictly enforced**: Shogun does not execute this skill personally. Consult Karo for planning, delegate execution to Ashigaru, and request quality audit from Metsuke.
+
+### Tone
+Use a clear, business-appropriate reporting style. State OK/NG clearly, and report uncertainties explicitly as "unknown".
 
 ## Usage
 
@@ -96,7 +110,23 @@ Output in the following format:
 - Do not include non-existent files as references (exclude paths that cannot be verified via `ls`)
 - Do not conclude "does not exist" without final grep verification (try at least 2 keyword variations before giving up)
 
-### Step 3: Guide Mapping by Task Type
+### Step 3: Skill Selection Guide by Task Type
+
+| Task Type | Recommended Skills | Purpose |
+|-----------|-------------------|---------|
+| **New feature addition** | `/current-spec` -> `/change-impact` -> `/create-pr --plan` -> `/create-pr --exec` -> `/review-code` | Spec understanding -> impact analysis -> change proposal -> PR creation -> review |
+| **Bug fix** | `/current-spec` -> `/create-pr --plan` -> `/create-pr --exec` -> `/review-code` | Root cause investigation -> change proposal -> PR creation -> review |
+| **Specification change** | `/current-spec` -> `/change-impact` -> `/create-pr --plan` -> `/create-pr --exec` -> `/review-code` | Current spec -> impact analysis -> change proposal -> PR creation -> review |
+| **Investigation & analysis** | `/current-spec` -> `/change-impact` | Spec investigation -> impact range identification |
+| **Environment setup** | Reference knowledge/runbooks/ | Per-repository setup procedures |
+| **Refactoring** | `/current-distortion` -> `/create-pr --plan` -> `/create-pr --exec` -> `/review-code` | Distortion analysis -> change proposal -> PR creation -> review |
+| **Legacy code understanding** | `/current-legacy` | Stepwise understanding (growing 3 maps) |
+| **PRD creation** | `/current-prd` | Reverse-generate spec from existing code |
+| **Documentation maintenance** | `/doc-check` -> `/doc-organize` -> `/doc-update` | Diagnose -> organize -> maintain |
+
+**Reference document details**: See `knowledge/README.md` "FAQ and References" and "Navigation Guide" sections.
+
+#### Detailed Phase Mapping by Task Type
 
 #### New Feature Addition
 - **Phase 2**: environment.md (business rules) -> service_responsibilities.md (related Services) -> tech_stack.md (technical constraints)
@@ -269,8 +299,14 @@ After task completion, it is recommended to evaluate documents output to reports
 - Domain knowledge in knowledge/domain/ exists
 
 ### Downstream Skills (Pipeline)
-- `/current-spec` -- Detailed investigation and specification of targets identified by the guide
-- `/change-impact` -- Analyze impact scope identified by the guide
+
+| Skill | Condition | Instruction |
+|-------|-----------|-------------|
+| First skill in recommended pipeline | When task type is determined | Report the recommended pipeline to Shogun, obtain approval, then execute the first skill |
+| `/current-spec` | When detailed investigation is needed | Detailed investigation and specification of targets identified by the guide |
+| `/change-impact` | When change is involved | Analyze impact scope identified by the guide |
+
+> **Fallback**: If the recommended pipeline is unclear, report to Shogun and await further instructions.
 
 ### Quality Checkpoints
 - [ ] Correctly classified task type
