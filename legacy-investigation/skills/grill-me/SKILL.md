@@ -239,6 +239,27 @@ Save to: `reports/grill/{YYYYMMDD}-{topic}.md`
 - [ ] Handoff section for subsequent skills is included
 - [ ] No speculation or answer completion
 
+## Operating Principles (Inspector-Reviewed)
+
+### A-001: Hallucination Prevention
+
+- Record only facts confirmed by actual file scans
+- Do not speculate or complete the user's answers
+- If a referenced file is not found, explicitly state "File not found"
+- Do not record uncertain information
+
+### A-002: F006 Strict (File Save Mandatory)
+
+- Output must always be saved to `reports/grill/{YYYYMMDD}-{topic}.md`
+- A stdout report is also required, but the file save itself is mandatory
+- An execution that does not produce a file is treated as a failure
+
+### A-003: Stay in the Questioner Role
+
+- Do not propose fixes or improvements (that is the leader's role)
+- Do not deny or evaluate the user's answers ("that's wrong", etc.)
+- Do not lead with speculative phrasing such as "isn't it really X...?"
+
 ## I/O Specification
 
 ### INPUT
