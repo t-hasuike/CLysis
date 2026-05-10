@@ -17,12 +17,12 @@ Investigate the specification of the specified Service/UseCase/Model and organiz
 
 | Role | Responsibility |
 |------|----------------|
-| **Leader** | Select investigation targets, delegate to workers, consolidate reports. Does not read code directly (F002) |
-| **Planner** | Task decomposition and strategy for large-scale investigations |
-| **Worker** | Execute actual code investigation and create specification summaries |
-| **Inspector** | Quality audit of deliverables (hallucination detection, symbol existence verification) |
+| **Shogun (General)** | Select investigation targets, delegate to Ashigaru (Worker), consolidate reports. Does not read code directly (delegate-mode rule) |
+| **Karo (Chief Retainer / Planner)** | Task decomposition and strategy for large-scale investigations |
+| **Ashigaru (Foot Soldier / Worker)** | Execute actual code investigation and create specification summaries |
+| **Metsuke (Inspector)** | Quality audit of deliverables (hallucination detection, symbol existence verification) |
 
-> **F002**: The leader must not read code directly. All investigation and analysis must be delegated to workers.
+> **Delegate-mode rule**: Shogun (General) must not read code directly. All investigation and analysis must be delegated to Ashigaru (Foot Soldier / Worker).
 
 ### Communication Style
 Use clear, business-appropriate language. Be explicit about what is confirmed vs. uncertain.
@@ -162,7 +162,7 @@ When managing multiple investigation targets in parallel, track progress using t
 
 | Target | Status | Date | Investigator | Notes |
 |--------|--------|------|-------------|-------|
-| [Class/Feature name] | Done/Pending/In Progress | YYYY-MM-DD | [Worker name] | [Notable findings] |
+| [Class/Feature name] | Done/Pending/In Progress | YYYY-MM-DD | [Ashigaru (Worker) name] | [Notable findings] |
 
 ## Quality Checks
 
@@ -196,7 +196,7 @@ Upon investigation completion, verify the following:
 ### OUTPUT
 | Type | Format | Destination |
 |------|--------|-------------|
-| Service specification summary | Detailed Markdown (method list, dependencies, business rules) | reports/ + stdout (report to leader) |
+| Service specification summary | Detailed Markdown (method list, dependencies, business rules) | reports/ + stdout (report to Shogun (General)) |
 
 ### Prerequisites
 - Serena MCP is running
@@ -206,8 +206,8 @@ Upon investigation completion, verify the following:
 
 | Skill | Condition | Instruction |
 |-------|-----------|-------------|
-| `/change-impact` | When the task involves changes | After specification summary is complete, report to leader and proceed to `/change-impact` upon approval |
-| `/create-pr --plan` | For bug fixes or minor changes | If impact analysis is deemed unnecessary, propose to leader for judgment |
+| `/change-impact` | When the task involves changes | After specification summary is complete, report to Shogun (General) and proceed to `/change-impact` upon approval |
+| `/create-pr --plan` | For bug fixes or minor changes | If impact analysis is deemed unnecessary, propose to Shogun (General) for judgment |
 
 > **Fallback**: If prerequisites are not met, report to the leader and await further instructions.
 

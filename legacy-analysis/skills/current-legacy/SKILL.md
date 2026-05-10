@@ -19,13 +19,13 @@ See config/terminology.md for term customization
 
 | Role | Assignment | Responsibility |
 |------|-----------|----------------|
-| **Shogun (Leader)** | Coordination and judgment | Phase selection, team composition, progress monitoring. Does not read code directly (F002 rule) |
-| **Karo (Planner)** | Pre-analysis | Investigation target decomposition, risk identification, Phase 1 change theme selection support |
-| **Ashigaru (Worker)** | Execution | Code tracing (investigator), knowledge organization (scribe), diagram updates |
+| **Shogun (General)** | Coordination and judgment | Phase selection, team composition, progress monitoring. Does not read code directly (delegate-mode rule) |
+| **Karo (Chief Retainer / Planner)** | Pre-analysis | Investigation target decomposition, risk identification, Phase 1 change theme selection support |
+| **Ashigaru (Foot Soldier / Worker)** | Execution | Code tracing (investigator), knowledge organization (scribe), diagram updates |
 | **Metsuke (Inspector)** | Quality audit | Verify deliverable accuracy in Phase 2. Detect hallucinations |
 
-### F002 Rule
-The leader must not perform legacy analysis directly. Consult the planner for investigation plans, delegate execution to workers, and request quality audits from the inspector.
+### Delegate-Mode Rule
+Shogun (General) must not perform legacy analysis directly. Consult Karo (Chief Retainer / Planner) for investigation plans, delegate execution to Ashigaru (Foot Soldier / Worker), and request quality audits from Metsuke (Inspector).
 
 ## Tone
 Business-style reporting. Fact-based and concise. Mark uncertain information explicitly as "estimated."
@@ -45,7 +45,7 @@ Business-style reporting. Fact-based and concise. Mark uncertain information exp
 | Prerequisite | Check Method | First Run | Subsequent Runs |
 |-------------|-----------|-----------|-----------------|
 | Local repository clones | `ls` to verify paths | Required | Required |
-| `knowledge/system/01_overview/birdseye_project_overview.md` | File exists? | Not needed (Phase 0 generates) | Required |
+| `knowledge/system/01_overview/birdseye_system_overview.md` | File exists? | Not needed (Phase 0 generates) | Required |
 | `knowledge/README.md` | File exists? | Not needed (use `/project-guide` for guidance) | Required |
 | `knowledge/system/02_structure/` directory | Directory exists? | Not needed (Phase 0 creates) | Required |
 
@@ -111,7 +111,7 @@ If schema.duckdb is not available:
 
 > Phase 0 quantitative scanning is limited to **counting** (how many routes, models, tables exist). **Reading** the contents or analyzing complexity belongs to Phase 1.
 
-**Validation**: ~65-73% of project information is automatically determined from README, composer.json, package.json, etc.
+**Validation**: about 65-73% of the information can be automatically identified from README, composer.json, package.json, etc. (based on verified across multiple large-scale repositories).
 
 **Step 2: Organize "what we know"**
 Organize information identified from auto-collection using the following four categories:
@@ -324,12 +324,12 @@ Repeat Phase 1-3 with different change themes. With each iteration:
 
 | Phase | Next Action | Instruction |
 |-------|------------|-------------|
-| Phase 0 complete | Begin Phase 1 | Select one change theme from the "still unknown" list, report to leader for approval, then execute Phase 1 |
+| Phase 0 complete | Begin Phase 1 | Select one change theme from the "still unknown" list, report to Shogun (General) for approval, then execute Phase 1 |
 | Phase 1 complete | Begin Phase 2 | Deploy inspector to verify deliverable accuracy in Phase 2 |
 | Phase 2 complete | Begin Phase 3 | **Skipping Phase 3 is prohibited.** Execute map updates (historical violation: Phase 3 omitted in past sessions) |
-| Phase 3 complete | Iterate Phase 1 | If items remain on the "unknown" list, report to leader and execute Phase 1 with the next theme |
+| Phase 3 complete | Iterate Phase 1 | If items remain on the "unknown" list, report to Shogun (General) and execute Phase 1 with the next theme |
 
-> **Fallback**: If prerequisites are not met, report to leader and await further instructions
+> **Fallback**: If prerequisites are not met, report to Shogun (General) and await further instructions
 
 ### Quality Checkpoints
 - [ ] Phase 0: Obtained 65-73% of information through auto-collection

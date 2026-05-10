@@ -15,12 +15,12 @@ description: Document integrity diagnosis skill. Detects dead links, naming conv
 **Role responsibilities**:
 | Role | Responsibility |
 |------|---|
-| **Leader** | Review diagnosis results, determine remediation strategy |
-| **Planner** | For large-scale diagnosis, plan inspection approach (optional) |
-| **Worker** | Execute checklist items (dead-link detection, naming rules, README consistency, promotion readiness) |
-| **Auditor** | Audit the diagnosis results themselves (ensure no detection gaps) |
+| **Shogun (General)** | Review diagnosis results, determine remediation strategy |
+| **Karo (Chief Retainer / Planner)** | For large-scale diagnosis, plan inspection approach (optional) |
+| **Ashigaru (Foot Soldier / Worker, scribe)** | Execute checklist items (dead-link detection, naming rules, README consistency, promotion readiness) |
+| **Metsuke (Inspector)** | Audit the diagnosis results themselves (ensure no detection gaps) |
 
-**Strict compliance with F002**: Leader does not personally run diagnostics. Delegate execution to workers.
+**Strict delegate-mode compliance**: Shogun (General) does not personally run diagnostics. Delegate execution to Ashigaru (Foot Soldier / Worker).
 
 **Distinction from `/doc-organize`**:
 - `/doc-check` = **Judge** (integrity verification + As-Is/To-Be promotion judgment + placement error detection)
@@ -44,7 +44,7 @@ Clear, professional reporting with business etiquette. Clearly state OK/NG, expl
 
 - **Required**: Run after documentation work (file additions, renames, integrations)
 - **Recommended**: Final verification before session end
-- **Optional**: When decision maker explicitly requests "verify integrity"
+- **Optional**: When Uesama (Lord) explicitly requests "verify integrity"
 
 ---
 
@@ -107,9 +107,9 @@ Verify promotion status of files in reports/.
 
 | Investigation Purpose | Promotion Timing | Decision Maker |
 |--------|------------|--------|
-| Current spec survey (As-Is) | **Immediate promotion** | Leader/Worker |
-| Future plans, improvement proposals (To-Be) | **Hold** (promote after decision maker approval) | Decision maker |
-| One-time investigation | **Discard candidate** (discard if valueless) | Leader |
+| Current spec survey (As-Is) | **Immediate promotion** | Shogun (General) / Ashigaru (Worker) |
+| Future plans, improvement proposals (To-Be) | **Hold** (promote after Uesama (Lord) approval) | Uesama (Lord) |
+| One-time investigation | **Discard candidate** (discard if valueless) | Shogun (General) |
 
 **Check content**:
 - List reports/ files without `> **Promoted**` mark
@@ -119,7 +119,7 @@ Verify promotion status of files in reports/.
 ### 4-b. Mark Omission Detection (Cross-Reference Check)
 
 For unpromoted files, run heuristics to detect "possible mark omission".
-**Results are suggestive only; final judgment is leader's.**
+**Results are suggestive only; final judgment is by Shogun (General) / Uesama (Lord).**
 
 **Procedure**:
 1. Extract keywords from unpromoted filename (minus extension/prefix)
@@ -131,7 +131,7 @@ For unpromoted files, run heuristics to detect "possible mark omission".
    | Hit Count | Judgment | Label | Action |
    |-----------|---------|-------|--------|
    | 5+ hits | Definitively reflected | `[Promoted candidate]` | Recommend adding promotion mark |
-   | 3-4 hits | Partially reflected (strong) | `[Review needed]` | Consult leader for judgment |
+   | 3-4 hits | Partially reflected (strong) | `[Review needed]` | Consult Shogun (General) for judgment |
    | 1-2 hits | Partially reflected (weak) | `[Info]` | Record as information. No immediate action required |
    | 0 hits | Not reflected | `[Not reflected]` | Recommend discard evaluation |
 
@@ -163,11 +163,11 @@ For unpromoted files, run heuristics to detect "possible mark omission".
 
 | Skill | Condition | Instruction |
 |-------|-----------|-------------|
-| `/doc-organize` | When 1+ promotion candidates detected | Save diagnosis results, then report to leader for approval before executing `/doc-organize` |
+| `/doc-organize` | When 1+ promotion candidates detected | Save diagnosis results, then report to Shogun (General) for approval before executing `/doc-organize` |
 
-> **When To-Be (awaiting decision) items are numerous**: Present the full list to decision maker and await priority judgment before executing
+> **When To-Be (awaiting decision) items are numerous**: Present the full list to Uesama (Lord) and await priority judgment before executing
 >
-> **Fallback**: If prerequisites are not met, report to leader and await further instructions
+> **Fallback**: If prerequisites are not met, report to Shogun (General) and await further instructions
 
 ---
 
@@ -206,7 +206,7 @@ No problems found: Integrity check complete
 - Dead-link → Fix links in target files
 - Naming violations → Rename files + update references
 - README undocumented → Add to README.md
-- Promotion candidates → Activate `/doc-organize` or confirm decision maker approval
+- Promotion candidates → Activate `/doc-organize` or confirm Uesama (Lord) approval
 
 ---
 
