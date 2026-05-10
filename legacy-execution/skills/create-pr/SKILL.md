@@ -499,6 +499,21 @@ Communicate in clear, business-appropriate language. Be explicit about successes
 
 > **Fallback**: If prerequisites are not met, report to the leader and await further instructions.
 
+### PR Body Prohibition List (Required Check for OSS PRs)
+
+When creating PRs to public/OSS repositories, verify that the PR body does NOT contain any of the following:
+
+| Prohibited Item | Example grep Pattern |
+|-----------------|----------------------|
+| Internal repository names | `<internal-repo-a>\|<internal-repo-b>` |
+| Internal organization names | `<internal-org-name>` |
+| Personal paths or identifiers | `<personal-handle>\|<personal-domain>` |
+| Internal Issue / PR numbers | `#[0-9]\+` (numbers referring to private trackers) |
+| API keys / tokens | `sk-\|AKIA\|ghp_\|AIza` |
+| Internal release notes / workflow names | `release\|workflow` (when referring to private workflows) |
+
+**Verification procedure**: Save the proposed PR body (from the plan) to a temporary file, run the grep patterns above and confirm 0 hits before delegating PR creation to the worker.
+
 ### Quality Checkpoints
 
 #### For --plan
