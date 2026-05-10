@@ -27,12 +27,12 @@ argument-hint: [scope] - e.g., `reports/` / `knowledge/` / `--all` / specific fi
 **Role responsibilities**:
 | Role | Responsibility |
 |------|---|
-| **Leader** | Approve organization/reorganization decisions, make final judgments |
-| **Planner** | For large-scale reorganization (10+ files), task decomposition and planning strategy |
-| **Worker** | Execute character classification, file placement, and mark assignments |
-| **Auditor** | Quality audit of classification results (accuracy, naming compliance) |
+| **Shogun (General)** | Approve organization / reorganization decisions, make final judgments |
+| **Karo (Chief Retainer / Planner)** | For large-scale reorganization (10+ files), task decomposition and planning strategy |
+| **Ashigaru (Foot Soldier / Worker)** | Execute character classification, file placement, and mark assignments |
+| **Metsuke (Inspector)** | Quality audit of classification results (accuracy, naming compliance) |
 
-**Strict compliance with F002**: Leader does not personally organize files. Consult planner, delegate execution to workers, request auditor for quality assurance.
+**Strict delegate-mode compliance**: Shogun (General) does not personally organize files. Consult Karo (Chief Retainer / Planner), delegate execution to Ashigaru (Foot Soldier / Worker), and request Metsuke (Inspector) for quality assurance.
 
 **Distinction from `/doc-check`**:
 - `/doc-check` = **Judge** (integrity verification + As-Is/To-Be promotion judgment + placement error detection)
@@ -55,10 +55,10 @@ argument-hint: [scope] - e.g., `reports/` / `knowledge/` / `--all` / specific fi
 | **Standards & Guidelines** | Checklists, maturity models, review rules | `knowledge/standards/` | PR checklist, legacy maturity model | Decision maker makes final decision |
 
 **Escalation Path for Uncertain Classification**:
-- Worker uncertain → Report to leader for judgment
-- Leader uncertain → Request analysis from planner, then leader decides based on results
-- Document matches multiple characters and requires decomposition → Leader makes final decision (see PRD decomposition rule)
-- New standards/guidelines creation → Requires decision maker approval (updates to existing standards can be decided by leader)
+- Ashigaru (Worker) uncertain → Report to Shogun (General) for judgment
+- Shogun (General) uncertain → Request analysis from Karo (Planner), then Shogun decides based on results
+- Document matches multiple characters and requires decomposition → Shogun (General) makes final decision (see PRD decomposition rule)
+- New standards / guidelines creation → Requires Uesama (Lord) approval (updates to existing standards can be decided by Shogun (General))
 
 ### Representative Document Type Mapping
 
@@ -96,23 +96,23 @@ argument-hint: [scope] - e.g., `reports/` / `knowledge/` / `--all` / specific fi
 
 1. **No deletion of files created within 2 weeks**: Files less than 2 weeks old are marked as discard candidates only. Do not delete immediately (they may be referenced across sessions)
 2. **No deletion of referenced files**: Files linked from other Markdown files (`[text](path)` format) must not be deleted without first updating the referencing files
-3. **No deletion based solely on automated judgment**: Do not finalize discard based on grep results or filename similarity alone. Always require human confirmation (leader or decision maker)
+3. **No deletion based solely on automated judgment**: Do not finalize discard based on grep results or filename similarity alone. Always require human confirmation (Shogun (General) or Uesama (Lord))
 
 #### Fallback
 
-When in doubt, do not delete. Add the following mark to the file header and report to leader:
+When in doubt, do not delete. Add the following mark to the file header and report to Shogun (General):
 
 ```
-> **Discard candidate**: [reason in one line] (YYYY-MM-DD classified by worker)
+> **Discard candidate**: [reason in one line] (YYYY-MM-DD classified by Ashigaru (Worker))
 ```
 
 ### Promotion Decision Criteria (Purpose-Based)
 
 | Investigation Purpose | Processing Decision | Decision Maker |
 |--------|------------|--------|
-| Current spec survey (As-Is) | **Immediate promotion** | Leader/Worker |
-| Future plans, improvement proposals (To-Be) | **Hold** (promote after decision maker approval) | Decision maker |
-| One-time investigation | **Discard candidate** (discard if no value) | Leader |
+| Current spec survey (As-Is) | **Immediate promotion** | Shogun (General) / Ashigaru (Worker) |
+| Future plans, improvement proposals (To-Be) | **Hold** (promote after Uesama (Lord) approval) | Uesama (Lord) |
+| One-time investigation | **Discard candidate** (discard if no value) | Shogun (General) |
 
 ### Naming Convention (Prefixes)
 
@@ -191,7 +191,7 @@ When a document matches multiple character conditions, classify in this order:
 1. **"Does it exist independent of code?"**: Exists without code → Domain knowledge. Depends on code implementation details → Implementation specs
 2. **"Is it a problem record or structure record?"**: Problem/risk/debt record → Quality records. Structure/mechanism record → System knowledge
 3. **"Is it procedure description or knowledge description?"**: Procedure/operation description → Runbooks. Concept/specification description → use 1-2 above
-4. **Uncertain?** → Consult with leader
+4. **Uncertain?** → Consult with Shogun (General)
 
 #### PRD (Compound Document) Decomposition Rule
 
@@ -223,13 +223,13 @@ PRDs span multiple characters. Decompose by section during promotion:
 ```mermaid
 flowchart TD
     A["1. Obtain target file list"] --> B["2. Classify each file by character"]
-    B --> C["3. Decide processing action (promote/discard/hold)"]
-    C --> D["4. Leader confirms (classification results, filing plan)"]
-    D --> E{Leader approval}
+    B --> C["3. Decide processing action (promote / discard / hold)"]
+    C --> D["4. Uesama (Lord) confirms (classification, filing plan)"]
+    D --> E{Uesama approval}
     E -->|Rejected| F["End"]
     E -->|Approved| G{Large scale?}
-    G -->|10+ files| H["Consult planner (task decomposition)"]
-    G -->|10 or fewer| I["Delegate to workers"]
+    G -->|10+ files| H["Consult Karo (Chief Retainer / Planner)"]
+    G -->|10 or fewer| I["Delegate to Ashigaru (Foot Soldier / Worker)"]
     H --> I
     I --> J["Execute: place files + assign marks"]
     J --> K["Report"]
@@ -260,7 +260,15 @@ When describing domain terms and flag names, always explicitly state "whose/what
 ### Diagram Standards
 
 - Never use emoji
-- Use mermaid diagrams for visualization
+
+#### mermaid diagrams
+
+| Diagram type | Use case | Recommended character |
+|---|---|---|
+| `flowchart` | Bird's-eye view, dependency map, branching logic | birdseye_ |
+| `sequenceDiagram` | API call, batch processing, time-series flow | fisheye_, implementation specs |
+| `stateDiagram` | Status transitions | domain knowledge, quality records |
+| `erDiagram` | Table relations, data model | wormseye_, implementation specs |
 
 ---
 
@@ -286,8 +294,8 @@ When describing domain terms and flag names, always explicitly state "whose/what
 
 | Skill | Condition | Instruction |
 |-------|-----------|-------------|
-| `/doc-check` | When file moves or renames occurred | **Running `/doc-check` after organization is mandatory and must not be skipped.** Report to leader for approval, then execute |
-| `/doc-update` | When freshness verification of promoted files is needed | Execute after `/doc-check` completes; propose to leader and await judgment |
+| `/doc-check` | When file moves or renames occurred | **Running `/doc-check` after organization is mandatory and must not be skipped.** Report to Shogun (General) for approval, then execute |
+| `/doc-update` | When freshness verification of promoted files is needed | Execute after `/doc-check` completes; propose to Shogun (General) and await judgment |
 
 > **Fallback**: If prerequisites are not met, report to leader and await further instructions
 

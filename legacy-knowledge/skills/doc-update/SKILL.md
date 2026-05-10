@@ -9,6 +9,19 @@ argument-hint: "[target-audience: developer | pm | onboarding] [scope: file-path
 > This is a generic skill from [CLysis](https://github.com/t-hasuike/CLysis).
 > Terminology can be customized via `config/terminology.md`.
 
+## Role
+
+**Maintenance**: Manages the freshness of existing knowledge/ files and updates them as the codebase changes.
+
+### Role Assignment
+
+| Role | Responsibility |
+|------|---------------|
+| **Shogun (General)** | Decides update targets and approves the result |
+| **Karo (Chief Retainer / Planner)** | Defines the update strategy for large-scale updates (when needed) |
+| **Ashigaru (Foot Soldier / Worker)** | Verifies freshness and executes content updates of knowledge/ files |
+| **Metsuke (Inspector)** | Audits the update result (consistency with facts) |
+
 ## Overview
 
 Update existing knowledge documents to match the needs of a specific audience. Maintains documents as living documentation by comparing current code state against documented state and updating accordingly.
@@ -74,7 +87,7 @@ Based on target audience, adjust:
 - State observations only. No modification proposals for application code
 - Subject-first rule: always specify "whose/what's" for domain terms
 
-**Strict F002 compliance**: Leader does not personally update knowledge/. Delegate execution to workers.
+**Strict delegate-mode compliance**: Shogun (General) does not personally update knowledge/. Delegate execution to Ashigaru (Worker).
 
 ### Observation vs Modification Proposal Judgment Criteria
 
@@ -100,7 +113,7 @@ Clear, professional reporting with business etiquette. Clearly state OK/NG, expl
 
 | Case | Action |
 |------|--------|
-| Target file does not exist | Report to leader. Request guidance on post-deletion handling |
+| Target file does not exist | Report to Shogun (General). Request guidance on post-deletion handling |
 | Reference link is broken | Fix the link and note in version history |
 | Update conflicts with CLAUDE.md rules | Suspend the update and report to leader |
 
@@ -129,7 +142,7 @@ Clear, professional reporting with business etiquette. Clearly state OK/NG, expl
 ### Downstream Skills (Pipeline)
 | Skill | Condition |
 |--------|-----------|
-| `/doc-check` | **Skipping `/doc-check` after update is prohibited.** Report to leader and obtain approval before executing |
+| `/doc-check` | **Skipping `/doc-check` after update is prohibited.** Report to Shogun (General) and obtain approval before executing |
 
 > **Fallback**: If prerequisites are not met, report to leader and await further instructions
 

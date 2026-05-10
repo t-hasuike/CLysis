@@ -1,6 +1,6 @@
 ---
 name: session-start
-description: Automate session context recovery. Aggregate previous incomplete tasks, in-progress work, and open issues to present the leader with "today's priority tasks."
+description: Automate session context recovery. Aggregate previous incomplete tasks, in-progress work, and open issues to present today's priority tasks.
 argument-hint: "[--light (lightweight)] [--full (full, default)]"
 ---
 
@@ -8,7 +8,7 @@ argument-hint: "[--light (lightweight)] [--full (full, default)]"
 
 ## Overview
 
-Recovers context from previous sessions at the start of a new session. Aggregates the following information and reports to the leader:
+Recovers context from previous sessions at the start of a new session. Aggregates the following information and reports to Shogun (General) so today's tasks can be prioritized efficiently:
 
 - Previous session's incomplete tasks
 - Current project state
@@ -19,10 +19,9 @@ Recovers context from previous sessions at the start of a new session. Aggregate
 
 | Role | Responsibility |
 |------|---------------|
-| **Leader** | Decides when to invoke this skill. Receives the report and determines today's priorities |
-| **Planner** | Consulted if complex tasks (spanning 2+ areas) are found in the context summary |
-| **Worker** | Executes this skill. Scans actual files to aggregate context information and generates/saves the report |
-| **Inspector** | Verifies the output file exists, checks for hallucination, and confirms rule compliance |
+| **Shogun (General)** | Decides when to invoke this skill, receives the report, and determines today's priorities |
+| **Ashigaru (Foot Soldier / Worker)** | Executes this skill. Scans actual files to aggregate context information and generates / saves the report |
+| **Metsuke (Inspector)** | Verifies the output file exists and checks for hallucination |
 
 > **File save mandatory**: Output must be saved to `reports/session_context/`. stdout-only output is prohibited.
 
@@ -30,7 +29,7 @@ Recovers context from previous sessions at the start of a new session. Aggregate
 
 - New session start
 - Resume after long interruption
-- Leader mentions "continue from last time"
+- Uesama (Lord) mentions "continue from last time"
 
 ## Usage
 
@@ -78,24 +77,28 @@ Recovers context from previous sessions at the start of a new session. Aggregate
 - Task name, priority, current status, reference file name
 - Next Action (if explicitly stated)
 
-### Step 3 (--full only): Check open issues
+### Step 3 (--full only): Check open Issues in the project repository
 
 **Purpose**: Identify open GitHub Issues and their priorities.
 
 **Actions**:
-- Run `gh issue list --repo {your-project-repo} --state open`
+- Run `gh issue list --repo <owner>/<repo> --state open`
 - Extract title, labels, and priority from results
 - Prioritize items with these labels:
   - `priority: high`
   - `priority: critical`
   - `blocked`
 
+**Fallback (A-006)**:
+- On GitHub API failure: automatically fall back to `--light` mode
+- Error message: "Could not check GitHub Issues. Reporting with local information only."
+
 ### Step 4 (--full only): Check project session memory
 
 **Purpose**: Retrieve incomplete tasks and blockers recorded in the previous session.
 
 **Actions**:
-- Check the `{memory-directory}` directory
+- Check the `~/.claude/projects/<project-id>/memory/` directory
 - Sort `project_session_*.md` files by modification date (descending)
 - Read the latest 1 file
 - Extract "Incomplete Tasks", "Blockers", "Next Steps" sections
@@ -107,20 +110,23 @@ Recovers context from previous sessions at the start of a new session. Aggregate
 
 ### Step 5: Generate and save context summary
 
-**Purpose**: Integrate all collected information into a report and present it to the leader.
+**Purpose**: Integrate all collected information into a report and present it to Shogun (General).
 
 **Actions**:
 - Integrate information from Steps 1-4
 - Generate report using the standard format (below)
 - Save to: `reports/session_context/{YYYYMMDD}-session-start.md`
-- Deliver standard report to leader
+- Deliver standard report to Shogun (General)
+
+**Output file**:
+- `reports/session_context/{YYYYMMDD}-session-start.md` (required, file save mandatory)
 
 ## Mode Specification
 
-| Mode | Steps Executed | Scope | Estimated Time | When to Use |
-|------|---------------|-------|---------------|-------------|
-| `--light` | Step 1 + Step 2 only (local file scan) | Local only | Short | GitHub API unavailable; quick status check |
-| `--full` (default) | Steps 1-4 (includes GitHub API) | Full scope | Moderate | Standard session start; resume after interruption |
+| Mode | Steps Executed | Scope | Estimated Time |
+|------|---------------|-------|---------------|
+| `--light` | Step 1 + Step 2 only (local file scan) | Local only | Short |
+| `--full` (default) | Steps 1-4 (includes GitHub API) | Full scope | Moderate |
 
 Default is `--full`. If GitHub API fails during `--full` execution, automatically falls back to `--light` results.
 
@@ -153,14 +159,14 @@ State aggregation at the start of this session. Summarizes progress, blockers, a
 
 | Repository | # | Title | Labels | Reference |
 |-----------|---|-------|--------|-----------|
-| {repo} | #NN | [title] | priority: high, blocked | [URL] |
+| <owner>/<repo> | #NN | [title] | priority: high, blocked | [URL] |
 | ... | ... | ... | ... | ... |
 
 **Notes**: Only priority: high / critical shown. Other labeled issues noted if present.
 
 ### Previous Session Record
 - Previous session date: {YYYY-MM-DD}
-- Record file: {memory-directory}/project_session_*.md
+- Record file: MEMORY.md > project_session_*.md
 - Incomplete tasks:
   - [item 1]
   - [item 2]
@@ -168,7 +174,7 @@ State aggregation at the start of this session. Summarizes progress, blockers, a
 
 ## Recommendations for This Session
 
-> **Question for Leader**
+> **Question for Shogun (General)**
 >
 > Based on the above, what are today's priority tasks?
 >
@@ -186,26 +192,48 @@ State aggregation at the start of this session. Summarizes progress, blockers, a
 ---
 
 **Generated by**: /session-start skill
+**Version**: 1.0
 ```
 
-## Fallback Rules
+## Notes (Inspector Findings Reflected)
 
-### GitHub API Connection Failure
+### A-003: Planner consultation note
 
-1. Upon detecting connection failure during `--full` mode, automatically fall back to `--light` mode
-2. Record in output report: "GitHub API: Fallback (connection failed)"
-3. Report to leader: "Could not check GitHub Issues. Reporting with local information only."
-4. Processing continues -- complete the report with Step 1-2 information
+If complex tasks (spanning 2+ areas, multiple repositories, or requiring impact analysis) are found in the output summary, append the following note:
 
-### File Not Found
+> **Important**: Consult Karo (Chief Retainer / Planner) before executing this task. Decomposing complex tasks and impact analysis are Karo's responsibility.
 
-- If a target file is not found, output "No matching file found"
-- Processing continues. Other steps are still executed
+### A-004: Mandatory file save (file save mandatory)
 
-### Empty workspace/in_progress/
+- Output must be saved to `reports/session_context/{YYYYMMDD}-session-start.md`
+- A stdout report text is also produced, but file save is required
+- A session start without a saved file is treated as a failure
 
-- If the directory is empty or does not exist, report "No in-progress tasks found"
-- Processing continues with remaining steps
+### A-006: GitHub API fallback
+
+On GitHub API failure:
+
+1. Detect the failure and automatically fall back to `--light` mode
+2. Record "GitHub API: Fallback (connection failed)" in the output report
+3. Report to Shogun (General): "Could not check GitHub Issues. Reporting with local information only."
+4. Continue processing -- complete the report with Step 1-2 information
+
+### Hallucination Prevention
+
+- Record only facts confirmed by actual file scanning
+- Do not interpolate incomplete tasks or task content with guesses
+- If a file is not found, explicitly state "No matching file found"
+- Do not record uncertain information
+
+---
+
+## Prohibited Actions
+
+- Modifying files or editing code (this skill's purpose is information aggregation and reporting only)
+- Guessing or interpolating task content (report only actual file facts)
+- Returning stdout only without file save (file save mandatory)
+
+---
 
 ## I/O Specification
 
@@ -219,14 +247,33 @@ State aggregation at the start of this session. Summarizes progress, blockers, a
 
 | Type | Format | Destination | Required |
 |------|--------|-------------|----------|
-| Session start summary | Markdown | `reports/session_context/{YYYYMMDD}-session-start.md` | Yes |
-| Leader report text | Standard report format | stdout | Yes |
+| Session start summary | Markdown | `reports/session_context/{YYYYMMDD}-session-start.md` | Yes (file save mandatory) |
+| Shogun (General) report text | Standard report format | stdout | Yes |
 
 ### Preconditions
 
-- `workspace/in_progress/` directory exists (or can be empty)
+- `workspace/in_progress/` directory exists
 - `reports/session_context/` directory exists (create if missing)
-- Memory directory exists (--full only)
+- MEMORY.md exists (--full only)
+
+### Subsequent Skills (Pipeline)
+
+| Skill | Condition | Instruction |
+|-------|-----------|-------------|
+| `/project-guide` | Starting a new task | Report to Shogun (General), obtain approval before executing |
+| `/current-spec` | Continuing previous investigation | Report to Shogun (General), obtain approval before executing |
+| `/change-impact` | Impact analysis needed for complex task | Consult Karo (Chief Retainer / Planner) before executing |
+
+### Fallback Rules
+
+**GitHub API connection failure**:
+- During `--full` execution, on detecting a connection failure, automatically fall back to `--light` mode results
+- Record "GitHub API: Fallback" in the output report
+- Continue processing
+
+**File not found**:
+- If a target file is not found, output "No matching file found"
+- Continue processing. Other steps still execute
 
 ## Quality Checkpoints
 
@@ -234,28 +281,7 @@ State aggregation at the start of this session. Summarizes progress, blockers, a
 - [ ] File contains frontmatter (generation date, mode, API status)
 - [ ] All information from Steps 1-4 is aggregated (for --full mode)
 - [ ] No hallucination (no guessed or interpolated content)
-- [ ] Complex tasks include planner consultation note
+- [ ] Complex tasks include the Karo (Planner) consultation note (A-003)
 - [ ] Priority ordering is reasonable
 
-## Important Notes
-
-1. **Planner consultation**: If complex tasks (spanning 2+ areas) are found, note that planner consultation is required before execution
-2. **File save mandatory**: Output must be saved to `reports/session_context/`. stdout-only output is prohibited
-3. **Fallback**: If GitHub API fails, fall back to --light mode and report the failure
-4. **No hallucination**: Report only facts confirmed by actual file scanning. Do not guess or interpolate task content
-
-## Prohibited Actions
-
-- Modifying files or editing code (this skill's purpose is information aggregation and reporting only)
-- Guessing or interpolating task content (report only actual file facts)
-- Returning stdout only without file save
-
-## Subsequent Skills (Pipeline)
-
-| Skill | Condition | Instruction |
-|-------|-----------|-------------|
-| `/project-guide` | Starting a new task | Report to leader, obtain approval before executing |
-| `/current-spec` | Continuing previous investigation | Report to leader, obtain approval before executing |
-| `/change-impact` | Impact analysis needed for complex task | Consult planner before executing |
-
-> **Fallback**: If previous incomplete tasks cannot be identified, report to leader: "No previous session records found. Start as new task?" and await instructions.
+> Note: See `config/terminology.md` for term customization.

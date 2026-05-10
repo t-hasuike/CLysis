@@ -13,7 +13,26 @@ argument-hint: <description of the change>
 
 Systematically investigate the impact scope when adding new features or changing specifications, and create a report.
 
-See config/terminology.md for term customization
+## Role
+
+**Analysis**: Systematically investigate the impact scope when adding new features or changing specifications, and create an impact analysis report.
+
+### Role Assignment
+
+| Role | Responsibility |
+|------|---------------|
+| **Shogun (General)** | Decides analysis targets, approves results, and judges response policies |
+| **Karo (Chief Retainer / Planner)** | Decomposes tasks and selects investigation scope for large analyses |
+| **Ashigaru (Foot Soldier / Worker)** | Executes code investigation, identifies impact scope, and writes the report |
+| **Metsuke (Inspector)** | Audits the analysis result (omissions in impact scope, mis-judgments) |
+
+**Strict delegate-mode compliance**: Shogun (General) does not perform impact analysis directly. Consult Karo (Chief Retainer / Planner), delegate execution to Ashigaru (Foot Soldier / Worker), and request Metsuke (Inspector) for quality audit.
+
+### Tone
+
+Use a polite and clear business reporting style. State OK / NG plainly. When something is unknown, say so explicitly.
+
+> Note: See `config/terminology.md` for term customization.
 
 ## Investigation Target
 
@@ -261,7 +280,7 @@ Example: Impact investigation for adding a product category
 ### OUTPUT
 | Type | Format | Destination |
 |------|--------|-------------|
-| Impact analysis report | ADR-format Markdown (affected files list, risks, implementation plan) | stdout (report to leader) |
+| Impact analysis report | ADR-format Markdown (affected files list, risks, implementation plan) | stdout (report to Shogun (General)) |
 
 ### Prerequisites
 - Change target specification has been understood (prior investigation with /current-spec recommended)

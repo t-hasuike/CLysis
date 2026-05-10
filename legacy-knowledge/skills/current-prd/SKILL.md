@@ -20,6 +20,19 @@ Generate a PRD (Product Requirements Document) by reverse-engineering an existin
 - Creating a baseline spec before refactoring
 - Bridging the gap between code reality and documented expectations
 
+## Role Assignment
+
+| Role | Responsibility |
+|------|---------------|
+| **Shogun (General)** | Decides scope, manages phase progression, and reports to Uesama (Lord). Does not perform code investigation or analysis directly |
+| **Karo (Chief Retainer / Planner)** | Validates phase splitting given the target repository's size and complexity. Reviews module decomposition before execution |
+| **Ashigaru (Foot Soldier / Worker)** | Executes each phase (code scan, module analysis, PRD assembly). Writes output to `reports/` |
+| **Metsuke (Inspector)** | Detects hallucination in the final PRD (verifies referenced paths, symbols, and table names exist). Quality audit |
+
+### Tone
+
+Use a polite and clear business reporting style. State OK / NG plainly. When something is unknown, say so explicitly.
+
 ## Three-Phase Workflow
 
 ### Phase 1: Global Scan (Automated Collection)
