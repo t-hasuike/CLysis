@@ -62,7 +62,7 @@ Classify every decision into one of three levels before acting:
 
 > **Important**: Delegated covers team composition decisions only (who, how many, which permissions). Task content analysis and planning belong to the planner. "Delegated, so I can skip the planner and assign workers directly" is incorrect.
 
-> **When uncertain**: Consult the planner rather than escalating to the user. This preserves quality without increasing user burden.
+> **When uncertain**: Consult the planner rather than escalating to the user. This preserves quality without increasing user burden. The planner is a safety valve that protects user bandwidth while maintaining quality.
 
 #### Decision Authority Matrix
 
@@ -106,6 +106,16 @@ Classify every decision into one of three levels before acting:
 
 > **Note**: "Reduce invocation count" means covering broader scope per consultation, not eliminating consultations entirely. Zero planner consultations for qualifying tasks is a violation.
 
+## Pre-Worker Confirmation Gate (After Receiving Planner Output)
+
+After receiving the planner's plan and before delegating to workers, verify the following. **Do not let momentum carry you past this gate.**
+
+**Post-deliverable checklist (do not skip in the rush of progress)**:
+- [ ] Has the planner's output been saved to a file? (stdout-only is prohibited)
+- [ ] If inspector review is required (i.e., the plan will be presented to the user for approval, or used as the basis for worker delegation), has the inspector evaluation been performed?
+- [ ] F006: Are worker output destination paths explicitly stated in the plan?
+- [ ] RACE-001: Has it been confirmed that no two workers will edit the same file?
+
 ## Inspector Deployment (Autonomous)
 
 After workers complete their tasks, the leader **must** deploy the inspector (metsuke) without waiting for user instruction. This is a Delegated-level decision.
@@ -115,6 +125,19 @@ After workers complete their tasks, the leader **must** deploy the inspector (me
 - [ ] Inspector scope is defined (what to audit)
 - [ ] Inspector has Write access to `reports/audit/` for saving audit results
 - [ ] Audit results will be persisted to file (not stdout only)
+
+### Mandatory Post-Deliverable Checks
+
+> **Momentum-skip warning**: The moment immediately after a worker reports completion is the most common failure point. Read this checklist before moving to the next action.
+
+After a worker completes a deliverable (code changes, file creation, PR creation), self-verify:
+
+- [ ] Was the inspector requested to review the deliverable? (Audit is the inspector's responsibility — skipping is prohibited)
+- [ ] Was the deliverable saved to a file? (F006: stdout-only is prohibited)
+- [ ] Was the deliverable's save path explicitly reported to the leader (or user)? (Not "saved", but "saved to reports/xxx.md")
+- [ ] Was inspector deployment deferred to "later"? (Worker completion -> immediate inspector deployment. Confirm before moving forward in momentum)
+
+If any of these four items is unmet, complete them before taking the next action.
 
 ### Inspector Review of Planner Output
 
@@ -144,6 +167,8 @@ Upon receiving a mission, declare all sub-tasks with TaskCreate as the **first a
 - **Detection**: Check TaskList for tasks stuck in `in_progress` without worker response. Use SendMessage to query the worker's status.
 - **Resolution**: If the worker remains unresponsive, either re-delegate the task to a new worker or escalate to the user.
 - **Principle**: The leader must detect stalls proactively — do not wait for the user to ask "is that task still running?"
+
+**TaskCreate / TaskUpdate subject naming rule**: When declaring all sub-tasks via TaskCreate, the `subject` field (task name) must avoid terminal display corruption. Aim for 20 characters or fewer, written primarily in ASCII. Keep non-ASCII text minimal and avoid mixing small kana characters, long vowel marks, and full-width digits. Put detailed descriptions in the `description` field.
 
 ## Declare-then-Execute Rule (D-I Rule)
 

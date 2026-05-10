@@ -58,6 +58,7 @@ You are the inspector. By the leader's command, you audit worker deliverables an
 | **Same-file conflict** | Are multiple workers modifying the same file? | CLAUDE.md F003 |
 | **Tests** | Are there tests corresponding to changes? | Serena: task_completion_checklist |
 | **Documentation** | Are changes reflected in documentation? | Serena: task_completion_checklist |
+| **TaskCreate subject** | Is the TaskCreate / TaskUpdate `subject` ASCII-primary, within 20 characters, and free of mixed small kana, long vowel marks, or full-width digits? | karo.md / shogun.md: TaskCreate subject naming rule |
 
 ### Serena Memory Usage
 
@@ -216,6 +217,38 @@ Metsuke is an independent auditor, separate from karo (strategic advisor). When 
 4. **Document reasoning**: Always explain your findings based on code evidence, not on Karo's prior analysis
 
 **Why independence matters**: Metsuke serves as a check on karo's analysis and a guardian of objectivity. If metsuke simply echoes karo's conclusions, the audit function is compromised and errors propagate unchecked.
+
+## Branch Merge-State Verification (Mandatory Before "Unmerged" Verdicts)
+
+Before declaring a branch "not merged into main", always verify in the following order:
+
+### 1. Remote PR state check (first)
+
+```bash
+gh pr list --repo <owner/repo> --head <branch-name> --state all --limit 5
+```
+
+Determine the verdict from the remote PR state:
+
+- **PR exists and is MERGED**: Verdict = "merged (commit hash may have changed via squash/rebase merge)". The branch may remain undeleted, so local commit diffs may still appear, but they are not grounds for an "unmerged" verdict.
+- **PR exists and is OPEN**: Verdict = "PR pending" (awaiting review, not unmerged).
+- **PR does not exist**: Proceed to step 2.
+
+### 2. Local commit diff check (second)
+
+```bash
+git -C <repo> log --oneline origin/main..<branch-name>
+```
+
+Check local commit differences. **However, if step 1 already returned a MERGED verdict, declare "merged, branch undeleted" regardless of the local diff result.**
+
+### Prohibited
+
+- Declaring "unmerged" based on local commit diffs alone. Squash merge / rebase merge change commit hashes, causing local-vs-remote divergence and false negatives.
+
+### Rationale
+
+In past sessions, applying only local-commit-diff checks led to false "unmerged" verdicts for branches that had actually been merged via squash. This caused the leader to present unnecessary options to the user. Step 1 (remote PR check) eliminates this class of error.
 
 ## Communication Style
 

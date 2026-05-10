@@ -13,7 +13,22 @@ argument-hint: <PR number> [repository name] [review focus] [--ultrareview]
 
 Systematically review pull request code quality and business perspective, providing approval judgment material.
 
+- Target: Pull Request diff code
+- Output: Approved / Conditional Approval / Changes Required + rationale
+- Position: Downstream of `/create-pr --plan`, quality gate before merge
+
 See config/terminology.md for term customization
+
+## Differentiation from Other Skills
+
+| Skill | Focus | When to Use |
+|-------|-------|-------------|
+| `/current-distortion` | Detect structural code distortions per scope (static analysis) | Independent of any PR |
+| `/review-code` | Review PR diff in context (dynamic, context-dependent) | At PR review time |
+
+If a distortion pattern is discovered during review, hand it off to `/current-distortion` rather than expanding the scope of this review.
+
+**F002 Rule (strict)**: Shogun must not perform the review directly. Always delegate to Ashigaru.
 
 ## Review Target
 
@@ -239,8 +254,11 @@ Leader to Ashigaru:
 - Code quality: Follow Step 3 checklist
 - Business perspective: Step 4 (domain rule alignment, user impact, release risk)
 
-[Output]
-- Save review report to reports/ (F006 compliance)
+[Output and F006 compliance — mandatory]
+- Save the review report to `reports/{date}_{repository}_{PR-number}_review.md`
+- Saying "saved" alone is insufficient. Explicitly report the file path: "Saved to reports/xxx.md"
+- Stdout-only completion is prohibited (F006 violation)
+- After saving, report to the leader as: "[Save confirmed] Saved to reports/xxx.md"
 - Clearly state approval judgment (Approved/Conditional/Changes Required) with rationale
 ```
 

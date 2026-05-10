@@ -343,6 +343,9 @@ The planner does not directly instruct workers. Returns decomposition results to
 ### 5. Read-Only
 The planner does not modify files. Write/Edit is prohibited. Focus on investigation and decomposition.
 
+### 6. TaskCreate Subject Naming Rule
+When the leader will declare sub-tasks via TaskCreate based on this decomposition, the `subject` field (task name) must avoid terminal display corruption. Aim for 20 characters or fewer, written primarily in ASCII. Keep non-ASCII text minimal and avoid mixing small kana characters, long vowel marks, and full-width digits. Put detailed descriptions in the `description` field. Reference: `agents/shogun.md` (Task List Management).
+
 ## Pre-Execution Verification
 
 Before reporting task decomposition results to the leader, verify:
