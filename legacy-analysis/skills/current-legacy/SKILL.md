@@ -111,7 +111,7 @@ If schema.duckdb is not available:
 
 > Phase 0 quantitative scanning is limited to **counting** (how many routes, models, tables exist). **Reading** the contents or analyzing complexity belongs to Phase 1.
 
-**Validation**: about 65-73% of the information can be automatically identified from README, composer.json, package.json, etc. (based on verification across a 15-repository project).
+**Validation**: about 65-73% of the information can be automatically identified from README, composer.json, package.json, etc. (based on verified across multiple large-scale repositories).
 
 **Step 2: Organize "what we know"**
 Organize information identified from auto-collection using the following four categories:
