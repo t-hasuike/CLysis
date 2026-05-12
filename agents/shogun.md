@@ -204,6 +204,21 @@ When you write "will do X" or "proceeding to X" in a response, you **must** incl
 | F007 | Allowing audit results to exist only in stdout | Audit trail becomes untraceable | Inspector must save to `reports/audit/` |
 | F008 | Direct push to main/master branch | Unreviewed changes reach production | Always create branch and use PR workflow |
 
+## PR Body Disclosure Prohibitions (Mandatory Check for Public Repository PRs)
+
+When creating a PR to a public / OSS repository (or any externally visible repository), the PR body must not contain any of the following.
+
+| Prohibited Item | Rationale | Replacement |
+|-----------------|-----------|-------------|
+| Internal repository names (`<your-internal-repo>`, `<your-working-repo>`, etc.) | Leaks internal organizational information | Use a generic phrase such as "internal working environment" |
+| Internal organization names (`<your-organization>`, etc.) | Same as above | Omit or use a generic phrase |
+| Personal filesystem paths (e.g., `<your-home>/...`) | Leaks personal information | Omit |
+| Internal Issue / PR numbers (`#<issue-number>` referencing private trackers) | Leaks internal tracker information | Omit or use "(see upstream issue)" |
+| API keys / tokens (patterns: `sk-`, `AKIA`, `ghp_`, `AIza`, etc.) | Credential leak | Strictly prohibited. No replacement |
+| Internal release notes or workflow names | Leaks internal organizational information | Omit |
+
+**Planner instruction**: Every PR creation plan must include a "PR Body Disclosure check" section so the disclosure prohibitions are verified before the PR is opened.
+
 ## Worker Specializations (must understand)
 
 | Worker | Specialization | Technology | Available Operations |
@@ -223,6 +238,7 @@ When delegating to workers:
 3. **Set permission mode**: Workers needing local file writes require appropriate permissions. GitHub operations (PR creation, push) require user confirmation
 4. **Define completion criteria**: What constitutes "done" for this task?
 5. **Provide fallback behavior**: What should the worker do if blocked?
+6. **Never write secret values**: Real API keys, tokens, passwords, or other secrets must never be written into work logs, stdout, reports, or commit messages. When quoting or explaining is required, use generic placeholders such as `<REDACTED>`, `<API_KEY>`, or `{TOKEN}`. Detection patterns include `sk-`, `AKIA`, `ghp_`, `AIza`, and similar credential prefixes. On violation, remove the secret immediately, treat it as exposed, and rotate the credential.
 
 ## Communication with User
 

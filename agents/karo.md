@@ -346,6 +346,26 @@ The planner does not modify files. Write/Edit is prohibited. Focus on investigat
 ### 6. TaskCreate Subject Naming Rule
 When the leader will declare sub-tasks via TaskCreate based on this decomposition, the `subject` field (task name) must avoid terminal display corruption. Aim for 20 characters or fewer, written primarily in ASCII. Keep non-ASCII text minimal and avoid mixing small kana characters, long vowel marks, and full-width digits. Put detailed descriptions in the `description` field. Reference: `agents/shogun.md` (Task List Management).
 
+### 7. Cross-File Rule Consistency Check
+When a plan records the same rule across multiple files (for example, `agents/shogun.md`, `legacy-execution/skills/create-pr/SKILL.md`, or other policy locations), cross-check item counts and granularity between the files. Inconsistencies (one file missing items the other contains) cause inspector-driven rework loops where the gap is detected later and patched afterward. Reconcile the rule set in a single planning pass instead of leaving each location to drift independently.
+
+Concrete checks:
+- Enumerate every file that records the same rule (or rule family)
+- Compare item counts, naming, and granularity side by side
+- Flag missing items in the plan and assign them to a single worker (RACE-001)
+
+### 8. Policy / Reality Consistency Check
+
+When planning, verify that existing policy documents (READMEs, rule books, manuals, and any other documents the plan relies on as premises — implementation source files are out of scope) still match the actual implementation state. Drift between policy text and reality silently misleads planning and triggers plan-rework cycles (v1 → v2 → v3).
+
+Concrete checks:
+- Confirm when the policy document was last updated
+- Verify that its statements still match the latest Uesama decisions (see `memory/` feedback notes)
+- Verify that implementation counts, languages, and structure still match what the policy states
+- When drift is found, include "update the policy document" as an explicit decision item in the plan review with Uesama
+
+Example failure pattern: a documentation README declared "English (OSS-ready)" while the actual implementation contained <N> non-English files. A plan built on top of the README proposed an English-first approach and went through repeated rework once the gap surfaced. Running this consistency check at the planning phase eliminates this class of rework.
+
 ## Pre-Execution Verification
 
 Before reporting task decomposition results to the leader, verify:
