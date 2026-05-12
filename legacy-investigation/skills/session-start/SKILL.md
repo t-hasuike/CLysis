@@ -108,12 +108,35 @@ Recovers context from previous sessions at the start of a new session. Aggregate
 - Recorded priority tasks
 - Blockers (including items awaiting action from others)
 
+### Step 4.5 (--full only): Verify execution of Try items from previous KPT
+
+**Purpose**: Surface the execution status of Try items (improvement actions) recorded in the previous KPT retrospective so Shogun (General) can judge whether they were carried out.
+
+**Actions**:
+- Locate the latest KPT file (e.g., `ls -t reports/*_kpt.md | head -1`)
+- Extract the `## Try` section from that file
+- Pull the following columns from the Try table:
+  - Try ID (e.g., T1, T2)
+  - Linked Problem ID (e.g., P1, P2)
+  - Try content
+  - Owner (e.g., Shogun, Karo, ashigaru-scribe, ashigaru-investigator)
+  - Deadline (milestone-style: before next session start, before Phase 4 kickoff, etc.)
+  - Completion verification method (file existence check, grep pattern, git log check, etc.)
+
+**Fallback**:
+- KPT file not found: output "No previous KPT" and continue
+- Try section empty: output "No previous Try items"
+
+**Output fields**:
+- Try table
+- Note for Shogun (General): "Status judgment (completed / partially executed / not executed / no effect) is performed by Shogun in line with the KPT skill definition. Do not auto-classify."
+
 ### Step 5: Generate and save context summary
 
 **Purpose**: Integrate all collected information into a report and present it to Shogun (General).
 
 **Actions**:
-- Integrate information from Steps 1-4
+- Integrate information from Steps 1-4 (and Step 4.5 in --full mode)
 - Generate report using the standard format (below)
 - Save to: `reports/session_context/{YYYYMMDD}-session-start.md`
 - Deliver standard report to Shogun (General)
@@ -126,7 +149,7 @@ Recovers context from previous sessions at the start of a new session. Aggregate
 | Mode | Steps Executed | Scope | Estimated Time |
 |------|---------------|-------|---------------|
 | `--light` | Step 1 + Step 2 only (local file scan) | Local only | Short |
-| `--full` (default) | Steps 1-4 (includes GitHub API) | Full scope | Moderate |
+| `--full` (default) | Steps 1-4 + Step 4.5 (includes GitHub API) | Full scope | Moderate |
 
 Default is `--full`. If GitHub API fails during `--full` execution, automatically falls back to `--light` results.
 
@@ -171,6 +194,15 @@ State aggregation at the start of this session. Summarizes progress, blockers, a
   - [item 1]
   - [item 2]
 - Blockers: [if any]
+
+### Previous KPT Try Execution Status (--full only)
+
+| Try ID | Linked Problem | Try Content | Owner | Deadline | Verification Method | Status (filled in by Shogun) |
+|--------|---------------|-------------|-------|----------|---------------------|------------------------------|
+| T1 | P1 | [summary] | ashigaru-scribe | before next session | [method] | not yet executed |
+| T2 | P2 | [summary] | Karo | before Phase 4 kickoff | [method] | not yet executed |
+
+**Note**: Status judgment (completed / partially executed / not executed / no effect) is performed by Shogun (General) in line with the KPT skill definition. Do not auto-classify; defer to Shogun's visual judgment.
 
 ## Recommendations for This Session
 
@@ -279,7 +311,7 @@ On GitHub API failure:
 
 - [ ] `reports/session_context/{YYYYMMDD}-session-start.md` was created
 - [ ] File contains frontmatter (generation date, mode, API status)
-- [ ] All information from Steps 1-4 is aggregated (for --full mode)
+- [ ] All information from Steps 1-4 and Step 4.5 is aggregated (for --full mode)
 - [ ] No hallucination (no guessed or interpolated content)
 - [ ] Complex tasks include the Karo (Planner) consultation note (A-003)
 - [ ] Priority ordering is reasonable
