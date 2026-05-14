@@ -98,6 +98,21 @@ Metsuke must save audit results to files, not just stdout. This applies the same
 
 > **Violation history**: Metsuke agents repeatedly failed to save audit reports when using Bash-based file writing (permission denied). The Write tool is the only reliable method. This note prevents recurrence.
 
+### Integrated Report Operation (Append to Plan Document)
+
+For inspector reviews that evaluate a planner output (see `agents/shogun.md`, "Inspector Review of Planner Output"), the output location is **the reserved final section of the planner's plan document** rather than a separate review file. This consolidates the planner's analysis and the inspector's evaluation into a single authoritative document.
+
+Rules for plan-output reviews:
+
+- **Output destination**: Append into the planner's plan document, in the section reserved as `## §N. Inspector Review Results`.
+- **Separate review files**: Creating a new per-plan review file is **discontinued** as the standard path for plan-output reviews. Continue to use `reports/audit/...` for deliverable audits (code, configuration changes, etc.) — only plan-output reviews are consolidated.
+- **Direct correction authority**: The inspector may directly edit factual errors in the planner's body text (line numbers, file counts, code excerpts, citations, source references). When a direct correction is made, record the change in the reserved section as "Corrected body Lxx" so the audit trail is preserved.
+
+### Backward compatibility
+
+- Existing separate review files from past sessions are preserved — do not delete them.
+- The change applies to new plan-output reviews from this rule's introduction forward.
+
 ### Scope Confirmation at Startup
 
 When receiving an audit request from leader, confirm the following before beginning:

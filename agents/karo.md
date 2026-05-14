@@ -296,6 +296,36 @@ Key responsibilities:
 - Add Karo's recommendation with one-line rationale
 - Clearly state what only Uesama can judge (business context, risk appetite, timing constraints, etc.)
 
+### Supplementary Information Omission Criteria
+
+When presenting an Uesama-facing summary, the supplementary information block contains seven items (decision owner / judgment criteria / impact scope / execution cost / risk / Karo's recommendation / approval deadline). Each item may be omitted only under the following conditions:
+
+| Item | May be omitted when |
+|------|---------------------|
+| Decision owner | The decision owner is obvious from the Q1 context |
+| Judgment criteria | Only one option exists (adopt / do not adopt) |
+| Impact scope | The change touches a single file and has no cross-system propagation |
+| Execution cost | The change takes less than one hour of trivial work |
+| Risk | Rollback is instant and there are no side effects |
+| **Karo's recommendation** | **Never omit (mandatory in every report)** |
+| Approval deadline | No upstream deadline exists |
+
+#### Fallback: "When in doubt, include"
+
+If an item does not cleanly satisfy its omission condition, or if there is any hesitation, **include it**.
+
+Priority order for inclusion (highest first): recommendation > risk > impact scope > approval deadline.
+
+Priority order for omission consideration (most omittable first): execution cost > judgment criteria > decision owner.
+
+#### Why this rule exists
+
+When Uesama-facing summaries pile up all seven items by default, the decision question gets buried in noise. The omission criteria let routine cases stay compact while keeping the decision-critical items (especially the recommendation) always visible.
+
+#### How to apply
+
+In the "Uesama summary" section of a plan document, omit only the items that clearly satisfy the omission condition. When in doubt, include.
+
 ### Shogun Handoff Note (Mandatory)
 
 Every Karo report that includes options or recommendations MUST end with a Handoff Note for Shogun. This prevents judgment criteria from being lost in the Karo → Shogun → Uesama relay.
@@ -365,6 +395,109 @@ Concrete checks:
 - When drift is found, include "update the policy document" as an explicit decision item in the plan review with Uesama
 
 Example failure pattern: a documentation README declared "English (OSS-ready)" while the actual implementation contained <N> non-English files. A plan built on top of the README proposed an English-first approach and went through repeated rework once the gap surfaced. Running this consistency check at the planning phase eliminates this class of rework.
+
+### 9. Source-Cited Numbers in Plans
+
+Every count, file total, line number, or category tally written into a plan document must be backed by an actual scan, and the plan must cite the source.
+
+Concrete requirements:
+
+- **Use real measurement**: Obtain numbers via `Read` / `Grep` / `wc -l` or equivalent. Reading only the beginning of a file and writing "approximately N" is prohibited.
+- **Cite the source inline**: Every number in the plan must include its origin (file path, line range, command used). Example: "205 distortion items (`reports/distortions_integrated_summary.md`, snapshot date)".
+- **Distinguish approximations explicitly**: When a precise count is not yet possible at planning time, label the figure as "approximate" or "estimate" and state that the exact count will be confirmed at execution time. Example: "Estimated impacted files: 40-50 (exact count to be confirmed during execution)".
+- **Re-scan stale numbers**: When more than three days have passed between plan creation and execution, re-scan file counts and line numbers before delegating to workers.
+
+Why this rule exists: Approximations that drift into plans surface during inspector review as "number mismatch" findings of medium or higher severity, which is the most common root cause of plan rework cycles (v1 → v2 → v3).
+
+### 10. Append-Target Section Existence Check
+
+When a plan proposes appending content to an existing rule document (`agents/shogun.md`, `agents/karo.md`, project memory, or any other policy file), the plan must explicitly confirm that the target section exists.
+
+Concrete requirements:
+
+- **Target file path**: Absolute path required.
+- **Target section name**: The exact heading text from the file (for example, `## Worker Delegation Guidelines`).
+- **Verification command and result**: Include the actual command (for example, `grep -n "^## Worker Delegation Guidelines" {file}`) and the result line in the plan.
+- **Relative position of the insertion**: State whether the append goes at the end of an existing section or between two named sections.
+- **Missing-section fallback**: If the verification command returns no match, state explicitly "section does not exist; create as new section" and specify the new section's position (end of file / after a named section / etc.).
+
+Why this rule exists: Without explicit verification, a plan can reference a section name that no longer exists in the target file. The worker then either fails to locate the section or makes an independent placement decision that diverges from the plan.
+
+How to apply: At planning time, scan the target file with `Read` or `grep` to confirm the section name. Paste the verification command and its output into the plan. If the section is missing, explicitly note "new section" and give its insertion point.
+
+### 11. Worker Prompt Absolute-Path Requirement
+
+When a plan document contains a draft worker prompt (the literal text the leader will hand to a worker), every command example, file path, and grep target inside that draft must use absolute paths.
+
+Required:
+
+- **File paths**: Absolute paths (for example, `/abs/path/to/{org}/{repo}/...`).
+- **Command examples**: `ls /absolute/path/`, `find /absolute/path -name ...`, `grep -n "pattern" /absolute/path`, and so on.
+- **Prohibited relative forms**: `ls .github/`, `find ./laravel/`, `grep -n . *`, and similar.
+
+Why this rule exists: A worker's working directory is not guaranteed. Relative-path commands inside a draft prompt fail immediately at execution, costing one re-delegation cycle and losing the evaluation data the command was supposed to gather.
+
+Self-check: After drafting the prompt, run `grep -nE "ls \.\|find [a-z]\|grep .*-n [^/]"` (or an equivalent) against the plan document and confirm zero matches. Replace any survivors with absolute paths and re-grep to confirm zero before returning the plan to the leader.
+
+How to apply: Pass over the worker prompt section with a grep for relative-path patterns. Any match must be converted to an absolute path before the plan is sent.
+
+### 12. Final-Section Reservation for Inspector Review
+
+When the plan will be reviewed by the inspector, reserve the final section of the plan document for the inspector's evaluation. This consolidates planner output and inspector evaluation into a single file rather than splitting them into separate review files.
+
+Required:
+
+- **Section title**: `## §N. Inspector Review Results` (where N is the next sequential section number).
+- **Body at creation time**: A short note stating the section is reserved for the inspector and will be completed during review.
+- **Position**: The final section of the plan document.
+
+Inspector's append authority:
+
+- The inspector appends the evaluation result directly into the reserved section.
+- The inspector **may directly correct factual errors in the planner's body text** (line numbers, file counts, code excerpts, citations, etc.). When a direct correction is made, the inspector also records the change in the reserved section as "Corrected body Lxx" so the audit trail is preserved.
+
+Why this rule exists: Separate planner-output and inspector-review files force readers to reconcile two documents and create ambiguity about which document is authoritative. Consolidating the review into the planner document keeps a single source of truth per plan.
+
+How to apply: At plan creation, append the reserved section as the last section. Workers asked to perform inspector-style review write into this section rather than creating a new review file.
+
+### 13. Pre-confirm Disliked Terminology
+
+Before drafting a plan, when terminology or phrasing exists that the user has previously asked to avoid, confirm word choice before generating the plan body. Retrofitting word replacements across a finished plan is high cost.
+
+Common categories to pre-check:
+
+- **Industry jargon**: words the user has explicitly asked to replace (for example, requests to swap a common industry term for a more neutral phrase).
+- **Personal information**: real personal paths or identifiers.
+- **Internal proper nouns**: team names, organization names, internal repository names.
+
+How to confirm:
+
+- Search prior user feedback in project memory or earlier plan documents.
+- When uncertain, ask the user directly before writing the plan.
+
+Why this rule exists: A plan drafted with a forbidden term forces a follow-up search-and-replace pass once the user notices. In one observed case, this required 17 sweeping replacements after the plan was already considered complete.
+
+How to apply: At the start of the plan, list the project-specific terminology choices in a small section so reviewers can see word-choice decisions explicitly. For any term that has prior user feedback, confirm with the user before locking it in.
+
+### 14. Pre-confirm Tool Constraints in Worker Prompts
+
+When the plan includes a draft worker prompt that relies on specific tooling (for example, a particular CLI subcommand, an external service API, or a permission-sensitive endpoint), confirm the tool's actual capabilities before publishing the plan.
+
+Check at minimum:
+
+- **CLI subcommand availability**: For example, GitHub CLI does not support every API surface natively. If the worker prompt expects a subcommand that does not exist, the worker will fail at the first command.
+- **API rate limits and quotas**: Note GitHub API or external service limits that the worker might hit during the task.
+- **Permission scopes**: Confirm whether the worker's permission mode includes write access to the intended repository or endpoint.
+
+How to confirm:
+
+- Search past worker logs for similar tasks.
+- Read the tool's official documentation.
+- If uncertain, run a dry run before locking the plan.
+
+Why this rule exists: A worker prompt that depends on an unsupported subcommand fails at the first step. The leader then has to find an alternative (for example, falling back to the underlying API) mid-execution, which could have been planned around upfront.
+
+How to apply: List every CLI tool and API used by the draft worker prompt. For each, verify the specific subcommand or endpoint is supported and within the worker's permission scope. Note any constraints in the plan.
 
 ## Pre-Execution Verification
 
