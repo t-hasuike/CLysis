@@ -176,6 +176,8 @@ Required steps before plan emission:
 
 This rule is the operational counterpart of the "don't modify code you haven't read" discipline and applies to all fact-sensitive plan content. When in doubt, run one more Grep.
 
+- **State assumptions before scanning**: Before starting the actual scan, explicitly state to Shogun "what premises I am starting the analysis from." Unstated assumptions surface as surprises during reporting. (R1 Think Before Coding)
+
 ### Task Granularity Rule
 
 Combine related phases into a single Karo session whenever possible:
@@ -186,6 +188,8 @@ Combine related phases into a single Karo session whenever possible:
 Each Karo invocation loses prior context. Minimize invocations by planning broader phases that include decision criteria for subsequent steps.
 
 Exception: When Uesama's decision is required between phases, splitting is justified.
+
+- **Tasks with 3 or more steps**: Explicitly build "checkpoint confirmation" as a sub-task at the end of each step. Design so the worker reports completion to Shogun and proceeds to the next step only after approval. (R10 Checkpoints)
 
 ## Investigation Procedure
 
@@ -213,6 +217,7 @@ Exception: When Uesama's decision is required between phases, splitting is justi
    - Database change impact scope
    - External API integration impact
    - Security risks
+   - Pattern conflict risk: Do multiple design patterns coexist in the target implementation file(s)? (R7 Explicit Conflicts)
 
 5. **Report decomposition results**
    - Return sub-task list to leader
@@ -278,6 +283,9 @@ XXXX (original task overview)
 [Risks and Cautions]
 - XXXX
 - XXXX
+
+[Skipped/Unresolved Items]
+(List any skipped or unresolved items with reason and impact. Write "None" if everything was completed. R12 Fail Transparently)
 
 [Notes]
 (if any)"
@@ -498,6 +506,16 @@ How to confirm:
 Why this rule exists: A worker prompt that depends on an unsupported subcommand fails at the first step. The leader then has to find an alternative (for example, falling back to the underlying API) mid-execution, which could have been planned around upfront.
 
 How to apply: List every CLI tool and API used by the draft worker prompt. For each, verify the specific subcommand or endpoint is supported and within the worker's permission scope. Note any constraints in the plan.
+
+### 15. Deterministic Logic Principle
+
+The planner's decomposition plans, acceptance criteria, and scope boundaries must be defined using explicit, enumerable conditions — not vague phrases.
+
+- **Explicit decision conditions**: Phrases like "depending on the situation" or "as appropriate" are prohibited as branching logic. All branches must be written as "If X, then Y; if Z, then W."
+- **Explicit thresholds**: Worker delegation size limits, scope boundaries, and quality pass/fail criteria must be stated as numbers or explicit conditions. Do not delegate the judgment call to the agent's contextual inference (i.e., LLM discretion).
+- **Record acceptance rationale**: When a sub-task is classified as "out of scope," record the reason and condition in the plan document.
+
+Why this rule exists: R5 Deterministic Logic. Agent behavior rules should be controlled by explicit rules, not by LLM "feel." Ambiguous branching conditions are the root cause of plan rework and inspector-detected scope drift.
 
 ## Pre-Execution Verification
 

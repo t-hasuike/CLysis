@@ -136,8 +136,9 @@ After a worker completes a deliverable (code changes, file creation, PR creation
 - [ ] Was the deliverable saved to a file? (F006: stdout-only is prohibited)
 - [ ] Was the deliverable's save path explicitly reported to the leader (or user)? (Not "saved", but "saved to reports/xxx.md")
 - [ ] Was inspector deployment deferred to "later"? (Worker completion -> immediate inspector deployment. Confirm before moving forward in momentum)
+- [ ] Does the deliverable actually satisfy the completion criteria defined before the task began? Do not accept "done" reports at face value — verify against the defined success condition. (R4 Goal-Driven Execution)
 
-If any of these four items is unmet, complete them before taking the next action.
+If any of these five items is unmet, complete them before taking the next action.
 
 ### Inspector Review of Planner Output
 
@@ -343,6 +344,50 @@ When delegating to workers:
 4. **Define completion criteria**: What constitutes "done" for this task?
 5. **Provide fallback behavior**: What should the worker do if blocked?
 6. **Never write secret values**: Real API keys, tokens, passwords, or other secrets must never be written into work logs, stdout, reports, or commit messages. When quoting or explaining is required, use generic placeholders such as `<REDACTED>`, `<API_KEY>`, or `{TOKEN}`. Detection patterns include `sk-`, `AKIA`, `ghp_`, `AIza`, and similar credential prefixes. On violation, remove the secret immediately, treat it as exposed, and rotate the credential.
+
+7. **Emoji prohibition**: Never use emoji in any output — files, stdout, commit messages, PR body, or verbal responses. Use text notation: "High/Medium/Low", "Pass", "Fail", "In progress", "Confirmed".
+
+   Why: Emoji rendering varies across terminals and tools, causing display corruption and ambiguity in severity classifications.
+
+8. **Line count measurement**: When reporting the number of lines in a file you have modified, always report the value from `wc -l` after the modification is complete. Never estimate or carry forward a prior count.
+
+   Why: Stale line-count numbers in worker reports cause inspector findings and plan-rework cycles (observed 4 consecutive violations: 2026-05-12 to 2026-05-15).
+
+9. **State assumptions before starting**: Before beginning work, explicitly list to the leader: "What premises I am starting from", "What conditions I am assuming to be true", "What is unclear". Use a bulleted list.
+
+   Why: R1 Think Before Coding. This is the active-enumeration extension of the no-speculation rule. Unstated assumptions surface as surprises during reporting.
+
+10. **Minimum implementation**: Implement only the minimum code required to solve the requirement. Abstraction, generalization, or future-proofing beyond the stated requirement is prohibited. All "just in case" changes are prohibited.
+
+    Why: R2 Simplicity First. Prevents speculative features and single-use abstractions.
+
+11. **Surgical changes**: Within a target file, modify only the instructed location. Formatting, refactoring, comment edits, indentation, or variable rename "improvements" on adjacent code are prohibited.
+
+    Why: R3 Surgical Changes. Complements F003 (same-file conflict prohibition) by minimizing the change surface within a file.
+
+12. **Verify completion criteria**: At the end of each task, confirm that the deliverable actually satisfies the completion criteria defined before the task began. Do not accept "done" as self-reported — verify against the defined success condition.
+
+    Why: R4 Goal-Driven Execution. Prevents deliverables that technically ran without error but do not meet the stated goal.
+
+13. **Report scope overruns**: If the task scope turns out to be larger than expected (guideline: more than 20 files or 5 steps), report to the leader before proceeding. If session token consumption exceeds 2x the estimate, stop immediately and report.
+
+    Why: R6 Token Budgets. Adds per-task (micro) limits to complement existing session-level (macro) monitoring.
+
+14. **Report pattern conflicts**: If an instruction conflicts with existing code patterns, or if two existing patterns are found to conflict with each other, stop and report to the leader. Confirm which pattern to follow before continuing. Do not silently average or compromise.
+
+    Why: R7 Explicit Conflicts. Silent "good-enough averaging" causes architectural decay.
+
+15. **Checkpoint reporting**: For tasks with 3 or more steps, report "Step N/M complete — progress summary — preconditions for next step" to the leader at each step boundary. Do not proceed to the next step without leader approval.
+
+    Why: R10 Checkpoints in Multi-Step Work. Complements the momentum-skip prevention rule by requiring workers to actively report.
+
+16. **Follow established patterns**: When solving an equivalent problem, follow existing codebase patterns, naming conventions, and structure. Introducing new patterns, frameworks, or design approaches requires leader approval. "Theoretically superior new techniques" are deprioritized relative to existing conventions.
+
+    Why: R11 Match Established Patterns. Maintains codebase consistency. Delegates new-pattern adoption decisions to the leader.
+
+17. **Transparent failure reporting**: Any steps skipped, errors encountered, constraint violations, or rolled-back operations during execution must be included in the completion report. Reporting completion as if nothing went wrong is prohibited. "Too difficult, so I skipped it" must also be reported.
+
+    Why: R12 Fail Transparently. Prohibits silent failure concealment. Active-reporting version of the no-speculation and real-measurement rules.
 
 ## Communication with User
 
