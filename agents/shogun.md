@@ -151,6 +151,17 @@ When the planner produces plans or analysis, the inspector must evaluate them be
 
 **Rationale**: If the planner's decomposition is flawed, all downstream worker tasks will be misdirected. Quality assurance is needed not only for worker deliverables but also at the planning stage.
 
+#### Output Location: Append to the Plan Document
+
+When the leader requests an inspector review of a planner output, the following are mandatory:
+
+- The inspector's evaluation is **appended to the reserved final section of the planner's plan document** (see `agents/karo.md`, rule "Final-Section Reservation for Inspector Review").
+- Creating a separate review file (for example, a per-plan file under a separate review directory) is **discontinued** as the standard path.
+- Existing separate review files from past sessions are preserved for backward compatibility — do not delete them.
+- The inspector may directly correct factual errors in the planner's body text (line numbers, file counts, code excerpts, citations) and must record any direct correction in the reserved final section.
+
+How to apply: When delegating a lightweight inspector review, state explicitly in the worker prompt: "Output destination = append into §N. Inspector Review Results at the end of the planner's plan document." Do not request a separate review file.
+
 ## Task List Management (Orchestration)
 
 Upon receiving a mission, declare all sub-tasks with TaskCreate as the **first action**. This externalizes the plan and prevents declaration-without-execution violations.
@@ -218,6 +229,99 @@ When creating a PR to a public / OSS repository (or any externally visible repos
 | Internal release notes or workflow names | Leaks internal organizational information | Omit |
 
 **Planner instruction**: Every PR creation plan must include a "PR Body Disclosure check" section so the disclosure prohibitions are verified before the PR is opened.
+
+## User Proposal Summary Template (Standard)
+
+When the leader presents a proposal, recommendation, or approval request to the user, use the following standard structure. This prevents decision questions from being buried under parallel concerns.
+
+### Mandatory elements
+
+1. **Summary (one sentence)**: The core of the proposal.
+2. **As-Is (current state)**: Three lines or fewer.
+3. **To-Be (after the proposal)**: Three lines or fewer.
+4. **User decision items**: Q1 — plus Q2 only if it depends on Q1's outcome, capped at two questions total.
+5. **Supplementary information**: Include only the items required by the omission criteria. See `agents/karo.md`, section "Supplementary Information Omission Criteria".
+
+### Q1 pros/cons table (mandatory when Q1 has multiple options)
+
+| Option | Description | Pros | Cons |
+|--------|-------------|------|------|
+| Option A (recommended) | ... | ... | ... |
+| Option B | ... | ... | ... |
+
+### Supplementary information items (seven)
+
+1. Decision owner (user / leader)
+2. Judgment criteria (what is being traded off)
+3. Impact scope (affected areas, files, teams)
+4. Execution cost (implementation time, operational load)
+5. Risk (likely failure modes)
+6. **Karo's recommendation** (mandatory — never omit)
+7. Approval deadline
+
+### Why this template exists
+
+When user-facing summaries layered multiple decision questions in parallel, the user reported difficulty separating the primary decision from supporting ones. This template forces a single Q1 question (with at most one dependent Q2) and demands an explicit recommendation, which together prevent the structural ambiguity that caused the problem.
+
+### How to apply
+
+When drafting the user-facing message, follow this template. Attach the pros/cons table to Q1 whenever there are multiple options, and apply the omission criteria from `agents/karo.md` to keep the supplementary block compact.
+
+## Session Management and Token Consumption Monitoring
+
+For long sessions (anticipated consumption of 100k tokens or more), monitor token usage and use the following criteria for session splitting.
+
+### Periodic token-usage checks
+
+Use the following checkpoints during a session:
+
+| Checkpoint | Condition | Action |
+|------------|-----------|--------|
+| **Session start** | — | Record anticipated token consumption in the plan. Rough guides: one planner invocation about 15k, one inspector invocation about 10k, three parallel workers about 30k. 50k or more total counts as a large-scale session. |
+| **Mid-phase (100k consumed)** | Remaining budget below 50k | Consider splitting the session. The leader may propose to the user "it is safer to break here." |
+| **Late-phase (150k consumed)** | Remaining budget below 20k | Splitting is required. Continue in a new session. |
+| **Emergency stop** | Remaining budget below 10k | Save in-progress tasks and plans to file and end the session immediately to prevent rework. |
+
+### Session-split decision criteria
+
+Propose a session split when any of the following apply:
+
+1. **Token warning flag** (see the checkpoint table above).
+2. **Milestone boundary**: After PR merge, issue close, or completion of a large-scale task.
+3. **Information saturation**: Combined Keep / Problem / Try items at five or more, with no retrospective yet performed.
+4. **Team exhaustion**: Planner, inspector, and multiple workers operating in parallel for three or more cycles.
+
+### Continue-vs-split judgment
+
+| Judgment axis | Continue indicator | Split indicator |
+|---------------|--------------------|-----------------|
+| **Remaining budget** | 50k or more | 50k or less |
+| **Next task's dependency** | Independent of current task | Depends on current task's results |
+| **Team load** | One or two workers | Planner + inspector + three or more workers |
+| **Retrospective recency** | Within three hours | Six or more hours since last retrospective |
+
+### Mandatory handover document at session end
+
+When ending a session, save a handover document under the in-progress workspace (path is project-defined; see project conventions for the exact directory). The handover is required so the next session can resume without losing context (this is the F006 discipline applied to leader output).
+
+#### Required fields (the next session must be able to start without the user filling gaps)
+
+1. **Completed milestones**: Tasks completed in this session (M1, M2, ...).
+2. **Next-session tasks in priority order**:
+   - **Background**: Why the task is needed (brief).
+   - **Deadline**: An observable deadline (calendar date, or "by next PR request from the user," and so on).
+   - **Risk**: Likely failure modes; the cost of deferral.
+   - **Absolute path to the planner's plan document and any related reports**.
+3. **Pending user decisions**: None, or the specific items.
+4. **Session statistics**: Planner / inspector / worker activation counts.
+
+#### Why this rule exists
+
+When a handover omits background, deadline, and risk for the highest-priority next task, the user has to re-ask "did you do this?" / "is this still pending?" at the start of the next session. Listing background, deadline, and risk for each high-priority task allows the user to align expectations without asking.
+
+#### How to apply
+
+When writing the handover, attach background / deadline / risk to every high-priority task. Phrase next-session work in the indicative ("the next session executes X") rather than the prospective ("plan to do X").
 
 ## Worker Specializations (must understand)
 
