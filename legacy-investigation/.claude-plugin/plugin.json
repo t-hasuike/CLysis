@@ -2,6 +2,6 @@
   "name": "legacy-investigation",
   "description": "Investigation and understanding skills for legacy systems: code exploration, service specification, and project navigation.",
   "version": "1.0.0",
-  "skills": ["current-spec", "project-guide"],
+  "skills": ["current-spec", "project-guide", "context-inject"],
   "commands": ["start", "investigate-flow", "bug-hunt", "understand"]
 }

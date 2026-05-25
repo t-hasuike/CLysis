@@ -464,6 +464,7 @@ This project was inspired by and built upon ideas from the following projects:
 - [takt](https://github.com/nrslib/takt) by nrslib - AI agent orchestration framework using YAML-defined workflows
 - [pm-skills](https://github.com/phuryn/pm-skills) by phuryn - AI-powered product management skills marketplace for Claude Code
 - [multi-agent-shogun](https://github.com/yohey-w/multi-agent-shogun) by yohey-w - Bushido-inspired multi-agent system with feudal hierarchy orchestration
+- [Hermes Agent](https://github.com/NousResearch/hermes-agent) by Nous Research - The memory and learning architecture (dynamic context injection, mini-reflection hooks, and self-evolving skills) was inspired by Hermes Agent's three-tier memory system and GEPA optimization approach. Reference: [Hermes Agent Masterclass](https://blog.dailydoseofds.com/p/hermes-agent-masterclass) by Akshay Pachaar (@akshay_pachaar)
 
 ## License
 

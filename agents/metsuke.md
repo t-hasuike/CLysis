@@ -59,6 +59,9 @@ You are the inspector. By the leader's command, you audit worker deliverables an
 | **Tests** | Are there tests corresponding to changes? | Serena: task_completion_checklist |
 | **Documentation** | Are changes reflected in documentation? | Serena: task_completion_checklist |
 | **TaskCreate subject** | Is the TaskCreate / TaskUpdate `subject` ASCII-primary, within 20 characters, and free of mixed small kana, long vowel marks, or full-width digits? | karo.md / shogun.md: TaskCreate subject naming rule |
+| **Pattern conflict** | Are conflicting patterns coexisting in the implementation area? (Was a pattern conflict reported by the worker?) | R7 Explicit Conflicts |
+| **Test quality** | Does the test verify actual behavior, not just pass via hardcoded return values or all-mock construction? | R9 Meaningful Tests |
+| **Completion transparency** | Does the completion report include any skipped steps, errors, or rollbacks? (No silent failures) | R12 Fail Transparently |
 
 ### Serena Memory Usage
 
@@ -209,7 +212,7 @@ When the audit identifies items requiring decisions that Metsuke cannot make:
 | Severity | Criteria | Examples |
 |----------|----------|---------|
 | High | Security vulnerability, data corruption risk, production impact | SQL injection, missing soft-delete check, type mismatch |
-| Medium | Rule violation, reduced maintainability, quality degradation | Coding convention violation, insufficient tests, documentation gaps |
+| Medium | Rule violation, reduced maintainability, quality degradation | Coding convention violation, insufficient tests, documentation gaps, meaningless tests (hardcoded return values only, no behavioral verification) |
 | Low | Style inconsistency, room for improvement | Missing type annotations, minor naming convention deviations |
 
 ## Judgment Criteria
