@@ -1,0 +1,80 @@
+# This workflow is based on the TAKT framework.
+# Original framework: https://github.com/nrslib/takt
+# Licensed under MIT License - Copyright (c) 2026 Masanobu Naruse
+name: sem-create
+description: Generate semantic model documentation for any business domain and create a PR
+workflow_config:
+  provider_options:
+    claude:
+      allowed_tools:
+        - Read
+        - Glob
+        - Grep
+        - Bash
+        - Edit
+        - Write
+max_steps: 20
+initial_step: plan
+loop_monitors:
+  - cycle:
+      - execute_sem
+      - gate_g2
+    threshold: 3
+    judge:
+      persona: sem-supervisor
+      instruction: sem-loop-monitor
+      rules:
+        - condition: Healthy (the number of failing items is decreasing and revisions are making progress)
+          next: execute_sem
+        - condition: Unproductive (the same failures repeat with no progress)
+          next: ABORT
+steps:
+  - name: plan
+    persona: sem-planner
+    instruction: sem-plan
+    output_contracts:
+      report:
+        - name: sem-plan.md
+          format: sem-plan-report
+    rules:
+      - condition: Investigation and scope definition are complete and the model is ready to be authored (quality gate G1 passed - no tool_uses findings, domain facts are sourced)
+        next: execute_sem
+      - condition: Information about the target domain is insufficient and planning is impossible (quality gate G1 failed - no sources, investigation not possible)
+        next: ABORT
+
+  - name: execute_sem
+    edit: true
+    persona: sem-writer
+    instruction: sem-execute
+    output_contracts:
+      report:
+        - name: SEM-draft.md
+          format: sem-document
+    rules:
+      - condition: The semantic model draft was created
+        next: gate_g2
+      - condition: Execution is not possible (files inaccessible, domain information missing)
+        next: ABORT
+
+  - name: gate_g2
+    persona: sem-auditor
+    instruction: sem-audit
+    output_contracts:
+      report:
+        - name: sem-audit.md
+          format: sem-audit-report
+    rules:
+      - condition: All quality gates passed (mermaid validation 0 errors, forbidden keywords 0, symbols 0, business meaning fully described, at least 3 pitfalls)
+        next: create_pr
+      - condition: A quality gate failed (revisions required)
+        next: execute_sem
+
+  - name: create_pr
+    edit: true
+    persona: sem-scribe
+    instruction: sem-create-pr
+    rules:
+      - condition: PR creation succeeded
+        next: COMPLETE
+      - condition: PR creation failed
+        next: ABORT

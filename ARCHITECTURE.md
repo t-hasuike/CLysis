@@ -49,6 +49,22 @@ legacy-knowledge/         # Knowledge Management
 └── examples/
 ```
 
+### Workflow Orchestration Layer (.takt/)
+
+In addition to the plugins, the repository contains a top-level `.takt/` directory that holds multi-agent, multi-step orchestration workflows. While the `legacy-*` plugins are individually invokable skills, `.takt/` defines a meta layer that coordinates several personas through a structured loop with quality gates.
+
+```
+.takt/
+|-- workflows/
+|   `-- sem-create.yaml          # Semantic model creation workflow
+`-- facets/
+    |-- personas/                # sem-planner, sem-writer, sem-auditor, sem-supervisor, sem-scribe
+    |-- instructions/            # sem-plan, sem-execute, sem-audit, sem-loop-monitor, sem-create-pr
+    `-- output-contracts/        # sem-plan-report, sem-audit-report, sem-document
+```
+
+The `.takt/` directory follows the conventions of the TAKT framework (https://github.com/nrslib/takt), which provides the agent-coordination engine, workflow transition logic, and state management. CLysis acts as a user of that framework: `.takt/` is the project-specific customization layer (workflow definitions, personas, instructions). The `sem-create` workflow and its facets are an adaptation based on the concepts of takt, which is licensed under the MIT License, Copyright (c) 2026 Masanobu Naruse.
+
 ### Plugin Dependencies
 
 ```
