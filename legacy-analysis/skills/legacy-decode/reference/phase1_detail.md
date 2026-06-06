@@ -72,7 +72,7 @@ List side effects such as file generation, external service calls, and notificat
 
 **File FTP / SFTP sending**:
 - Search for SFTP sends to external systems with grep.
-- File format (e.g., SPOF / CSV / XML), send timing, and resend logic on failure.
+- File format (e.g., CSV / XML / PDF), send timing, and resend logic on failure.
 
 ---
 

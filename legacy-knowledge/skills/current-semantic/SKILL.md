@@ -329,7 +329,7 @@ erDiagram
 
 ## Chapter 6: SQL Samples
 
-The following are all raw PostgreSQL SQL. Laravel's Eloquent global scopes are not automatically applied to raw SQL, so always manually add your project's soft-delete condition (e.g., `[soft-delete-flag] = '0'`).
+The following are all raw PostgreSQL SQL. ORM global scopes or query filters may not be automatically applied to raw SQL, so always manually add your project's soft-delete condition (e.g., `[soft-delete-flag] = '0'`).
 
 ### SQL-1: [purpose in one phrase]
 

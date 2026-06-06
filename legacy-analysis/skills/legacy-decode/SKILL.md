@@ -39,7 +39,7 @@ Shogun must not perform legacy decoding directly. Consult Karo for investigation
 
 Rules for notation within this skill:
 
-- **Subject-first principle**: When explaining flags, statuses, or variable names, write "whose / what's" subject first. Example: "publish_status (photo's publication status)", "soft_delete_flag=0 (that record's deletion flag is 0 = not deleted)".
+- **Subject-first principle**: When explaining flags, statuses, or variable names, write "whose / what's" subject first. Example: "[your-flag] ([your description])", "soft_delete_flag=0 (that record's deletion flag is 0 = not deleted)".
 - **Citation requirement**: All evidence such as code, tables, and file paths must be cited in the format "filepath:line-number" or "table.column". "It appears to be" or "it seems like" are not acceptable. If evidence is uncertain, write "estimated" and state the reason.
 - **Separation of inference and fact**: Directly extracted code, logs, and schema are "facts". Pattern inferences or "may be the case" must be labeled as "estimated".
 - **No emoji or decorative symbols**: Do not use emoji or symbols (such as checkmarks, warning signs) to indicate severity or pass/fail. Use only text such as "high/medium/low", "complete/pending".
@@ -213,7 +213,7 @@ List side effects such as file generation, external service calls, and notificat
 
 **File FTP / SFTP sending**:
 - Search for SFTP sends to external systems (e.g., print companies) with grep.
-- File format (e.g., SPOF / CSV / XML), send timing, and resend logic on failure.
+- File format (e.g., CSV / XML / PDF), send timing, and resend logic on failure.
 
 ### 1.4 Fact Recording Practice (file:line citation requirement, inference marking, honest reporting of non-retrieval)
 
@@ -230,7 +230,7 @@ All facts obtained through digging must be recorded in the following format.
 - File path: `[path]`
   - Line [L123]: [Code citation, maximum 3 lines]
   - Lines [L124-126]: [Range notation for multiple lines]
-  - Related database: table `order_info`, column `payment_status` / soft_delete_flag
+  - Related database: table `[your-table]`, column `[your-column]`
   - Constraints: NOT NULL, DEFAULT 'pending', FOREIGN KEY users(id)
 
 **When inference is included**:
