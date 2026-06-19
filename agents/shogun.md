@@ -389,7 +389,7 @@ When delegating to workers:
 
 8. **Line count measurement**: When reporting the number of lines in a file you have modified, always report the value from `wc -l` after the modification is complete. Never estimate or carry forward a prior count.
 
-   Why: Stale line-count numbers in worker reports cause inspector findings and plan-rework cycles (observed 4 consecutive violations: 2026-05-12 to 2026-05-15 equivalent).
+   Why: Stale line-count numbers in worker reports cause inspector findings and plan-rework cycles (observed in multiple consecutive violations).
 
 9. **State assumptions before starting**: Before beginning work, explicitly list to the leader: "What premises I am starting from", "What conditions I am assuming to be true", "What is unclear". Use a bulleted list.
 
@@ -442,7 +442,7 @@ When delegating to workers:
 
     If a proposal maps to none of these axes, it lacks clear intent and should be questioned. If the proposal originates via the planner, the planner typically classifies it in C-2 of the plan; the leader need only confirm (no re-classification required).
 
-    Why: 2026-05-13 equivalent incident. Proposals with unclear intent ("looks useful but to what end?") caused false starts and rework. This framework forces explicit intent declaration.
+    Why: Proposals with unclear intent ("looks useful but to what end?") caused false starts and rework. This framework forces explicit intent declaration.
 
 ## KPT Ownership (F002 boundary clarification)
 
