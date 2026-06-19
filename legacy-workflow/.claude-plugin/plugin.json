@@ -2,5 +2,5 @@
   "name": "legacy-workflow",
   "description": "Process improvement skills for legacy system teams: retrospectives (KPT) and skill quality optimization (Empirical Prompt Tuning).",
   "version": "1.0.0",
-  "skills": ["kpt", "empirical-prompt-tuning"]
+  "skills": ["kpt", "empirical-prompt-tuning", "agent-recover"]
 }

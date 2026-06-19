@@ -38,10 +38,10 @@ $ARGUMENTS
 
 | Role | Responsibility |
 |------|-----------------|
-| **Shogun (Leader)** | Approve review plan, make final judgment (Approved / Conditional Approval / Changes Required) |
-| **Karo (Planner)** | Formulate review plan (Step 1.5). Advise review direction (focus areas, judgment criteria) based on PR characteristics |
-| **Ashigaru (Worker)** | Execute review (Steps 1-5). Follow karo's plan and direction; investigate and report code quality and business perspective |
-| **Metsuke (Inspector)** | Audit review results (Step 6). Independently verify quality, completeness, and appropriateness of ashigaru's report |
+| **Shogun (Leader)** | Approve review plan, make final judgment (Approved / Conditional Approval / Changes Required). Coordinate team and confirm escalations. |
+| **Karo (Planner)** | Formulate review plan (Step 1.5). Advise review direction (focus areas, judgment criteria) based on PR characteristics. Generate plan template output with all items filled. |
+| **Ashigaru (Worker)** | Execute review (Steps 1-5, 7). Follow karo's plan and direction; investigate and report code quality and business perspective. Classify findings (Category A vs B). |
+| **Metsuke (Inspector)** | Audit review results (Step 6). Independently verify quality, completeness, and appropriateness of ashigaru's report per planned scope. |
 
 ## Review Flow
 
@@ -109,14 +109,15 @@ Karo must document the following and hand off to Ashigaru:
 
 | Item | Content |
 |------|---------|
-| PR Characteristic Classification | Domain rule change: Yes/No, System structure impact: Yes/No, Known distortion fix: Yes/No |
-| Reference Scope | Baseline references + additional file paths |
-| PR Scale Judgment | Small/Medium/Large + rationale |
-| Metsuke Scope | Lightweight/Standard/Full |
-| Primary Focus Area | Specific concern (e.g., "High risk of missing soft-delete condition") |
-| Fallback Judgment Criteria | Specific criteria for uncertain cases |
+| PR Characteristic Classification | Domain rule change: Yes/No, System structure impact: Yes/No, Known distortion fix: Yes/No, Part of active remediation: Yes/No |
+| Reference Scope | Baseline references + additional file paths (prioritize by impact) |
+| PR Scale Judgment | Small/Medium/Large + specific rationale (file count, line changes, complexity) |
+| Metsuke Scope | Lightweight/Standard/Full (aligned with PR scale) |
+| Primary Focus Area | Specific concern (e.g., "High risk of missing soft-delete condition in query refactoring") |
+| Category A/B Initial Classification | Preliminary assessment of which issues are PR-introduced vs. pre-existing |
+| Fallback Judgment Criteria | Specific criteria for uncertain cases and boundary conditions |
 
-**Ashigaru Receipt Check**: Verify that all items above are filled. If any are missing, report to Shogun and request revision.
+**Ashigaru Receipt Check**: Verify that all items above are filled. If any are missing, report to Shogun and request revision from Karo.
 
 ### Step 2: Reference Domain Knowledge - Dynamic Scope (Ashigaru)
 
@@ -134,23 +135,48 @@ Based on Karo's Step 1.5 scope determination:
 - `knowledge/system/04_change_impact/` — change impact patterns
 - `knowledge/standards/review/` — review criteria checklists
 
+### Step 3.0: Classification of Review Findings (Pre-Requisite)
+
+Before conducting detailed code quality review, perform a preliminary classification of findings into two categories. This step prevents existing bugs from appearing PR-introduced, which causes rework.
+
+**Same-Name Collision Detection (Pre-Processing)**:
+Before classification, check if classes/Resources/Models referenced in the PR exist with the same name across multiple namespaces. If detected, list all candidates with fully-qualified names in the report and escalate to Shogun without making a final judgment. Ashigaru does not finalize the judgment at this stage — this is a detection and reporting process independent of code quality.
+
+| Category | Definition | Report Location |
+|----------|-----------|-----------------|
+| **Category A (PR Introduces)** | Code added/changed in this PR. Direct basis for merge decision. | Report section "Evaluation focused on this PR's additions" |
+| **Category B (Pre-existing Concern)** | Issues existing before PR was started. PR neither improved nor worsened. | Report section "Pre-existing concerns (not PR-induced)" |
+
+**Category B Judgment Criteria** (Any of the following qualifies as Category B):
+- `git blame` or staging branch shows the issue exists in a commit older than this PR
+- The issue is not mentioned in the PR's diff (the problematic line existed before)
+- PR demonstrably neither improves nor worsens the issue
+
+**Overall Judgment Rule**:
+- Base approval decision (Approved/Conditional/Changes Required) on Category A findings only
+- Category B issues are provided as informational; recommend separate issue for Category B
+- If Category A is fully compliant, overall judgment is "Approved" even if Category B contains high-risk legacy bugs
+
+**Uncertain Cases**: Escalate to Shogun if Category A/B boundary is unclear. Ashigaru does not make final calls on boundary cases.
+
 ### Step 3: Code Quality Review (Ashigaru)
 
 Reference: `knowledge/standards/review/base_checklist.md`
 
-**CLAUDE.md Mandatory Rules (must check)**:
-1. Soft-delete check: **Are all queries including the soft-delete condition** (e.g., `is_deleted = false`, `deleted_at IS NULL`) — Violation example: `SELECT * FROM xxx WHERE id=1` (no soft-delete condition)
-2. Type safety: **Is strict mode declared at the top of each source file** (e.g., `declare(strict_types=1)` for PHP)
+**Mandatory Rules (must check)**:
+1. Soft-delete/logical deletion: **Are all queries including the soft-delete condition** (e.g., `is_deleted = false`, `deleted_at IS NULL`) — Violation example: `SELECT * FROM xxx WHERE id=1` (no soft-delete condition)
+2. Type safety: **Is strict mode declared at the top of each source file** (e.g., `declare(strict_types=1)` for PHP, or equivalent per language)
 3. Cross-repository duplicate code: **Verify with grep whether identical methods exist in other repositories**
+4. Same-name collision detection: **Verify that same-named classes/Resources/Models do not exist in multiple namespaces**. If detected, list all fully-qualified names in the report and escalate to Shogun. Ashigaru does not finalize judgment. — Background: Legacy incidents where identically-named classes in different namespaces caused incorrect code interpretation.
 
 **Core Checklist**:
-- [ ] Soft-delete check: soft-delete condition included in all queries
-- [ ] Type safety: strict mode declaration present
+- [ ] Soft-delete/logical deletion: soft-delete condition included in all queries
+- [ ] Type safety: strict mode declaration present (language-specific)
 - [ ] Type comparison: strict equality used (no loose comparison traps)
 - [ ] Proper parameter binding (SQL injection prevention)
 - [ ] Output escaping (XSS prevention)
 - [ ] Error handling and exception management
-- [ ] N+1 query prevention (eager loading)
+- [ ] N+1 query prevention (eager loading where applicable)
 - [ ] Consistency with existing code patterns
 - [ ] Test coverage for changes
 - [ ] All callers of changed functions: verify with grep that all call sites of modified functions/methods are reviewed and no parallel fix is needed (lesson: a fix in one PR may require the same change in another call site)
@@ -287,18 +313,44 @@ Leader to Ashigaru:
 
 ## 2. Code Quality Review
 
-### Positive Points
+### Finding Classification Summary (Step 3.0 Result)
+
+| Finding # | Description | Category |
+|-----------|-------------|----------|
+| Finding 1 | XXX | Category A (PR-Introduced) |
+| Finding 2 | YYY | Category B (Pre-existing Concern) |
+
+---
+
+### 2-A. Evaluation Focused on This PR's Additions
+
+Code added/changed in this PR. Direct basis for merge judgment.
+
+#### Positive Points
 - [Include specific file:line numbers]
 
-### Improvement Suggestions
+#### Improvement Suggestions
 | Location | Description | Priority | Proposal |
 |----------|-------------|----------|----------|
 | xxx.ts:45 | ... | High | ... |
 
-### Required Fixes
+#### Required Fixes
 | Location | Description | Reason |
 |----------|-------------|--------|
 | xxx.ts:78 | ... | ... |
+
+---
+
+### 2-B. Pre-existing Concerns (Not PR-Induced)
+
+Issues existing before PR was started. PR neither improved nor worsened.
+Documented here for informational purposes; recommend addressing via separate issue.
+
+| # | Issue | Severity | Origin (Commit/Date) | Recommended Action |
+|---|-------|----------|-------------------|-------------------|
+| B1 | XXX | Medium | Staging pre-existing (Unknown / YYYY-MM-DD) | Separate issue for resolution |
+
+**Note**: If no Category B findings exist, this section (2-B) may be omitted.
 
 ---
 
@@ -335,10 +387,14 @@ Leader to Ashigaru:
 - **Approved** / **Conditional Approval** / **Changes Required**
 
 ### Reason
-[State judgment reason]
+Judgment based on Category A findings (PR-introduced issues). Category B issues do not affect this decision.
+
+### Pre-existing Concerns Information
+Category B findings are provided for informational purposes; recommend separate issue handling (PR merge decision unaffected).
 
 ### Next Actions
-- [ ] [Assignee]: [Task description]
+- [ ] [Assignee]: [PR judgment response]
+- [ ] [Assignee]: [Separate issue tracking if Category B exists] (if applicable)
 
 ---
 
@@ -365,27 +421,30 @@ Leader to Ashigaru:
 | none / `knowledge/domain/xxx.md` | ... | `/doc-organize` handoff |
 ```
 
-## Tone
+## Tone and Communication Style
 
-Business-appropriate, clear reporting style. State OK/NG clearly. State unknowns clearly as unknowns.
+Business-appropriate, clear reporting style. State OK/NG clearly and without ambiguity. State unknowns explicitly. Provide specific file:line references for all findings. Escalate judgment boundary cases to Shogun without attempting to resolve them unilaterally.
 
 ## Quality Checklist
 
 Upon review completion, verify the following:
 
 - [ ] Did Karo formulate the review plan in Step 1.5?
+- [ ] Was Karo plan verified to have all items filled?
 - [ ] Was the knowledge reference scope determined per PR characteristics?
 - [ ] Were all changed files reviewed?
 - [ ] Were domain knowledge references checked per scope?
+- [ ] Was Step 3.0 pre-processing completed? (Same-name collision detection)
+- [ ] Were findings classified into Category A and Category B?
+- [ ] Was the overall judgment based solely on Category A?
 - [ ] Were code quality and business perspective both reviewed?
 - [ ] Are file path:line numbers included?
 - [ ] Is the approval judgment clear (Approved/Conditional/Changes Required)?
+- [ ] Were mandatory rules verified (soft-delete/logical deletion, type safety, cross-repo duplication, same-name collision)?
+- [ ] Were all callers of changed functions verified with grep?
 - [ ] Was Metsuke audit performed per Step 1.5 scope?
 - [ ] Was knowledge/ impact determination completed?
-- [ ] Was the report saved to `reports/`? (F006 compliance)
-- [ ] Were CLAUDE.md mandatory rules (soft-delete, type safety) verified?
-- [ ] Were all callers of changed functions verified with grep?
-- [ ] Was the Karo plan (Step 1.5) verified to have all items filled?
+- [ ] Was the report saved to `reports/`? (F006 compliance: explicit path reporting, not stdout-only)
 
 ---
 
@@ -421,16 +480,19 @@ Upon review completion, verify the following:
 ### Quality Checkpoints
 - [ ] Karo approved the review plan (Step 1.5)?
 - [ ] Karo plan (Step 1.5) has all items filled?
+- [ ] Pre-processing Step 3.0 completed? (Same-name collision detection)
+- [ ] Findings classified into Category A and Category B?
+- [ ] Overall judgment based solely on Category A?
 - [ ] Scope of domain knowledge references determined per PR characteristics?
 - [ ] All changed files reviewed?
 - [ ] Code quality + business perspective + test coverage reviewed?
 - [ ] File path:line numbers included?
 - [ ] Approval judgment clear (Approved/Conditional/Changes Required)?
+- [ ] Mandatory rules verified (soft-delete, type safety, cross-repo duplication, same-name collision)?
+- [ ] All callers of changed functions verified with grep?
 - [ ] Metsuke audit performed per planned scope?
 - [ ] knowledge/ impact determination completed?
-- [ ] Report saved to `reports/`?
-- [ ] CLAUDE.md mandatory rules (soft-delete, type safety) verified?
-- [ ] All callers of changed functions verified with grep?
+- [ ] Report saved to `reports/` with explicit path statement?
 
 ---
 

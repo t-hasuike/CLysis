@@ -37,6 +37,25 @@ If no primary condition is met, apply secondary scoring (execute if total >= 2 p
 
 Even without a milestone, run a lightweight version (`--light`) at session boundaries.
 
+### Carryover Detection (Unexecuted Try Chain)
+
+When reviewing previous Try items (Step 1), check if any "Not Executed" item was also marked "Not Executed" in the prior KPT session.
+
+- **First recurrence of unexecuted Try**: At the start of the current session, confirm priority with the leader. Escalate the Try to "Must Execute" status in the current KPT.
+- **Second consecutive recurrence** (unexecuted Try appearing 2+ times): Trigger Five Whys immediately (treat as equivalent to recurring Problem with failed Try). Conduct structural analysis of the root cause: process ambiguity, unclear priority judgment, or undefined execution responsibility. Record findings in feedback memory for permanent improvement.
+
+**Why**: To catch structural problems where the improvement effort itself carries over across multiple sessions, indicating deeper process breakdown.
+
+### Mandatory Try Execution Timing
+
+"Mandatory Try" refers to any KPT Try item explicitly marked with deadline "by next session start".
+
+- **Unconditional execution rule**: Mandatory Try items must begin immediately after the next session starts, before any other task. Do not re-evaluate priority (mechanically avoids carryover due to judgment delay).
+- **/session-start integration**: When `/session-start` executes, extract all Try items with deadline "by next session start" and present them as the session's top priority to the leader. Completion judgment must finish before addressing any user-directed task.
+- **Non-execution consequence**: If a Mandatory Try is not addressed in the session, escalate it to Five Whys trigger in the next KPT (same treatment as above carryover detection rule). Analyze why the unconditional execution rule failed.
+
+**Why**: To mechanically prevent multi-session carryover of improvement efforts, eliminating human re-prioritization delay.
+
 ## Execution Steps
 
 ### Step 1: Check Previous Try Execution
@@ -54,6 +73,13 @@ ls -t reports/*_kpt.md | head -1
 | **Partial** | Try action partially executed or Problem only partially resolved | Partial commit / partial Issue completion |
 | **Not Executed** | Try action was not attempted | No relevant commit / Issue not opened |
 | **Ineffective** | Try was executed but Problem persists (triggers Five Whys) | Commit exists but recurrence detected |
+
+#### Handling Multi-Session Carryover
+
+After identifying the status of each previous Try item, check for "Not Executed" items that also appeared as "Not Executed" in the prior KPT session.
+
+- **Single carryover**: Verify priority with the leader at session start. Re-enter as "Must Execute" in the current KPT.
+- **Double carryover** (Not Executed for 2+ consecutive KPTs): Treat as Five Whys trigger. Perform root-cause analysis: Why was this improvement effort delayed across sessions? Document findings as feedback memory.
 
 ### Step 2: Confirm Current Session Outcomes
 
@@ -117,6 +143,40 @@ Entries that fail these criteria must be rejected and rewritten:
 - Fail example: "Be more careful next time" / "Do a better job"
 - Pass example: "Add delegation checklist to leader agent definition (Owner: leader, Deadline: before next session start, Verification: checklist item exists in agent definition file)"
 
+## Role Assignment for KPT (Core Judgments by Leader)
+
+KPT execution authority is distributed as follows:
+
+| Role | Responsibility | Notes |
+|------|-----------------|-------|
+| KPT draft creation (Keep/Problem/Try initial candidates) | Planner | Multi-perspective analysis (PM, architect, engineer) |
+| Session achievement certification & finalization | Leader | Validates planner draft; confirms realized value & milestones |
+| Keep/Problem selection & finalization | Leader | Decides which behaviors to continue and which problems to prioritize |
+| Five Whys execution | Leader | Analyzes root cause of recurring Problems |
+| Try definition & finalization | Leader | Receives planner's draft; confirms final remediation actions |
+| KPT file formatting & storage | Worker | Transforms leader-approved content into file format; verifies prohibited symbols |
+| Symbol verification (grep check) | Worker | Confirms 0 occurrences of prohibited terms/symbols |
+
+**Background**: Delegating core KPT judgments to workers resulted in 3 consecutive quality issues. Root cause (Five Whys analysis): KPT judgment is a leader's retrospective responsibility, not a worker's transcription task. Planner provides multi-perspective input; leader owns the final decision.
+
+## File Management (Split Threshold)
+
+If a single KPT file grows too large, split to maintain readability:
+
+- **Recommended split threshold**: 250 lines per file
+- **Split method**: If the threshold is exceeded, create a new file with sequential naming: `reports/YYYY.MM.DD_kpt_2.md`
+- **Owner**: The worker implementing the KPT should confirm file size with `wc -l` before submitting. If threshold is exceeded, propose split to the leader.
+- **Cross-referencing**: When multiple KPT files exist for the same day, add "Previous KPT: {filename}" link at the top of the newer file to enable traceability.
+
+**Why**: During a previous 3-session retrospective on 2026-05-12, accumulated KPT appends reached 260 lines, degrading readability.
+
+## Prohibited Actions (Detailed)
+
+- Concealing or downplaying Problems: record all observed facts. "Impact was small so I omitted it" is prohibited. Verification: cross-check that all user corrections and feedback during the session are reflected in the Problem table
+- Recording a Problem without a Try: every Problem must have a corresponding Try entry. Verification: Problem table row count <= Try table row count
+- Generic entries: vague Try items like "try harder", "be careful", or "stay aware" are prohibited. Try entries must always include Owner, Deadline, and Completion Verification Method. Verification: confirm all rows in the Try table have these three fields populated
+- Reporting without execution evidence: "0 items found" or similar qualitative claims alone are insufficient. Report grep/API commands, exact counts, and matching lines as proof of verification
+
 ## Output Format
 
 ```markdown
@@ -156,7 +216,7 @@ Entries that fail these criteria must be rejected and rewritten:
 
 | Skill | Condition | Instruction |
 |-------|-----------|-------------|
-| `/session-start` | Next session start | Include previous Try execution check |
+| `/session-start` | Next session start | Extract Mandatory Tries and present as session priority before any other user direction |
 | `/empirical-prompt-tuning` | Problem root cause is skill definition ambiguity | Propose skill definition improvement |
 
 > **Fallback**: Even if Problem count is 0, record at least 1 Keep and 1 Try.
@@ -180,3 +240,5 @@ Entries that fail these criteria must be rejected and rewritten:
 - Concealing or downplaying Problems: record all observed facts. "Impact was small so I omitted it" is prohibited. Verification: cross-check that all user corrections and feedback during the session are reflected in the Problem table
 - Recording a Problem without a Try: every Problem must have a corresponding Try entry. Verification: Problem table row count <= Try table row count
 - Generic entries: vague Try items like "try harder", "be careful", or "stay aware" are prohibited. Try entries must always include Owner, Deadline, and Completion Verification Method. Verification: confirm all rows in the Try table have these three fields populated
+- Reporting without execution evidence: "0 items found" or similar qualitative claims alone are insufficient. Report grep/API commands, exact counts, and matching lines as proof of verification
+- Unchecked symbols in output: KPT files distributed externally must pass symbol verification. Worker must run prohibited symbol check before delivery. For external-facing deliverables, use pattern: `grep -nP "[\x{2190}-\x{2BFF}\x{1F000}-\x{1FAFF}]" <file>` and confirm 0 matches. For internal working notes, emoji check only: `grep -nP "[\x{1F000}-\x{1FAFF}]" <file>` and confirm 0 matches.

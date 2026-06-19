@@ -2,5 +2,5 @@
   "name": "legacy-analysis",
   "description": "Analysis and planning skills for legacy systems: impact analysis, system overview diagrams (DFD, I/O interfaces).",
   "version": "1.0.0",
-  "skills": ["change-impact", "current-legacy", "current-distortion"]
+  "skills": ["change-impact", "current-legacy", "current-distortion", "current-prd", "current-semantic"]
 }

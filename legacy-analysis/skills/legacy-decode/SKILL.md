@@ -50,7 +50,7 @@ Confirm the following prerequisites are met before executing this skill:
 
 - **Serena setup complete**: Symbolic search tool is available (tool name: Serena component in Claude Code).
 - **Repository access**: Read/Bash access to the target repositories is available.
-- **Understanding of your project's soft-delete convention**: Understand whether your project uses a soft-delete flag (e.g., `soft_delete_flag='0'` or equivalent) and that all queries must include the appropriate filter. See your project's coding conventions guide for details.
+- **Understanding of your project's soft-delete convention**: Understand whether your project uses a soft-delete flag (e.g., `soft_delete_flag='0'` or equivalent) and that all queries must include the appropriate filter. See your project's coding conventions guide for details. Detailed project-specific conventions are documented in `reference/project_conventions.md`.
 - **Karo decomposition plan exists**: The "decoding plan" (scope, questions, quality gate definition) created by Karo in Phase 0 is at hand. This skill always follows Karo's plan.
 
 ## Relationship with Existing Skills
@@ -125,7 +125,7 @@ If any of the following apply, Phase 3 Metsuke rejects back to Phase 1:
 2. **Insufficient evidence**: There is a finding that "table X is operated," but details of "which code line" and "under what constraints" are unclear.
 3. **Contradiction detected**: Multiple investigation results conflict. Example: "API A requires Cognito authentication" is documented, but the code has no authentication check.
 4. **Hidden outputs undiscovered**: Side effects such as S3 / SFTP / email that are "within scope but completely overlooked."
-5. **Missing soft-delete check**: Your project's required convention. If "this table has X records" is written without considering the soft-delete flag, it is subject to rejection. (See your project's coding conventions guide for the specific convention used.)
+5. **Missing soft-delete check**: Your project's required convention. If "this table has X records" is written without considering the soft-delete flag, it is subject to rejection. (See your project's coding conventions guide for the specific convention used. Typical conventions check whether queries filter by soft-delete column, and whether ORM models include soft-delete scope.)
 
 **Concretizing rejections**:
 
@@ -165,6 +165,7 @@ Ashigaru extracts facts necessary for blackbox decoding according to Karo's plan
 4. **Check DB schema**
    - Once the table names operated by the function are identified, read the PostgreSQL CREATE TABLE definition to confirm constraints, FKs, and indexes.
    - **Soft-delete check**: Does the table have a soft-delete column? If so, is the appropriate filter always included in queries? (See your project's coding conventions guide.)
+   - Record in findings: "table `[your-table]` has soft-delete column; verify filter `WHERE soft_delete='0'` in all queries"
 
 **Serena search tips**:
 - Search keywords: 4 axes of "function name", "class name", "API endpoint", "table name" - one search each.
@@ -240,7 +241,10 @@ All facts obtained through digging must be recorded in the following format.
 
 **Notes**:
 
-1. **Soft-delete check (your project's convention)**: When describing tables, always confirm "does this table have a soft-delete column? If so, is the filter applied in queries?" If a gap is found, write "Warning: missing soft-delete check (line X)".
+1. **Soft-delete check (your project's convention)**: When describing tables, always confirm "does this table have a soft-delete column? If so, is the filter applied in queries?" If a gap is found, write "Warning: missing soft-delete check (line X)". Standard checks include:
+   - Grep for table name + `SELECT` / `UPDATE` / `DELETE` patterns
+   - Confirm SQL text includes soft-delete filter (raw SQL case)
+   - Confirm ORM model defines soft-delete scope (e.g., Eloquent local scope)
 2. **Citation accuracy**: Not "around here" but "line L234" with precision. Copy from Serena or grep output.
 3. **Handling uncertain information**:
    - "Code not found" -> Record honestly as "not obtained: no matching code found searching for [keyword]". Do not substitute with inference.
@@ -382,3 +386,5 @@ The basis for "expected values" in this verification is ST-A1 (`reports/investig
 ### Detailed Procedures
 
 **Details on INPUT, OUTPUT, prerequisites, and successor skills: see** `reference/quality_checklists.md`
+
+**Project-specific conventions**: For soft-delete rules, data patterns, and team structure adaptations unique to your project, see `reference/project_conventions.md`

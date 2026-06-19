@@ -216,6 +216,31 @@ When you write "will do X" or "proceeding to X" in a response, you **must** incl
 | F007 | Allowing audit results to exist only in stdout | Audit trail becomes untraceable | Inspector must save to `reports/audit/` |
 | F008 | Direct push to main/master branch | Unreviewed changes reach production | Always create branch and use PR workflow |
 
+## PR Operation Pre-flight Checklist (Step 0 — Mandatory)
+
+Before any PR operation (review, conflict resolution, rebase, force-push, merge, untrack, etc.), measure the following ground truth:
+
+```
+gh pr view <PR-number> --json number,state,merged,mergeable,mergeStateStatus
+```
+
+**Decision rules**:
+
+- If `state` is MERGED or CLOSED: Stop immediately and report to user. The PR is already decided — avoid empty operations on closed PRs.
+- If `mergeable` / `mergeStateStatus` show CONFLICTING or DIRTY: Investigate the conflict before proceeding.
+
+**Background note**: A prior incident (2026-06-15 equivalent scenario) involved attempting conflict resolution, rebase, and force-push on an already-merged PR without state verification. This checklist prevents such empty operations.
+
+### PR Change File Source Specification
+
+When retrieving a PR's file change list, use the official API as the authoritative source:
+
+```
+gh api repos/{owner}/{repo}/pulls/{n}/files
+```
+
+**Prohibited**: Using git two-dot diff (`main..branch`) to determine PR changes. When squash-merge or other commit operations change hashes, git diff may diverge from the remote PR file list, causing misclassification.
+
 ## PR Body Disclosure Prohibitions (Mandatory Check for Public Repository PRs)
 
 When creating a PR to a public / OSS repository (or any externally visible repository), the PR body must not contain any of the following.
@@ -334,6 +359,19 @@ When writing the handover, attach background / deadline / risk to every high-pri
 | ashigaru-scribe | Documentation | Markdown | Read, Edit, Write |
 | ashigaru-devops | Infrastructure/Operations | Docker, CI/CD, AWS | Read, Edit, Write, Bash |
 
+## Handoff Discipline (One-Step-at-a-Time Delivery)
+
+Beyond task content, the **cadence and granularity of delegation** must be governed by explicit rules. This prevents format degradation and prompt overflow under high context saturation.
+
+- **Delegate one step at a time**. Include an explicit "stop here" marker. Do not hand over three steps in one delegation — they will become confused.
+- **Confirm step-1 success before step-2**: The leader must confirm completion before issuing the next delegation.
+- **Minimize restating context**: The leader (not the worker) is responsible for committing central decisions to files and memory. The leader quotes facts; do not ask workers to redraw the reasoning.
+- **Minimize the message**: Before delegating a long task, validate syntax with a minimal call (e.g., `echo ok`). This proves antml formatting before the real delegation.
+- **Compress with memory**: Reference prior decisions by memory (team notation) rather than re-listing them in full.
+- **One PR per session**: Break work at PR boundaries. Do not run multiple PRs in a single session.
+
+See memory `feedback-one-step-handoff` for details.
+
 ## Worker Delegation Guidelines
 
 When delegating to workers:
@@ -351,7 +389,7 @@ When delegating to workers:
 
 8. **Line count measurement**: When reporting the number of lines in a file you have modified, always report the value from `wc -l` after the modification is complete. Never estimate or carry forward a prior count.
 
-   Why: Stale line-count numbers in worker reports cause inspector findings and plan-rework cycles (observed 4 consecutive violations: 2026-05-12 to 2026-05-15).
+   Why: Stale line-count numbers in worker reports cause inspector findings and plan-rework cycles (observed 4 consecutive violations: 2026-05-12 to 2026-05-15 equivalent).
 
 9. **State assumptions before starting**: Before beginning work, explicitly list to the leader: "What premises I am starting from", "What conditions I am assuming to be true", "What is unclear". Use a bulleted list.
 
@@ -388,6 +426,38 @@ When delegating to workers:
 17. **Transparent failure reporting**: Any steps skipped, errors encountered, constraint violations, or rolled-back operations during execution must be included in the completion report. Reporting completion as if nothing went wrong is prohibited. "Too difficult, so I skipped it" must also be reported.
 
     Why: R12 Fail Transparently. Prohibits silent failure concealment. Active-reporting version of the no-speculation and real-measurement rules.
+
+18. **Completion definition (for output-file tasks)**: For tasks that produce a work product file, apply the following discipline:
+    - "Investigation complete" or "analysis complete" does not equal "task complete"
+    - Completion occurs when the final Write or Edit successfully saves the file
+    - If a Write is interrupted mid-execution, continue with Edit to append. Do not report "complete" until a file physically exists
+    - Layer 2 environmental obstacles (token exhaustion, network timeout, cascade Edit failures) are outside the worker's control. If encountered, report the environmental failure to the leader with specifics — "write was interrupted due to token limit" / "file was not saved" — rather than concealing the failure as "complete"
+
+    Why: Workers conflate "investigation finished in working memory" with "task complete," leading to a gap between reported completion and actual file existence. This discipline anchors completion to file persistence and surfaces layer-2 environmental issues transparently.
+
+19. **Proposal classification framework (for leader-to-user proposals)**: When proposing changes or improvements to the user, classify the proposal across three axes to clarify intent:
+    - **A-axis: Skill precision** — Improve existing skill effectiveness or accuracy → feed into `.claude/skills/*/SKILL.md`
+    - **B-axis: Domain knowledge** — Capture and persist team business knowledge → feed into `knowledge/domain/`
+    - **C-axis: Operating procedure** — Refine leader, planner, or worker operational practices → feed into `agents/shogun.md` / `agents/karo.md` / MEMORY.md
+
+    If a proposal maps to none of these axes, it lacks clear intent and should be questioned. If the proposal originates via the planner, the planner typically classifies it in C-2 of the plan; the leader need only confirm (no re-classification required).
+
+    Why: 2026-05-13 equivalent incident. Proposals with unclear intent ("looks useful but to what end?") caused false starts and rework. This framework forces explicit intent declaration.
+
+## KPT Ownership (F002 boundary clarification)
+
+The leader conducts KPT retrospective judgment directly — this is not subject to F002 (leader does not implement).
+
+| Activity | Owner | Role |
+|----------|-------|------|
+| Session outcome acknowledgment | Leader | Direct judgment |
+| Keep/Problem selection | Leader | Direct judgment |
+| Five Whys analysis | Leader | Direct judgment |
+| Try definition | Leader | Direct judgment |
+| KPT document formatting & save | Worker | Delegable |
+| Emoji / symbol validation (0-occurrence check) | Worker | Delegable |
+
+Background: Workers in three consecutive KPT sessions (equivalent to kpt_6, kpt_7, kpt_8) introduced errors, and even with remedy T11 applied, violations recurred. Five Whys analysis (kpt_8 equivalent, P-1) determined: "KPT core judgment is a leader's reflection task, not implementation work, and is structurally unsuitable for delegation." KPT execution transferred to leader direct responsibility.
 
 ## Communication with User
 

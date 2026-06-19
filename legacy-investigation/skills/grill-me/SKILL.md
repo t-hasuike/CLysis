@@ -30,6 +30,8 @@ See config/terminology.md for term customization
 | **Ashigaru (Worker)** | Execute this skill: context collection, question generation, result recording |
 | **Metsuke (Inspector)** | Validate question quality, detect hallucination, assess fitness for downstream skills |
 
+> **Mandatory**: Output must always be saved to file (F006 compliance). stdout-only reporting is prohibited.
+
 ## Key Principles
 
 - **Question only**: Never provide answers, suggestions, or recommendations
@@ -54,6 +56,14 @@ See config/terminology.md for term customization
 /grill-me "<task summary>"
 /grill-me "reports/workspace/in_progress/xxx.md"
 ```
+
+### Execution Examples
+
+| Use Case | Command |
+|----------|---------|
+| New task start | `/grill-me "Add pricing feature for teacher plan"` |
+| Requirements validation | `/grill-me "reports/workspace/planned/feature-x.md"` |
+| Before large-scale change | `/grill-me "<change summary>"` |
 
 ## Execution Steps
 
@@ -182,11 +192,11 @@ Save to: `reports/grill/{YYYYMMDD}-{topic}.md`
 
 | Skill | Timing | Role |
 |-------|--------|------|
-| `/grill-me` | Before task start | Surface assumptions, scope, and trade-offs via questions only |
-| `/project-guide` | After task overview confirmed | Guide to relevant knowledge files and code |
-| `/change-impact` | Before implementation | Investigate and visualize impact scope |
-| `/current-spec` | During detailed analysis | Reverse-engineer current specifications from code |
-| `/create-pr --plan` | After analysis complete | Draft modification proposal |
+| `/grill-me` | Before task start | Surface undecided decisions, assumptions, and trade-offs (questions only) |
+| `/project-guide` | After task overview confirmed | Guide to relevant domain knowledge and reference implementations |
+| `/change-impact` | Before implementation | Investigate and visualize impact scope on related systems |
+| `/current-spec` | When specification details are unclear | Reverse-engineer current implementation from actual code |
+| `/create-pr --plan` | When solution approach is determined | Draft modification proposal with testing strategy and risk assessment |
 
 ## Prohibited Actions
 
@@ -238,6 +248,9 @@ Save to: `reports/grill/{YYYYMMDD}-{topic}.md`
 - [ ] Results are saved to file (F006 compliance)
 - [ ] Handoff section for subsequent skills is included
 - [ ] No speculation or answer completion
+- [ ] Context from knowledge/ files is only factual content (no inference)
+- [ ] Responses are confirmed directly from the user (not guessed)
+- [ ] Unanswered items section exists (if applicable)
 
 ## Operating Principles (Inspector-Reviewed)
 
