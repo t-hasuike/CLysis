@@ -57,6 +57,7 @@ Update existing knowledge documents to match the needs of a specific audience. M
   - **Fallback**: If Serena is unresponsive, use `grep -rn '[class/method name]' app/` as alternative search. If 0 results, report "symbol not found" and request confirmation
   - **Prohibition**: Do not delete from documents without existence verification. Deletion candidates must be backed by grep evidence, and reasoning must be noted in version history
 - Gap classification: Categorize into "documented but changed", "exists but undocumented", "documented but removed"
+- Staleness tagging: Check for sections where `Last Updated` is 30+ days old and apply `[NEEDS VERIFICATION]` tag in version history
 
 ### Step 2: Audience Adaptation
 
@@ -79,7 +80,7 @@ Based on target audience, adjust:
 - Last-updated date is always current
 - Removed content is noted in version history (not silently deleted)
 - Cross-references to other knowledge files are verified on each update
-- Stale content (>30 days without verification) is flagged with `[NEEDS VERIFICATION]`
+- Stale content (>30 days without verification) is flagged with `[NEEDS VERIFICATION]` tag
 
 ## Output Rules
 
@@ -121,9 +122,44 @@ Clear, professional reporting with business etiquette. Clearly state OK/NG, expl
 
 | Existing Skill | Relationship |
 |---------------|-------------|
-| `/current-spec` | Provides bulk findings that doc-update integrates |
+| `/current-prd` | Provides bulk findings that doc-update integrates |
 | `/doc-organize` | Handles reports/ → knowledge/ promotion. doc-update handles knowledge/ maintenance |
-| `/doc-check` | Diagnoses issues. doc-update executes fixes |
+| `/current-legacy` | Phase 3 updates the map. doc-update extends to all knowledge/ files |
+
+### Path Alias List (automatically generated from paths.json)
+
+<!-- PATH_TABLE_START -->
+
+**File Aliases**
+
+| Alias | Path |
+| :--- | :--- |
+| `birdseye_system_overview` | `knowledge/system/01_overview/birdseye_system_overview.md` |
+| `wormseye_repositories` | `knowledge/system/02_structure/wormseye_repositories.md` |
+| `knowledge_readme` | `knowledge/README.md` |
+| `claude_md` | `CLAUDE.md` |
+| `claude_local_md` | `CLAUDE.local.md` |
+| `shogun_md` | `.claude/agents/shogun.md` |
+| `karo_md` | `.claude/agents/karo.md` |
+| `birdseye_partner_overview` | `knowledge/quality/distortions/scoped/partner/birdseye_partner_overview.md` |
+| `birdseye_cross_cutting_risks` | `knowledge/quality/birdseye_cross_cutting_risks.md` |
+| `wormseye_contract_attributes_impact_matrix` | `knowledge/domain/pr2_contract/wormseye_contract_attributes_impact_matrix.md` |
+| `birdseye_batch_group` | `knowledge/domain/feature_groups/birdseye_batch_group.md` |
+| `birdseye_notification_group` | `knowledge/domain/feature_groups/birdseye_notification_group.md` |
+| `birdseye_photo_processing_group` | `knowledge/domain/feature_groups/birdseye_photo_processing_group.md` |
+| `birdseye_print_dispatch_group` | `knowledge/domain/feature_groups/birdseye_print_dispatch_group.md` |
+
+**Directory Aliases**
+
+| Alias | Path |
+| :--- | :--- |
+| `knowledge_system` | `knowledge/system/` |
+| `knowledge_domain` | `knowledge/domain/` |
+| `knowledge_quality` | `knowledge/quality/` |
+| `skills_dir` | `.claude/skills/` |
+| `agents_dir` | `.claude/agents/` |
+
+<!-- PATH_TABLE_END -->
 
 ## I/O Specification
 
@@ -152,5 +188,5 @@ Clear, professional reporting with business etiquette. Clearly state OK/NG, expl
 - [ ] Last-updated date set to current: visually confirm `Last Updated:` in file header matches today's date
 - [ ] Cross-references verified: confirm all link paths in the file exist via `ls`, no broken links
 - [ ] Audience-appropriate depth applied: visually review that terminology and detail level match target audience (developer/pm/onboarding)
-- [ ] No modification proposals: grep the file for "should be", "needs to be", "must be changed" and confirm zero matches
+- [ ] No modification proposals: grep the file for "should be", "needs to be", "must be changed to" and confirm zero matches
 - [ ] Stale content flagged: grep for sections where `Last Updated` is 30+ days old and confirm `[NEEDS VERIFICATION]` tag is present

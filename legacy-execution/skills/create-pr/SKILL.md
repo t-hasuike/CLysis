@@ -40,6 +40,10 @@ This two-phase structure ensures human judgment gates all code modifications.
 | **Worker** | --plan: Generate change proposals. --exec: Implement approved changes, create PR |
 | **Inspector** | Post-PR audit: Code quality, compliance, hallucination detection |
 
+**GitHub Operations Authority**: Workers execute in `mode: "default"` and obtain approval before push/PR creation.
+
+**F002 Compliance**: The leader does not perform code changes directly. Consult the planner for design, delegate implementation to workers, and request inspector audit after PR creation.
+
 ## Investigation Target
 
 $ARGUMENTS
@@ -295,6 +299,14 @@ Verify that the change proposal has been approved by the user through the follow
 - [ ] Approved proposal version (file path, creation date) matches the current proposal
 - [ ] User has acknowledged and accepted high-risk items (from the proposal's "High Risk" section)
 
+**Approval Verification Protocol Violations (3 prohibitions)**:
+
+| ID | Violation | Reason |
+|----|-----------|--------|
+| APR-01 | Executing --exec without confirmed approval comment | Approval is mandatory. Execution is prohibited if no explicit approval comment ("approved", "OK", "proceed", etc.) exists in session history or Discussion/Issue |
+| APR-02 | Executing --exec without identifiable approval timestamp | Timing verification is mandatory. If approval timing is unknown, the proposal may have been updated since approval. Verify the exact approval timestamp |
+| APR-03 | Executing --exec with proposal version mismatch | Re-approval is mandatory if proposal was modified after initial approval. If file modification timestamp > approval timestamp, present changes to the user and obtain fresh approval |
+
 **Fallback (approval not confirmed)**: If approval cannot be confirmed, do not execute --exec. Report to the leader: "Cannot confirm change proposal approval; requesting user confirmation." Self-declaring "considered approved" is prohibited.
 
 #### Step 3: Create Branch
@@ -334,10 +346,12 @@ Why: {why this change is needed}
 What: {what was changed}
 How: {how it was implemented}
 
-Co-Authored-By: Claude <noreply@anthropic.com>
+Co-Authored-By: Claude Opus <noreply@anthropic.com>
 EOF
 )"
 ```
+
+**Commit Message Format**: Follow 5W1H structure. The "Why:" section links to business requirements or architectural decisions documented in ADR/SPEC files (if applicable).
 
 #### Step 6: Push
 
@@ -516,21 +530,23 @@ When creating PRs to public/OSS repositories, verify that the PR body does NOT c
 
 ### Quality Checkpoints
 
-#### For --plan
-- [ ] All modification points have diffs
-- [ ] Change reasons documented
-- [ ] Impact scope analyzed
-- [ ] Test strategy is specific
-- [ ] Risks and side effects identified
-- [ ] Dependencies organized
-- [ ] Change order is appropriate
+#### For --plan Phase
+- [ ] All modification points presented with diffs
+- [ ] Change reasons clearly documented
+- [ ] Impact scope analyzed with ripple effects
+- [ ] Test strategy is specific (unit/integration/manual breakdown)
+- [ ] Risks and side effects comprehensively identified
+- [ ] Dependencies between changes organized and documented
+- [ ] Change order determined based on dependencies
+- [ ] Diff generation checklist completed (line numbers, context, indentation verified)
 
-#### For --exec
-- [ ] All modification files applied
-- [ ] Commits follow 5W1H format
-- [ ] PR body includes change summary, test results, risks
-- [ ] Execution log recorded
-- [ ] Test results verified
+#### For --exec Phase
+- [ ] All modification files successfully applied from proposal
+- [ ] Each commit message follows 5W1H format with Why/What/How sections
+- [ ] PR body includes: change summary, test results, risk acknowledgment
+- [ ] Execution log recorded with details in `reports/pr_logs/`
+- [ ] Test results (unit/integration) verified and documented
+- [ ] No force pushes used; standard push protocol followed
 
 ---
 
@@ -594,4 +610,19 @@ Output: reports/proposals/add_express_shipping_phase0.md
 Input: reports/proposals/add_express_shipping_phase0.md (approved)
 Output: PR URL + reports/pr_logs/add_express_shipping_phase0.md
 ```
+
+---
+
+## Path Aliases and Common References
+
+When creating PRs or referencing documentation, use the following standardized paths:
+
+| Category | Purpose | Path Pattern |
+|----------|---------|--------------|
+| Change proposals | Output from --plan phase | `reports/proposals/{feature}_{phase}.md` |
+| Execution logs | Documentation of --exec phase | `reports/pr_logs/{feature}_{phase}.md` |
+| Impact reports | Input from /change-impact skill | `reports/impact_reports/{feature}.md` |
+| Workspace docs | ADR, SPEC, and session notes | `workspace/in_progress/` |
+
+**Note**: Path structures may vary by organization. Consult your local documentation for customized alias mappings.
 

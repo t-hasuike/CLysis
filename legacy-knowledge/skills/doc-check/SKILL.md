@@ -20,7 +20,15 @@ description: Document integrity diagnosis skill. Detects dead links, naming conv
 | **Ashigaru (Foot Soldier / Worker, scribe)** | Execute checklist items (dead-link detection, naming rules, README consistency, promotion readiness) |
 | **Metsuke (Inspector)** | Audit the diagnosis results themselves (ensure no detection gaps) |
 
-**Strict delegate-mode compliance**: Shogun (General) does not personally run diagnostics. Delegate execution to Ashigaru (Foot Soldier / Worker).
+**Strict delegate-mode compliance (F002 mandatory)**: Shogun (General) does not personally run diagnostics. Delegate execution to Ashigaru (Foot Soldier / Worker).
+
+```
+/doc-check (diagnosis) → verify integrity, identify problems
+       ↓ if problems found
+Shogun (General) → judge As-Is vs To-Be, gate decision
+       ↓ if promotion approved
+/doc-organize (execution) → reorganize files
+```
 
 **Distinction from `/doc-organize`**:
 - `/doc-check` = **Judge** (integrity verification + As-Is/To-Be promotion judgment + placement error detection)
@@ -116,9 +124,11 @@ Verify promotion status of files in reports/.
 - Judge each: "As-Is (promote immediately)" or "To-Be (wait for decision)"
 - Suggest `/doc-organize` activation if promotion candidates exist
 
-### 4-b. Mark Omission Detection (Cross-Reference Check)
+**Escalation rule**: Reports lacking promotion mark are escalated to Shogun (General) for As-Is/To-Be classification. Final promotion decision is not automatic but requires human judgment at the gate.
 
-For unpromoted files, run heuristics to detect "possible mark omission".
+### 4-b. Mark Omission Detection (Content Cross-Reference Check)
+
+For unpromoted files, run heuristics to detect "possible mark omission" by cross-referencing file content with knowledge/.
 **Results are suggestive only; final judgment is by Shogun (General) / Uesama (Lord).**
 
 **Procedure**:
@@ -135,11 +145,14 @@ For unpromoted files, run heuristics to detect "possible mark omission".
    | 1-2 hits | Partially reflected (weak) | `[Info]` | Record as information. No immediate action required |
    | 0 hits | Not reflected | `[Not reflected]` | Recommend discard evaluation |
 
-**Prohibition**: Do not judge by grep matches alone. For each hit, verify one line of the hit file's content to confirm the keyword appears in the context of "same information reflected." Do not miscount partial filename matches or unrelated context hits.
+**Critical prohibition**: Do not judge by grep matches alone. For each hit, manually verify at least one line of the hit file's content to confirm the keyword appears in meaningful context (i.e., "same information reflected"). Do not miscount:
+   - Partial filename matches without semantic relevance
+   - Unrelated usage of keywords (e.g., generic term reuse)
+   - Obsolete or deprecated references
 
 **Caveat**: Keyword grep detects "some content exists" but NOT "information fully integrated." Human judgment is final.
 
-**Future enhancement (Phase 2)**: Add YAML front-matter (`promoted_to:` field) to reports/ files for structured tracking, improving accuracy.
+**Future enhancement (Phase 2)**: Add YAML front-matter (`promoted_to:` field) to reports/ files for structured tracking, improving accuracy and reducing manual keyword matching burden.
 
 ---
 
@@ -221,3 +234,4 @@ No problems found: Integrity check complete
 
 - `scripts/check-dead-links.sh` — Dead-link detection script
 - `knowledge/README.md` — Document structure (single source of truth)
+- `config/terminology.md` — Customizable terminology definitions (CLysis-specific)

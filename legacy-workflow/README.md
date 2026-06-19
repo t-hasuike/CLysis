@@ -8,6 +8,7 @@ Process improvement skills for legacy system teams.
 |-------|-------------|
 | `/kpt` | KPT (Keep/Problem/Try) retrospective with Five Whys for recurring problems |
 | `/empirical-prompt-tuning` | Bias-free skill definition evaluation and iterative improvement |
+| `/agent-recover` | Async agent stall recovery (viability assessment, idempotent restart, granularity splitting) |
 
 ## Installation
 

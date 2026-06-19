@@ -81,6 +81,14 @@ argument-hint: [scope] - e.g., `reports/` / `knowledge/` / `--all` / specific fi
 | **Discard** | Delete temporary notes, duplicates, obsolete content (see "Discard Criteria" below for details) | Content merged elsewhere or information outdated |
 | **Hold** | Keep in reports/ (waiting for decision maker judgment) | Future plans, improvement proposals (To-Be) requiring decision maker approval |
 
+### Promotion Decision Criteria (Purpose-Based)
+
+| Investigation Purpose | Processing Decision | Decision Maker |
+|--------|------------|--------|
+| Current spec survey (As-Is) | **Immediate promotion** | Shogun (General) / Ashigaru (Worker) |
+| Future plans, improvement proposals (To-Be) | **Hold** (promote after Uesama (Lord) approval) | Uesama (Lord) |
+| One-time investigation | **Discard candidate** (discard if no value) | Shogun (General) |
+
 ### Discard Criteria
 
 #### 4 Conditions for Discard
@@ -105,14 +113,6 @@ When in doubt, do not delete. Add the following mark to the file header and repo
 ```
 > **Discard candidate**: [reason in one line] (YYYY-MM-DD classified by Ashigaru (Worker))
 ```
-
-### Promotion Decision Criteria (Purpose-Based)
-
-| Investigation Purpose | Processing Decision | Decision Maker |
-|--------|------------|--------|
-| Current spec survey (As-Is) | **Immediate promotion** | Shogun (General) / Ashigaru (Worker) |
-| Future plans, improvement proposals (To-Be) | **Hold** (promote after Uesama (Lord) approval) | Uesama (Lord) |
-| One-time investigation | **Discard candidate** (discard if no value) | Shogun (General) |
 
 ### Naming Convention (Prefixes)
 
@@ -191,7 +191,7 @@ When a document matches multiple character conditions, classify in this order:
 1. **"Does it exist independent of code?"**: Exists without code → Domain knowledge. Depends on code implementation details → Implementation specs
 2. **"Is it a problem record or structure record?"**: Problem/risk/debt record → Quality records. Structure/mechanism record → System knowledge
 3. **"Is it procedure description or knowledge description?"**: Procedure/operation description → Runbooks. Concept/specification description → use 1-2 above
-4. **Uncertain?** → Consult with Shogun (General)
+4. **When in doubt, consult Shogun (General)**
 
 #### PRD (Compound Document) Decomposition Rule
 

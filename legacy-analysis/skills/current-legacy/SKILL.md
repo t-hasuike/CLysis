@@ -77,6 +77,8 @@ If schema.duckdb is not available:
 2. Estimate table structure from migration files
 3. If neither is available, note as "DB structure unknown" in the unknowns list
 
+**Note**: Phase 0 quantitative scanning is limited to **counting** (how many routes, models, tables exist). **Reading** the contents or analyzing complexity belongs to Phase 1.
+
 ### Additional Collection Items (Dynamic / Hidden Assets)
 
 | Collection Target | Method | Output |
@@ -92,6 +94,8 @@ If schema.duckdb is not available:
 - Table count (from schema or migrations)
 - Total file count per major language
 - Service/UseCase count
+
+> Phase 0 quantitative scanning is limited to **counting** (how many routes, models, tables exist). **Reading** the contents or analyzing complexity belongs to Phase 1.
 
 **Risk Quantitative Scan** (code metrics for risk assessment):
 
@@ -109,8 +113,6 @@ If schema.duckdb is not available:
 | **Code Liveness** | Git Blame for last update date; flag files not updated in 1+ year as "dormant" | Prioritize investigation targets; identify dead code areas |
 | **Runtime/Library EOL Risk** | Extract dependency versions from composer.json, package.json, go.mod, build.gradle; check for deprecated APIs and EOL runtimes | Early security and maintainability risk detection |
 
-> Phase 0 quantitative scanning is limited to **counting** (how many routes, models, tables exist). **Reading** the contents or analyzing complexity belongs to Phase 1.
-
 **Validation**: about 65-73% of the information can be automatically identified from README, composer.json, package.json, etc. (based on verified across multiple large-scale repositories).
 
 **Step 2: Organize "what we know"**
@@ -127,7 +129,6 @@ Organize information identified from auto-collection using the following four ca
 
 **4. Batch & Infrastructure**
 - Scheduled tasks, queue workers, infrastructure components
-
 
 **Step 3: Present "what we don't know" as questions**
 Generate questions dynamically based on what Step 1-2 revealed and what remains unknown. The following are reference examples of common question categories:

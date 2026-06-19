@@ -38,11 +38,28 @@ $ARGUMENTS
    - Check the file list under knowledge/domain/
    - Read files related to the task keywords
    - Start investigation with understanding of known business rules and constraints
+   
+   #### Domain Terminology Pre-check (Optional / When terminology is ambiguous)
+   
+   If terminology interpretation is ambiguous before code investigation, perform the following pre-checks:
+   - `knowledge/domain/domain_vocabulary.md` — Domain terminology glossary
+   - If term meaning is unclear, consult the glossary before starting investigation instead of making assumptions
+
 3. **Target file identification**: Identify file paths using Serena's find_symbol
 4. **Symbol overview retrieval**: Get method list using get_symbols_overview
 5. **Dependency investigation**: Identify callers/callees using find_referencing_symbols
-6. **Detailed reading**: Read only important method bodies using find_symbol
-7. **Survival check**: Verify the investigation target is still actively used
+6. **Survival check**: Verify the investigation target is still actively used
+
+   | Check Item | Method | Criteria |
+   |------------|--------|----------|
+   | Caller existence | Serena find_referencing_symbols | At least 1 reference must exist. If 0, record as "dead code candidate" |
+   | Last commit date | `git log -1 --format=%ci [file_path]` | If >1 year since last update, record as "low activity". Record fact only — do not propose deletion |
+   | Runtime usage | Check route definitions, cron schedules, queue registrations | May be used at runtime even without static references |
+
+   **Note**: Dead code candidate / low activity judgments are factual records only. Do not propose deletion or refactoring (state-comprehension phase rule).
+
+7. **Detailed reading**: Read only important method bodies using find_symbol
+8. **Diff check**: If the same class exists in multiple repositories, check differences
 
    | Check Item | Method | Criteria |
    |------------|--------|----------|
@@ -81,6 +98,8 @@ $ARGUMENTS
 |-------------|-------------|------------|--------------|
 | `methodA()` | ... | public | 45-67 |
 | `methodB()` | ... | private | 70-85 |
+
+> **Checkpoint**: After completing the key feature list, report progress to the leader and confirm the investigation scope before proceeding to dependency and side-effect analysis.
 
 > **Checkpoint**: After completing the key feature list, report progress to the leader and confirm the investigation scope before proceeding to dependency and side-effect analysis.
 
@@ -164,6 +183,14 @@ When managing multiple investigation targets in parallel, track progress using t
 |--------|--------|------|-------------|-------|
 | [Class/Feature name] | Done/Pending/In Progress | YYYY-MM-DD | [Ashigaru (Worker) name] | [Notable findings] |
 
+**Example**:
+
+| Target | Status | Date | Investigator | Notes |
+|--------|--------|------|-------------|-------|
+| ValidationService | Done | 2026-03-15 | Ashigaru | 3 hardcoded locations found |
+| PriceCalculationService | In Progress | 2026-03-16 | Ashigaru | Dependency verification in progress |
+| InvoiceService | Pending | - | - | High priority Phase 1 task |
+
 ## Quality Checks
 
 Upon investigation completion, verify the following:
@@ -212,10 +239,14 @@ Upon investigation completion, verify the following:
 > **Fallback**: If prerequisites are not met, report to the leader and await further instructions.
 
 ### Quality Checkpoints
+- [ ] Confirmed with actual code (not assumptions)
 - [ ] Covered all public methods
 - [ ] Documented dependencies (DI)
 - [ ] Extracted business rules and validations
 - [ ] Included file path:line numbers
+- [ ] Checked cross-repository differences
+- [ ] Identified hardcoded locations
+- [ ] (Cross-repo investigation) Documented Source of Truth, sync timing, and inconsistency behavior
 
 ## Effort Setting
 

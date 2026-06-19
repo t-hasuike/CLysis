@@ -199,6 +199,21 @@ Bad: "publication_end_date is not checked"
 Good: "Event's publication end date (event.publication_end_date) is not checked in PaymentProcessor.php's payment processing"
 ```
 
+### Legacy Distortion Pattern Mapping (A-F to Root Cause + Symptom)
+
+This section maps traditional distortion patterns (A-F) to the 2-Axis model (Root Cause A-E + Symptom Pattern DR1-DR6) for reference:
+
+| Legacy Pattern | Root Cause Axis | Symptom Pattern | Meaning |
+|---|---|---|---|
+| A | Validation bypass | Invalid data passes | Insufficient validation allows invalid data downstream |
+| B | Type/Value conversion defects | Inconsistent behavior / Cross-system divergence | Type coercion, implicit conversion, or encoding mismatch |
+| C | Logic/Branching gaps | Check missing entirely | Missing validation or incomplete case handling |
+| D | Architecture & Design flaws | Inconsistent behavior / Cross-system divergence | Structural issues in responsibility, design, or layering |
+| E | Security & Robustness defects | (varies) | Authentication, authorization, or robust error handling gaps |
+| F | Integrity defects (cross-system) | Cross-system divergence | Value, type, or semantic mismatch across repository boundaries |
+
+When classifying a risk in this skill, prefer the 2-Axis model (A-E root cause + DR1-DR6 symptom) for consistency and clarity. The legacy A-F patterns are provided for reference only.
+
 ### Phase 1 Output
 
 **No file output by default.** The leader receives all workers' results, performs deduplication and integration, and holds them locally. Passes directly to Phase 2.
@@ -569,6 +584,7 @@ When distortion analysis covers multiple repositories, risks that span repositor
 | `/current-legacy` | Discovers risks during change-theme investigation -> `/current-distortion` organizes systematically |
 | `/current-spec` | Individual code investigation -> `/current-distortion` Phase 1 for distortion-focused investigation |
 | `/change-impact` | Change impact analysis -> Part B remediation priority judgment benefits from this |
+| `/review-code` | **Complementary relationship**: `/review-code` performs per-PR differential review (dynamic, tactical). `/current-distortion` detects structural distortions across a domain (static, strategic). When distortions are discovered during code review, delegate systematic analysis to `/current-distortion` |
 
 ### Skill Chain Examples
 
@@ -622,8 +638,14 @@ When distortion analysis covers multiple repositories, risks that span repositor
 
 ### Downstream Skills (Pipeline)
 
-- `/change-impact` -- Impact analysis based on Part B remediation priority
-- Used as handoff material for implementation phase
+| Skill | Condition | Instruction |
+|-------|-----------|------------|
+| `/change-impact` | When Part B remediation priority 1 is confirmed | Execute after Part C completion; obtain leader approval before proceeding |
+| `/create-pr --plan` | When Quick Fix distortions exist | Propose to leader; seek approval before execution |
+
+> **User Approval Required**: Do not proceed to next phase for Architecture Fix distortions without explicit user decision
+
+> **Fallback**: If prerequisites are not met, report to leader and await further instruction
 
 ### Quality Checklist
 
@@ -640,3 +662,6 @@ When distortion analysis covers multiple repositories, risks that span repositor
 - [ ] Remaining investigation items and next actions documented
 - [ ] Findings verified against actual code (no hallucinations)
 - [ ] Part C "WHAT TO DO" view is decision-maker-oriented with clear remediation effort/impact tradeoffs
+- [ ] All Phase 1 risks are deduplicated and source-tracked (existing investigation vs distortion survey)
+- [ ] Each risk's file paths point to verified code locations (no assumptions)
+- [ ] Negative assertions ("does not check") are supported by absence evidence (grep results showing 0 matches)
