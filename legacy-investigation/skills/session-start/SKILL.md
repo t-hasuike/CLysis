@@ -129,7 +129,7 @@ Files required for context recovery after the previous session clear are missing
 
 **Actions**:
 - Search all `.md` files in `workspace/in_progress/` for "Status: waiting" or similar markers
-- Example command: `grep -l "Status.*waiting\|ステータス.*待機状態" workspace/in_progress/*.md`
+- Example command: `grep -l "Status.*waiting" workspace/in_progress/*.md`
 - List all matching files (no limit)
 - Extract "Kickoff trigger", "Escalation target", "Target deadline" from each file
 
@@ -323,11 +323,14 @@ Automatically classify Try items from the latest KPT file's Try table using the 
 | Mode | Steps Executed | Scope | Estimated Time |
 |------|---------------|-------|---------------|
 | `--light` | Step 1 + Step 2 + Step 2.5 (local file scan only) | Local only | Short |
-| `--full` (default) | Steps 1-4 + Step 2.5 + Step 4.5 (includes GitHub API) | Full scope | Moderate |
+| `--full` (default) | Steps 1-4 + Step 2.1 + Step 2.5 + Step 3 + Step 3 Extension + Step 4.5 + Step 4.5 Extensions (includes GitHub API) | Full scope | Moderate |
 
 Default is `--full`. If GitHub API fails during `--full` execution, automatically falls back to `--light` results.
 
-**Step 2.1** (sequential persistence verification) and **Step 3 Extension** (recent PR list) are included in `--full` mode only.
+**Key additions in `--full` mode**:
+- **Step 2.1**: Sequential persistence file verification (KPT + handover completeness check)
+- **Step 3 Extension**: Recent PR list (`gh pr list --state all --limit 5`) to detect CLOSED/MERGED status changes
+- **Step 4.5 Extensions**: Mandatory Try auto-extraction and three-tier Try deadline grouping (mandatory / parallel-candidate / standard)
 
 ## Output Format
 
@@ -373,12 +376,14 @@ If none: "(No standard Try items)"
 
 ### Sequential Persistence File Verification (--full only)
 
+When a handover document is detected in Step 2, Step 2.1 verifies that both the KPT report and handover document exist and contain content:
+
 | File Type | Verification Path | Status | Action |
 |-----------|------------------|--------|--------|
 | KPT Report | `reports/YYYY.MM.DD_kpt.md` | [Exists / Missing] | [OK / Retry] |
 | Handover Document | `workspace/in_progress/YYYY.MM.DD_session_handover.md` | [Exists / Missing] | [OK / Retry] |
 
-**Note**: Both files should exist per sequential persistence rules. Report any missing files to Shogun.
+**Critical Note**: If either file is missing or empty, a CRITICAL warning section is generated and displayed here. Both files must exist and contain content per the sequential persistence design. Report any discrepancies to Shogun immediately.
 
 ### knowledge/ Update Status
 - Last updated: {date}
@@ -545,8 +550,9 @@ On GitHub API failure:
 
 - [ ] `reports/session_context/{YYYYMMDD}-session-start.md` was created
 - [ ] File contains frontmatter (generation date, mode, API status)
-- [ ] All information from Steps 1-4 + Step 2.5 + Step 4.5 + Step 4.5 Extensions is aggregated (for --full mode)
-- [ ] Step 2.1: Sequential persistence file verification table is present and states matches reality
+- [ ] All information from Steps 1-4 + Step 2.1 + Step 2.5 + Step 3 + Step 3 Extension + Step 4.5 + Step 4.5 Extensions is aggregated (for --full mode)
+- [ ] Step 2.1: Sequential persistence file verification results are present; KPT report and handover document existence confirmed
+- [ ] Step 2.1: If either file is missing, warning section is output before Step 3 (critical state)
 - [ ] Step 2.5: Waiting-state task list (if any) matches grep results from `workspace/in_progress/`
 - [ ] Step 3 Extension: Recent PR list (`gh pr list --state all --limit 5`) is included (--full only)
 - [ ] Step 3 Extension: Handover-recorded PR numbers are cross-referenced with recent PR list (--full only)
@@ -564,5 +570,6 @@ On GitHub API failure:
 
 | Date | Version | Changes |
 |------|:-------:|---------|
+| 2026-06-21 | 1.2.1 | Clarity improvements: Removed Japanese grep pattern from Step 2.5 example (English-only mode). Expanded Mode Specification section to explicitly list Step 2.1, Step 3 Extension, and Step 4.5 Extensions. Enhanced quality checkpoints with Step 2.1 missing-file warning detection. Clarified Sequential Persistence File Verification section description to emphasize critical warning output condition. |
 | 2026-06-19 | 1.2 | Added Step 2.1 (sequential persistence file verification), Step 2.5 (waiting-state task detection), Step 3 extension (recent PR list with CLOSED/MERGED), Step 4.5 extensions (mandatory Try alert + three-tier Try priority grouping), expanded output format and quality checkpoints |
 | 2026-06-06 | 1.1 | Added Step 4.5 (mandatory Try auto-extraction), quality checkpoints, edge case handling |

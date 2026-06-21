@@ -37,6 +37,17 @@ If no primary condition is met, apply secondary scoring (execute if total >= 2 p
 
 Even without a milestone, run a lightweight version (`--light`) at session boundaries.
 
+### Clear Preparation Priority Rule
+
+When it is confirmed during the current session that "clear will execute in the next session", KPT becomes mandatory regardless of milestone judgment. Specifically:
+
+1. If milestone completion flag `workspace/in_progress/_clear_milestone.flag` exists → treat as KPT-required
+2. If the leader directs "proceed with clear preparation" → KPT is the session's top priority
+
+Execute KPT before session end when both conditions are met.
+
+**Rationale**: The flag indicates the leader has pre-confirmed readiness for clear. KPT in this state satisfies "KPT at milestone completion" requirement.
+
 ### Carryover Detection (Unexecuted Try Chain)
 
 When reviewing previous Try items (Step 1), check if any "Not Executed" item was also marked "Not Executed" in the prior KPT session.
@@ -79,7 +90,9 @@ ls -t reports/*_kpt.md | head -1
 After identifying the status of each previous Try item, check for "Not Executed" items that also appeared as "Not Executed" in the prior KPT session.
 
 - **Single carryover**: Verify priority with the leader at session start. Re-enter as "Must Execute" in the current KPT.
-- **Double carryover** (Not Executed for 2+ consecutive KPTs): Treat as Five Whys trigger. Perform root-cause analysis: Why was this improvement effort delayed across sessions? Document findings as feedback memory.
+- **Double carryover** (Not Executed for 2+ consecutive KPTs): Treat as Five Whys trigger. Perform root-cause analysis: Why was this improvement effort delayed across sessions? Record root cause in feedback memory: what structural issue (process ambiguity, unclear priority, undefined responsibility) allowed the improvement itself to slip?
+
+**Rationale**: When an improvement effort carries over across multiple sessions, the root problem lies in process structure, not execution effort. Capture this pattern.
 
 ### Step 2: Confirm Current Session Outcomes
 
