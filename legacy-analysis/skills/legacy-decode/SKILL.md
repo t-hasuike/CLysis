@@ -4,9 +4,6 @@ description: Legacy blackbox decoding skill. Adapts the takt research workflow e
 argument-hint: "Phase 0 [target-repository] | Phase 1 [target-feature] | Phase 2 | Phase 3 | Phase 4"
 ---
 
-> This is a generic skill from [CLysis](https://github.com/t-hasuike/CLysis).
-> Terminology can be customized via `config/terminology.md`.
-
 # /legacy-decode -- Legacy Blackbox Decoding Skill
 
 ## §0 takt Adaptation Reference
@@ -50,7 +47,7 @@ Confirm the following prerequisites are met before executing this skill:
 
 - **Serena setup complete**: Symbolic search tool is available (tool name: Serena component in Claude Code).
 - **Repository access**: Read/Bash access to the target repositories is available.
-- **Understanding of your project's soft-delete convention**: Understand whether your project uses a soft-delete flag (e.g., `soft_delete_flag='0'` or equivalent) and that all queries must include the appropriate filter. See your project's coding conventions guide for details. Detailed project-specific conventions are documented in `reference/project_conventions.md`.
+- **Understanding of your project's soft-delete convention**: Understand whether your project uses a soft-delete flag (e.g., `soft_delete_flag='0'`, `deleted_at IS NULL`, or equivalent) and that all queries must include the appropriate filter. See your project's coding conventions guide for details. Detailed project-specific conventions are documented in `reference/project_conventions.md`.
 - **Karo decomposition plan exists**: The "decoding plan" (scope, questions, quality gate definition) created by Karo in Phase 0 is at hand. This skill always follows Karo's plan.
 
 ## Relationship with Existing Skills

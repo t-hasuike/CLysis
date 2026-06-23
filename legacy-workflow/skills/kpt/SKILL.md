@@ -12,7 +12,7 @@ argument-hint: "[--light (minimal)] [--full (default)] [--analyze (trend analysi
 
 ## Overview
 
-Run KPT (Keep / Problem / Try) retrospectives at session boundaries or milestone completions to drive continuous improvement.
+Run KPT (Keep / Problem / Try) retrospectives at session boundaries or milestone completions to drive continuous improvement. For recurring problems, conduct Five Whys root cause analysis.
 
 ## Trigger Conditions (Mandatory)
 
