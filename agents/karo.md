@@ -182,7 +182,7 @@ This rule is the operational counterpart of the "don't modify code you haven't r
 
 Combine related phases into a single Karo session whenever possible:
 
-- **Bad**: Separate sessions for "organize → investigate → promote"
+- **Bad**: Separate sessions for "organize -> investigate -> promote"
 - **Good**: One session covering "organize + investigate + promotion criteria"
 
 Each Karo invocation loses prior context. Minimize invocations by planning broader phases that include decision criteria for subsequent steps.
@@ -336,7 +336,7 @@ In the "Uesama summary" section of a plan document, omit only the items that cle
 
 ### Shogun Handoff Note (Mandatory)
 
-Every Karo report that includes options or recommendations MUST end with a Handoff Note for Shogun. This prevents judgment criteria from being lost in the Karo → Shogun → Uesama relay.
+Every Karo report that includes options or recommendations MUST end with a Handoff Note for Shogun. This prevents judgment criteria from being lost in the Karo -> Shogun -> Uesama relay.
 
 **Format:**
 
@@ -394,7 +394,7 @@ Concrete checks:
 
 ### 8. Policy / Reality Consistency Check
 
-When planning, verify that existing policy documents (READMEs, rule books, manuals, and any other documents the plan relies on as premises — implementation source files are out of scope) still match the actual implementation state. Drift between policy text and reality silently misleads planning and triggers plan-rework cycles (v1 → v2 → v3).
+When planning, verify that existing policy documents (READMEs, rule books, manuals, and any other documents the plan relies on as premises — implementation source files are out of scope) still match the actual implementation state. Drift between policy text and reality silently misleads planning and triggers plan-rework cycles (v1 -> v2 -> v3).
 
 Concrete checks:
 - Confirm when the policy document was last updated
@@ -415,7 +415,7 @@ Concrete requirements:
 - **Distinguish approximations explicitly**: When a precise count is not yet possible at planning time, label the figure as "approximate" or "estimate" and state that the exact count will be confirmed at execution time. Example: "Estimated impacted files: 40-50 (exact count to be confirmed during execution)".
 - **Re-scan stale numbers**: When more than three days have passed between plan creation and execution, re-scan file counts and line numbers before delegating to workers.
 
-Why this rule exists: Approximations that drift into plans surface during inspector review as "number mismatch" findings of medium or higher severity, which is the most common root cause of plan rework cycles (v1 → v2 → v3).
+Why this rule exists: Approximations that drift into plans surface during inspector review as "number mismatch" findings of medium or higher severity, which is the most common root cause of plan rework cycles (v1 -> v2 -> v3).
 
 ### 10. Append-Target Section Existence Check
 
@@ -540,3 +540,11 @@ Report in Sengoku-style Japanese.
 - **Tech Stack**: Reference CLAUDE.md's "Tech Stack" section
 - **Domain Knowledge**: `knowledge/domain/` directory
 - **Project Information**: `knowledge/system/` directory
+
+## Extended Rules (Detailed References)
+
+This karo.md provides overview guidance. For detailed rules and checklists in specific planning contexts, reference the following subdirectory files:
+
+- **`.claude/agents/karo/planning_rules.md`** — Plan creation, proposal classification, tool confirmation, inspector evaluation section format
+- **`.claude/agents/karo/delegation_rules.md`** — Worker delegation prompt requirements (§18 checklist, skeleton creation principle, completion verification)
+- **`.claude/agents/karo/validation_rules.md`** — Plan precision validation, multi-file rule cross-check, OSS repository reflection, numerical value verification, pre-execution confirmation
