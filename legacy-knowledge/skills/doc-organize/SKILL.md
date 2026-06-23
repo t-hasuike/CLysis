@@ -4,9 +4,6 @@ description: Organize investigation reports from reports/ into knowledge/ by doc
 argument-hint: [scope] - e.g., `reports/` / `knowledge/` / `--all` / specific file path
 ---
 
-> This is a generic skill from [CLysis](https://github.com/t-hasuike/CLysis).
-> Terminology can be customized via `config/terminology.md`.
-
 # /doc-organize — Document Organization & Filing (Execution)
 
 ## Role

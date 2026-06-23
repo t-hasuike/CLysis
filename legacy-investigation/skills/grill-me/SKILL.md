@@ -40,6 +40,9 @@ See config/terminology.md for term customization
 - **Forced exit**: User can say "enough" or "done" to immediately end
 - **7-8 questions max**: Present all at once (not one-by-one)
 - **No speculation**: Do not guess answers or fill in blanks
+- **Context-aware exclusion**: Skip questions whose answers are already evident from context; mark them as "already confirmed"
+- **Maximum 8 questions**: No more than 8 total (7-8 is the typical range)
+- **Batch presentation only**: Generate all questions at once, never in Q&A exchange format
 
 ## Trigger Conditions
 
@@ -100,14 +103,25 @@ One question per category. Skip categories already clearly answered by context.
 
 **Important**:
 - Present all questions **at once** (no one-by-one Q&A)
-- Skip questions already answered by context. Note "Skipped: already confirmed from context."
+- Skip questions already answered by context; mark them as "Omitted: already confirmed from context"
 - Do not speculate answers or complete responses for the user
+- Identify obvious answers from context and list them in the "Skipped Questions" section with the reason
+- Generate 7-8 questions, excluding context-confirmed items
 
 ### Step 3: Await User Responses
 
+**Execution**:
 - Present questions in the standard report format
 - Wait for the user to respond
-- If the user says "enough" or "done" at any point, immediately proceed to Step 4 with responses collected so far
+- Record responses as Q&A pairs
+- If user says "enough" or "done" at any point, immediately stop and proceed to Step 4
+
+**Optional: User interruption handling**:
+- If user says "enough" or "done" before all questions are answered
+  - Cease question collection immediately
+  - Save collected responses
+  - Step 4: Record unanswered questions in "Unresolved Items" section
+  - Propose subsequent skills
 
 ### Step 4: Save Results
 
@@ -179,6 +193,19 @@ Output format:
 ```
 
 Save to: `reports/grill/{YYYYMMDD}-{topic}.md`
+
+---
+
+## Handoff to Subsequent Skills
+
+After grill-me questions are answered, the confirmed decisions form the foundation for downstream skills:
+
+| Subsequent Skill | When to Use | Input |
+|------------------|------------|--------|
+| `/project-guide` | Task scope confirmed | Grill results summary |
+| `/change-impact` | Modification task identified | Grill results + change scope |
+| `/current-spec` | Implementation details needed | Grill results + target component |
+| `/create-pr --plan` | Solution approach determined | Grill results + design decisions |
 
 ## Execution Environment
 
@@ -272,6 +299,9 @@ Save to: `reports/grill/{YYYYMMDD}-{topic}.md`
 - Do not propose fixes or improvements (that is the leader's role)
 - Do not deny or evaluate the user's answers ("that's wrong", etc.)
 - Do not lead with speculative phrasing such as "isn't it really X...?"
+- Restrict output to questions and response collection only
+- Present all questions as a batch; do not engage in iterative dialogue
+- When questions cannot be answered due to information gaps, state "Background information insufficient" and pause for clarification
 
 ## I/O Specification
 

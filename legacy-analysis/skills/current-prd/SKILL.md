@@ -140,9 +140,52 @@ Limit scope to manage token consumption in large codebases:
 
 | # | Checkpoint | Verification Method | Pass Criteria | Failure Response |
 |---|-----------|------------------|----------------|-----------------|
-| 1 | All endpoints discovered and documented | Read routes/api.php, web.php; cross-reference endpoint count in PRD with actual route definitions. grep `Route::` to detect omissions | Route definition count matches PRD endpoint count. Difference: 0 items | List omitted endpoints; issue correction instruction for Phase 2 re-analysis |
+| 1 | All endpoints discovered and documented | Read routes/api.php, web.php; cross-reference endpoint count in PRD with actual route definitions. grep for endpoint declarations to detect omissions | Route definition count matches PRD endpoint count. Difference: 0 items | List omitted endpoints; issue correction instruction for Phase 2 re-analysis |
 | 2 | DB tables mapped to business domain | Extract table list from schema file or migrations; cross-reference PRD domain mapping | All tables have business domain mapping (process name or entity name) | List unmapped tables; issue correction instruction for investigation |
 | 3 | Cross-repository dependencies identified | grep for shared table names, API URLs, shared Enum names across repositories; cross-reference with PRD | PRD cross-repo dependencies verified in code. Undocumented dependencies: 0 | List undocumented dependencies with scope and impact; issue correction instruction |
 | 4 | External integrations (SFTP, S3, API calls) documented | grep for `sftp`, `Storage::`, `S3Client`, `Http::`, `curl`, `Guzzle` etc.; cross-reference with PRD | All external integration points in code appear in PRD | List undocumented integration points with target and data format; issue correction instruction |
-| 5 | Batch processes documented with schedule, I/O | Read Console/Kernel.php schedule() and Console/Commands/ directory; cross-reference with PRD | All batch commands have schedule (cron expression), input source, and output destination documented | List incomplete batch command documentation; issue correction instruction for Phase 2 re-analysis |
-| 6 | No application fix recommendations included (assessment only) | Full-text review; grep for "should", "change", "refactor" type language | Fix recommendations/improvement suggestions: 0. Contains fact descriptions and state recording only | Remove fix language or rewrite as fact description. Issue correction instruction |
+| 5 | Batch processes documented with schedule, I/O | Read scheduler config and CLI command directory; cross-reference with PRD | All batch commands have schedule, input source, and output destination documented | List incomplete batch command documentation; issue correction instruction for Phase 2 re-analysis |
+| 6 | No application fix recommendations included (assessment only) | Full-text review; grep for prescriptive language ("should", "must change", "refactor") | Fix recommendations/improvement suggestions: 0. Contains fact descriptions and state recording only | Remove prescriptive language or rewrite as fact description. Issue correction instruction |
+
+---
+
+## Quality Assurance Criteria
+
+Inspection rules for Metsuke (Inspector):
+
+### Comprehensiveness
+- Have all repositories been investigated?
+- Have DB, Model, Service, and batch logic been covered?
+- Have hardcoded values and edge cases been identified?
+
+### Accuracy
+- Is every claim verified against actual code (not assumptions)?
+- Are file paths and line numbers documented?
+- Have differences between repositories been cross-checked?
+
+### Usability
+- Is the impact classification logic clear?
+- Are specific modifications documented?
+- Are review points and deadlines stated?
+
+### Service Specification Summary
+- Do high-impact Service/UseCase entries have specification summaries?
+- Do they include the four required elements: role, function, dependencies, special notes?
+
+---
+
+## Output Template: Risk Registration
+
+For risks and concerns discovered during PRD analysis:
+
+| ID | Risk Description | Discovery Date | Impact Level | Status | Resolution Strategy |
+|----|------------------|---|---|---|---|
+| R001 | [Risk detail] | YYYY-MM-DD | High/Medium/Low | Pending/In Progress/Resolved | [Strategy] |
+
+**Example**:
+
+| ID | Risk Description | Discovery Date | Impact Level | Status | Resolution Strategy |
+|----|------------------|---|---|---|---|
+| R001 | Schema migration incompleteness | 2026-06-15 | High | In Progress | Migration script pending (Phase 1) |
+| R002 | External integration spec confirmation required | 2026-06-15 | Medium | Pending | Verification due by end of week |
+| R003 | Existing test suite may fail | 2026-06-16 | Medium | In Progress | Test corrections prepared |
